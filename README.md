@@ -1,46 +1,184 @@
-# Astro Starter Kit: Basics
+# PoetiKa
 
-```sh
-npm create astro@latest -- --template basics
-```
+PoetiKa es una plataforma de escritura creativa competitiva y social.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Cada día, en una hora aleatoria, los usuarios reciben una notificación:
+> “Es hora de PoetiKa.”
 
-## 🚀 Project Structure
+A partir de ese momento comienza el reto diario.
 
-Inside of your Astro project, you'll see the following folders and files:
+Los usuarios tendrán que escribir un relato corto basado en una combinación de elementos generados automáticamente. Cada día cambia completamente.
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+Ejemplos:
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+- Lugar: Cabaña
+- Objeto: Espejo
+- Temática: Terror
 
-## 🧞 Commands
+Otro día:
 
-All commands are run from the root of the project, from a terminal:
+- Clima: Tormenta
+- Suceso: Asesinato
+- Estilo: Primera Persona
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+---
 
-## 👀 Want to learn more?
+# Concepto
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+PoetiKa mezcla:
+
+- Escritura creativa
+- Retos diarios
+- Competición social
+- Gamificación
+- Ranking comunitario
+
+La idea es convertir la escritura en una experiencia rápida, social y adictiva.
+
+---
+
+# Funcionamiento
+
+## 1. Notificación diaria
+
+Una vez al día, en una hora aleatoria:
+
+- Push notification
+- Correo electrónico
+- Notificación móvil
+
+Los usuarios reciben el aviso para participar en el reto del día.
+
+---
+
+## 2. Generación del reto
+
+Cada reto combina distintos elementos narrativos:
+
+- Lugar
+- Objeto
+- Temática
+- Clima
+- Suceso
+- Estilo narrativo
+- Personaje
+- Emoción
+- Restricciones especiales
+
+Cada día es único.
+
+---
+
+## 3. Escritura del relato
+
+Los usuarios tendrán un tiempo limitado para escribir y publicar un relato corto basado en el reto diario.
+
+Características previstas:
+
+- Editor minimalista
+- Contador de palabras
+- Guardado automático
+- Modo concentración
+- Publicación rápida
+
+---
+
+## 4. Feed social
+
+Cuando un usuario publique su relato podrá:
+
+- Leer relatos del resto
+- Dar likes
+- Descubrir autores
+- Ver rankings diarios
+- Compartir relatos
+
+Los relatos más votados aparecerán primero.
+
+---
+
+## 5. Sistema de coronas
+
+Los relatos con más votos ganarán una corona.
+
+Las coronas servirán como sistema de prestigio dentro de la plataforma.
+
+En cada perfil se podrán ver:
+
+- Likes totales
+- Coronas obtenidas
+- Participaciones
+- Rachas diarias
+- Ranking histórico
+
+---
+
+# Premium
+
+PoetiKa tendrá una suscripción premium con funciones avanzadas que se definirán más adelante.
+
+Ideas iniciales:
+
+- Estadísticas avanzadas
+- Temas exclusivos
+- Personalización de perfil
+- IA de inspiración narrativa
+- Exportación de relatos
+- Historial completo
+- Retos privados
+- Clubes de escritura
+
+---
+
+# Plataformas
+
+PoetiKa estará disponible como:
+
+- Web App
+- Aplicación móvil
+
+Todo sincronizado entre dispositivos.
+
+---
+
+# Stack Tecnológico
+
+## Frontend
+
+- Astro
+- TypeScript
+- TailwindCSS
+
+## Backend
+
+Pendiente de definir.
+
+Posibles opciones:
+
+- Supabase
+- Firebase
+- Appwrite
+- PocketBase
+- NestJS + PostgreSQL
+
+---
+
+# Objetivos
+
+- Hacer divertida la escritura diaria
+- Crear hábito creativo
+- Fomentar comunidad
+- Gamificar la narrativa
+- Descubrir nuevos escritores
+
+---
+
+# Estado del Proyecto
+
+🚧 En desarrollo inicial.
+
+---
+
+# Licencia
+
+Pendiente.
