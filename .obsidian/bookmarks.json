@@ -1,0 +1,30 @@
+{
+  "items": [
+    {
+      "type": "group",
+      "ctime": 1716215490212,
+      "items": [
+        {
+          "type": "folder",
+          "ctime": 1716215302633,
+          "path": "Nyvasma"
+        }
+      ],
+      "title": "Campañas"
+    },
+    {
+      "type": "file",
+      "ctime": 1728667255463,
+      "path": "Nyvasma/Campañas/L1/Pergaminos/Pergaminos_Crepusculo.md",
+      "subpath": "#Pergamino 1 La Historia del Gran Guardián",
+      "title": "La Gran Guardián"
+    },
+    {
+      "type": "file",
+      "ctime": 1753530580527,
+      "path": "Nyvasma/R2/Cultos/Culto de la Luz.md",
+      "subpath": "#[1]",
+      "title": "Derek"
+    }
+  ]
+}

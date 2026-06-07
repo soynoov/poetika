@@ -1,0 +1,24 @@
+body {
+  --h1-color: #e5ecf8;
+  --h2-color: #ff91d9;
+  --h3-color: #e44f5c;
+  --h4-color: #ab73e7;
+  --h5-color: #b1c086;
+  --h6-color: #f8c57c;
+
+  --h1-size: 40px;
+  --h2-size: 35px;
+  --h3-size: 30px;
+  --h4-size: 25px;
+  --h5-size: 20px;
+  --h6-size: 18px;
+
+  --h1-weight: 900;
+  --h2-weight: 900;
+  --h3-weight: 900;
+  --h4-weight: 800;
+  --h5-weight: 800;
+  --h6-weight: 800;
+
+  --divider-width: 5px;
+}

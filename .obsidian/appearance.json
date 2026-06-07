@@ -1,0 +1,12 @@
+{
+  "accentColor": "#c8102e",
+  "cssTheme": "Things",
+  "interfaceFontFamily": "Lexend",
+  "textFontFamily": "Josefin Sans,League Spartan",
+  "monospaceFontFamily": "Cascadia Code",
+  "enabledCssSnippets": [
+    "themes"
+  ],
+  "baseFontSize": 16,
+  "baseFontSizeAction": false
+}

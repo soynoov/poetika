@@ -21,6 +21,7 @@ Keep it updated when the implementation changes.
 - Supabase stores categories, words, and the daily challenge selection.
 - The public UI reads the current challenge with a client-side fetch.
 - Fallback challenge data exists so the site still renders before the database is configured.
+- The editable local word bank lives in `src/data/challengeWords.ts` and powers the fallback challenge while Supabase is unavailable.
 
 ## Database tables
 
@@ -39,3 +40,4 @@ Keep it updated when the implementation changes.
 - Add a small admin UI for category and word CRUD.
 - Add an admin guard before exposing any write surface in the app.
 - Replace fallback data with seeded Supabase data in the deployed environment.
+- Sync `src/data/challengeWords.ts` with Supabase seed data when the project is ready again.

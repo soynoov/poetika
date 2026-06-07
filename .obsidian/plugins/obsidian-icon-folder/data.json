@@ -1,0 +1,100 @@
+{
+  "settings": {
+    "migrated": 6,
+    "iconPacksPath": ".obsidian/icons",
+    "fontSize": 16,
+    "emojiStyle": "native",
+    "iconColor": null,
+    "recentlyUsedIcons": [
+      "LiBookText",
+      "LiFolder",
+      "LiToolCase",
+      "LiBookmark",
+      "LiBook"
+    ],
+    "recentlyUsedIconsSize": 5,
+    "rules": [],
+    "extraMargin": {
+      "top": 0,
+      "right": 4,
+      "bottom": 0,
+      "left": 0
+    },
+    "iconInTabsEnabled": false,
+    "iconInTitleEnabled": false,
+    "iconInTitlePosition": "above",
+    "iconInFrontmatterEnabled": false,
+    "iconInFrontmatterFieldName": "icon",
+    "iconColorInFrontmatterFieldName": "iconColor",
+    "iconsBackgroundCheckEnabled": false,
+    "iconsInNotesEnabled": true,
+    "iconsInLinksEnabled": true,
+    "iconIdentifier": ":",
+    "debugMode": false,
+    "lucideIconPackType": "native"
+  },
+  "Nyvasma": {
+    "iconName": "LiTrees",
+    "iconColor": "#547340"
+  },
+  "Voidegon": {
+    "iconName": "LiShieldAlert",
+    "iconColor": "#9c20df"
+  },
+  "DM": {
+    "iconName": "LiBookKey",
+    "iconColor": "#f87c16"
+  },
+  "Nyvasma/Culto de la Luz.md": "🐐",
+  "Idhun/Vashir/Conjuros/Cantrips/Poison Spray.md": "🌿",
+  "Luna de Sangre": {
+    "iconName": "LiMoonStar",
+    "iconColor": "#ff0000"
+  },
+  "Luna de Sangre/Puntuación Examen.md": "LiWaypoints",
+  "Nyvasma/Códice.md": "LiFileKey2",
+  "Idhun": {
+    "iconName": "LiPawPrint",
+    "iconColor": "#f547de"
+  },
+  "Nyvasma/SRC/IMG/PNJs/Culto de la Luz": "LiSun",
+  "Multiverso": {
+    "iconName": "LiServerCrash",
+    "iconColor": "#5dd0b3"
+  },
+  "Nyvasma/Modulos": "LiFolders",
+  "Nyvasma/Modulos/Odmun/Handouts": "LiScrollText",
+  "Nyvasma/Modulos/Odmun/Assets": "LiFolder",
+  "Nyvasma/Modulos/Odmun/Scenes": "LiMap",
+  "Nyvasma/Modulos/Odmun/Handouts/System": "LiInfo",
+  "Nyvasma/Modulos/Odmun/NPCS": "LiBot",
+  "Nyvasma/Modulos/Nether/NPCS": "LiBot",
+  "Nyvasma/Modulos/Nether/Bestiary": "LiActivity",
+  "Nyvasma/Modulos/Odmun/Bestiary": "LiActivity",
+  "Nyvasma/Modulos/Nether/Assets": "LiFolder",
+  "Nyvasma/Modulos/Nether/Scenes": "LiMap",
+  "Nyvasma/Campañas": "LiBookmark",
+  "Nyvasma/Campañas/L1/Pergaminos": "📜",
+  "Nyvasma/Campañas/L1/PNG": "🎴",
+  "Nyvasma/Campañas/L1/Work Zone": "🧻",
+  "Nyvasma/Campañas/L1/Work Zone/1. Aelin": "LiCircle",
+  "Nyvasma/Campañas/L1/Work Zone/2. Leovigildo": "LiCross",
+  "Nyvasma/Campañas/L1/Work Zone/3. Aus": "LiHexagon",
+  "Nyvasma/Campañas/L1/Work Zone/4. Damaia": "LiTriangle",
+  "Nyvasma/Campañas/L1/Work Zone/5. Roux": "LiSquare",
+  "Nyvasma/Campañas/L1/Work Zone/Detalles Lore.md": "📑",
+  "Nyvasma/Campañas/L1/Work Zone/Deseos.canvas": "🛡",
+  "Nyvasma/Campañas/L1/Work Zone/EP": "LiBookOpen",
+  "Nyvasma/Campañas/L1/Work Zone/My Creatures.canvas": "🧪",
+  "Nyvasma/Campañas/L1/Work Zone/EP/EP.10.canvas": "LiBrain",
+  "Nyvasma/Campañas/L1/Work Zone/EP/EP.11.canvas": "LiBrain",
+  "Nyvasma/Campañas/L1/Work Zone/EP/EP.7.md": "LiBrain",
+  "Nyvasma/Campañas/L1/Work Zone/EP/EP.8.md": "LiBrain",
+  "Nyvasma/Campañas/L1/Work Zone/EP/EP.9.canvas": "LiBrain",
+  "Nyvasma/Modulos/Void/NPCS": "LiBot",
+  "Nyvasma/Modulos/Void/Bestiary": "LiActivity",
+  "Nyvasma/Modulos/Odmun/Items": "LiToolCase",
+  "DM/Assets": "LiFolder",
+  "Nyvasma/Campañas/L2/Assets": "LiFolder",
+  "Nyvasma/Campañas/L2/Articles": "LiBookText"
+}
