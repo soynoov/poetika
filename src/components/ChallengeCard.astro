@@ -7,7 +7,9 @@ const { label, value, rotation, marker, slot } = Astro.props;
   data-daily-slot={slot}
   class={`rounded-3xl border border-[#dbc9b9] bg-white/90 p-6 text-center shadow-[0_14px_32px_rgba(43,28,20,0.08)] ${rotation}`}
 >
-  <div class='mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#201611] text-sm font-semibold text-white shadow-lg shadow-[#201611]/20'>
+  <div
+    class='mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#201611] text-sm font-semibold text-white shadow-lg shadow-[#201611]/20'
+  >
     <span data-daily-marker>{marker ?? label.slice(0, 1)}</span>
   </div>
   <span
@@ -16,7 +18,10 @@ const { label, value, rotation, marker, slot } = Astro.props;
   >
     {label}
   </span>
-  <span data-daily-word class='serif text-xl font-bold text-[#201611]'>
+  <span
+    data-daily-word
+    class='serif capitalize text-xl font-bold text-[#201611]'
+  >
     {value}
   </span>
 </div>

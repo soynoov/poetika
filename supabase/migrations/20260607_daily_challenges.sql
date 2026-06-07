@@ -33,11 +33,26 @@ create table if not exists public.daily_challenges (
 	generated_at timestamptz not null default now()
 );
 
+create table if not exists public.stories (
+	id uuid primary key default gen_random_uuid(),
+	challenge_date date not null references public.daily_challenges(challenge_date) on delete cascade,
+	title text not null,
+	body text not null,
+	author_name text not null default 'Anónimo',
+	word_count integer not null default 0,
+	source text not null default 'local',
+	created_at timestamptz not null default now(),
+	updated_at timestamptz not null default now()
+);
+
 create index if not exists challenge_words_category_active_idx
 	on public.challenge_words (category_id, active);
 
 create index if not exists challenge_categories_active_idx
 	on public.challenge_categories (active, sort_order);
+
+create index if not exists stories_challenge_date_idx
+	on public.stories (challenge_date, created_at desc);
 
 insert into public.challenge_categories (slug, name, description, sort_order)
 values

@@ -8,65 +8,84 @@ const challenge = getFallbackDailyChallenge();
 ---
 
 <Layout
-	title='PoetiKa - Reto del día'
-	description='Consulta el reto activo de PoetiKa: 3 palabras, 3 categorías y una ventana de 24 horas para escribir.'
+  title='PoetiKa - Reto del día'
+  description='Consulta el reto activo de PoetiKa: 3 palabras, 3 categorías y una ventana de 24 horas para escribir.'
 >
-	<main class='max-w-4xl mx-auto px-4 py-12' data-daily-challenge>
-		<div class='mx-auto mb-10 max-w-[280px] sm:max-w-[360px] md:max-w-[420px]'>
-			<BrandLogo class='w-full' linkClass='justify-center' />
-		</div>
+  <main class='max-w-4xl mx-auto px-4 py-12' data-daily-challenge>
+    <div class='mx-auto mb-10 max-w-70 sm:max-w-90 md:max-w-105'>
+      <BrandLogo class='w-full' linkClass='justify-center' />
+    </div>
 
-		<header class='text-center mb-12'>
-			<p class='text-[10px] tracking-[0.3em] uppercase text-slate-400 mb-3'>Reto activo</p>
-			<h1 class='text-5xl italic font-bold text-slate-800 mb-2'>Reto del día</h1>
-			<p class='text-sm text-slate-500 max-w-2xl mx-auto'>
-				Las palabras se escogen desde la base de datos y se conservan durante 24 horas.
-			</p>
-		</header>
+    <header class='text-center mb-12'>
+      <p class='text-[10px] tracking-[0.3em] uppercase text-slate-400 mb-3'>
+        Reto activo
+      </p>
+      <h1 class='text-5xl italic font-bold text-slate-800 mb-2'>
+        Reto del día
+      </h1>
+      <p class='text-sm text-slate-500 max-w-2xl mx-auto'>
+        Las palabras se escogen desde la base de datos y se conservan durante 24
+        horas.
+      </p>
+      <div class='mt-6'>
+        <a
+          href='/write'
+          class='inline-flex items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-[#fffaf4] shadow-lg shadow-accent/20 transition hover:-translate-y-0.5 hover:bg-[#843e2a]'
+        >
+          Escribir relato
+        </a>
+      </div>
+    </header>
 
-		<div class='grid grid-cols-1 md:grid-cols-3 gap-6 mb-10'>
-			<ChallengeCard
-				slot='0'
-				marker={challenge.slots[0].marker}
-				label={challenge.slots[0].category}
-				value={challenge.slots[0].word}
-				rotation='-rotate-1'
-			/>
-			<ChallengeCard
-				slot='1'
-				marker={challenge.slots[1].marker}
-				label={challenge.slots[1].category}
-				value={challenge.slots[1].word}
-				rotation='rotate-0'
-			/>
-			<ChallengeCard
-				slot='2'
-				marker={challenge.slots[2].marker}
-				label={challenge.slots[2].category}
-				value={challenge.slots[2].word}
-				rotation='rotate-1'
-			/>
-		</div>
+    <div class='grid grid-cols-1 md:grid-cols-3 gap-6 mb-10'>
+      <ChallengeCard
+        slot='0'
+        marker={challenge.slots[0].marker}
+        label={challenge.slots[0].category}
+        value={challenge.slots[0].word}
+        rotation='-rotate-1'
+      />
+      <ChallengeCard
+        slot='1'
+        marker={challenge.slots[1].marker}
+        label={challenge.slots[1].category}
+        value={challenge.slots[1].word}
+        rotation='rotate-0'
+      />
+      <ChallengeCard
+        slot='2'
+        marker={challenge.slots[2].marker}
+        label={challenge.slots[2].category}
+        value={challenge.slots[2].word}
+        rotation='rotate-1'
+      />
+    </div>
 
-		<section class='bg-white border border-slate-200 p-6 shadow-sm'>
-			<p class='text-sm text-slate-500 uppercase tracking-[0.2em] mb-2'>Resumen</p>
-			<h2 data-daily-summary class='text-2xl italic font-bold text-slate-800 mb-3'>
-				{challenge.summary}
-			</h2>
-			<p class='text-slate-700 leading-relaxed mb-2'>
-				El reto se genera automáticamente a partir de categorías y palabras guardadas en Supabase.
-			</p>
-			<p class='text-xs uppercase tracking-[0.25em] text-slate-400'>
-				Fecha: <span data-daily-date>{challenge.dateKey}</span>
-			</p>
-			<p class='text-xs uppercase tracking-[0.25em] text-slate-400 mt-1'>
-				Origen: <span data-daily-source>con fallback local</span>
-			</p>
-		</section>
-	</main>
+    <section class='bg-white border border-slate-200 p-6 shadow-sm'>
+      <p class='text-sm text-slate-500 uppercase tracking-[0.2em] mb-2'>
+        Resumen
+      </p>
+      <h2
+        data-daily-summary
+        class='text-2xl italic font-bold text-slate-800 mb-3'
+      >
+        {challenge.summary}
+      </h2>
+      <p class='text-slate-700 leading-relaxed mb-2'>
+        El reto se genera automáticamente a partir de categorías y palabras
+        guardadas en Supabase.
+      </p>
+      <p class='text-xs uppercase tracking-[0.25em] text-slate-400'>
+        Fecha: <span data-daily-date>{challenge.dateKey}</span>
+      </p>
+      <p class='text-xs uppercase tracking-[0.25em] text-slate-400 mt-1'>
+        Origen: <span data-daily-source>con fallback local</span>
+      </p>
+    </section>
+  </main>
 
-	<script type='module'>
-		import { initDailyChallenge } from '../scripts/daily-challenge';
-		initDailyChallenge();
-	</script>
+  <script type='module'>
+    import { initDailyChallenge } from '../scripts/daily-challenge';
+    initDailyChallenge();
+  </script>
 </Layout>

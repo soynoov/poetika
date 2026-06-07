@@ -72,7 +72,7 @@ export type Database = {
 				};
 				Relationships: [];
 			};
-			daily_challenges: {
+				daily_challenges: {
 				Row: {
 					challenge_date: string;
 					first_category_id: string;
@@ -103,9 +103,45 @@ export type Database = {
 					third_word_id?: string;
 					generated_at?: string;
 				};
-				Relationships: [];
+					Relationships: [];
+				};
+				stories: {
+					Row: {
+						author_name: string;
+						body: string;
+						challenge_date: string;
+						created_at: string;
+						id: string;
+						source: string;
+						title: string;
+						updated_at: string;
+						word_count: number;
+					};
+					Insert: {
+						author_name?: string;
+						body: string;
+						challenge_date: string;
+						created_at?: string;
+						id?: string;
+						source?: string;
+						title: string;
+						updated_at?: string;
+						word_count?: number;
+					};
+					Update: {
+						author_name?: string;
+						body?: string;
+						challenge_date?: string;
+						created_at?: string;
+						id?: string;
+						source?: string;
+						title?: string;
+						updated_at?: string;
+						word_count?: number;
+					};
+					Relationships: [];
+				};
 			};
-		};
 		Views: Record<string, never>;
 		Functions: {
 			get_daily_challenge: {
