@@ -23,6 +23,14 @@ Keep it updated when the implementation changes.
 - Fallback challenge data exists so the site still renders before the database is configured.
 - The editable local word bank lives in `src/data/challengeWords.ts` and powers the fallback challenge while Supabase is unavailable.
 
+## Typography notes
+
+- `Berista Font` is the current candidate for the main brand typeface.
+- If we adopt it, it should be checked against readability in long paragraphs and mobile layouts.
+- Likely best use: hero titles, logo treatment, and short editorial headings.
+- If body copy becomes less legible, pair it with a neutral readable text font instead of forcing it everywhere.
+- The font file is now stored locally at `public/fonts/Berista-5yyPV.woff`.
+
 ## Database tables
 
 - `challenge_categories`: category catalog.

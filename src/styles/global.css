@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+@font-face {
+  font-family: 'Berista Regular';
+  src: url('/fonts/Berista-5yyPV.woff') format('woff');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 @theme {
   --color-paper: #f7f2e8;
   --color-lines: rgba(79, 54, 39, 0.08);
@@ -46,15 +54,18 @@ body {
 
 h1,
 h2,
+h3,
+h4,
+.brand-font,
 .serif {
   font-family:
+    'Berista Regular',
     'Iowan Old Style',
     'Palatino Linotype',
     'Book Antiqua',
-    Palatino,
     Georgia,
     serif;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 a {
