@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+import StoryCard from '../components/StoryCard.astro';
+---
+
+<Layout title='PoetiKa - Relatos'>
+	<main class='max-w-4xl mx-auto px-4 py-12'>
+		<header class='flex items-end justify-between gap-4 mb-10 border-b border-slate-200 pb-3'>
+			<div>
+				<p class='text-xs uppercase tracking-[0.35em] text-slate-400 mb-2'>Feed</p>
+				<h1 class='text-5xl italic font-bold text-slate-800'>Relatos</h1>
+			</div>
+			<p class='text-sm text-slate-500 max-w-sm text-right'>
+				Selección de ejemplo para la vista completa de relatos del día.
+			</p>
+		</header>
+
+		<div class='space-y-6'>
+			<StoryCard
+				title='Pasos de Algodón'
+				author='TintaRoja'
+				words={28}
+				likes={12}
+				hasCrown={true}
+				preview='Caminaba sin hacer ruido, pero el eco de mi propio miedo me delataba. La neblina ocultaba el puerto'
+			/>
+			<StoryCard
+				title='Sin título'
+				author='Heroyi'
+				words={17}
+				likes={1}
+				preview='En la Niebla espesa vi una silueta negra, no sabía qué era, pero eso no era humano'
+			/>
+		</div>
+	</main>
+</Layout>

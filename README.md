@@ -1,3 +1,47 @@
+# Roadmap
+
+### MVP
+- [ ] Auth
+- [ ] Retos diarios
+- [ ] Publicación de relatos
+- [ ] Likes & Coronas
+- [ ] Rankings
+
+### v2
+- [ ] App móvil
+- [ ] Push notifications
+- [ ] Subscripción Pro
+- [ ] IA narrativa
+- [ ] TTS
+
+---
+
+poetika/
+├── supabase/              # Migraciones y Edge Functions
+│   └── functions/
+│       └── daily-notifier # Función que se ejecuta cada X tiempo
+├── src/
+│   ├── components/        # Componentes UI (React/Svelte/Astro)
+│   │   ├── Editor.tsx     # El editor de texto interactivo
+│   │   ├── StoryCard.astro# Tarjeta para el feed social
+│   │   └── Navbar.astro
+│   ├── layouts/
+│   │   └── Layout.astro   # Layout principal
+│   ├── lib/
+│   │   └── supabase.ts    # Cliente de Supabase
+│   ├── pages/
+│   │   ├── auth/          # Login y Registro
+│   │   ├── index.astro    # Home (Feed del día)
+│   │   ├── challenge.astro# Vista del reto activo
+│   │   ├── write.astro    # Editor de escritura
+│   │   └── u/[username].astro # Perfil de usuario
+│   └── types/             # Definiciones de TypeScript
+│       └── database.ts
+├── public/                # Assets estáticos
+└── tailwind.config.mjs
+
+---
+
 # PoetiKa
 
 PoetiKa es una plataforma de escritura creativa competitiva y social.

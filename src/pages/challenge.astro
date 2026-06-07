@@ -1,0 +1,28 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ChallengeCard from '../components/ChallengeCard.astro';
+---
+
+<Layout title='PoetiKa - Reto del día'>
+	<main class='max-w-4xl mx-auto px-4 py-12'>
+		<header class='text-center mb-12'>
+			<h1 class='text-5xl italic font-bold text-slate-800 mb-2'>Reto activo</h1>
+			<p class='text-[10px] tracking-[0.3em] uppercase text-slate-400'>
+				Lee las condiciones antes de empezar a escribir
+			</p>
+		</header>
+
+		<div class='grid grid-cols-1 md:grid-cols-3 gap-6 mb-10'>
+			<ChallengeCard marker='C' label='Clima' value='Niebla espesa' rotation='-rotate-1' />
+			<ChallengeCard marker='E' label='Estilo' value='Primera persona' rotation='rotate-0' />
+			<ChallengeCard marker='T' label='Temática' value='Misterio' rotation='rotate-1' />
+		</div>
+
+		<section class='bg-white border border-slate-200 p-6 shadow-sm'>
+			<p class='text-sm text-slate-500 uppercase tracking-[0.2em] mb-2'>Restricción especial</p>
+			<p class='text-slate-700 leading-relaxed'>
+				El relato debe ocurrir en un solo lugar y no puede superar las 250 palabras.
+			</p>
+		</section>
+	</main>
+</Layout>
