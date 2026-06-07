@@ -1,0 +1,18 @@
+---
+type Props = {
+	class?: string;
+	linkClass?: string;
+};
+
+const { class: className = '', linkClass = '' } = Astro.props as Props;
+---
+
+<a href='/' class={`inline-flex items-center ${linkClass}`.trim()}>
+	<img
+		src='/poetika-logo.svg'
+		alt='Poetika'
+		class={`block w-full max-w-full object-contain ${className}`.trim()}
+		loading='eager'
+		decoding='async'
+	/>
+</a>

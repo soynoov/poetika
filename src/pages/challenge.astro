@@ -1,4 +1,5 @@
 ---
+import BrandLogo from '../components/BrandLogo.astro';
 import Layout from '../layouts/Layout.astro';
 import ChallengeCard from '../components/ChallengeCard.astro';
 import { getFallbackDailyChallenge } from '../lib/challenge';
@@ -11,6 +12,10 @@ const challenge = getFallbackDailyChallenge();
 	description='Consulta el reto activo de PoetiKa: 3 palabras, 3 categorías y una ventana de 24 horas para escribir.'
 >
 	<main class='max-w-4xl mx-auto px-4 py-12' data-daily-challenge>
+		<div class='mx-auto mb-10 max-w-[280px] sm:max-w-[360px] md:max-w-[420px]'>
+			<BrandLogo class='w-full' linkClass='justify-center' />
+		</div>
+
 		<header class='text-center mb-12'>
 			<p class='text-[10px] tracking-[0.3em] uppercase text-slate-400 mb-3'>Reto activo</p>
 			<h1 class='text-5xl italic font-bold text-slate-800 mb-2'>Reto del día</h1>

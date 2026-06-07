@@ -1,4 +1,5 @@
 ---
+import BrandLogo from '../components/BrandLogo.astro';
 import Layout from '../layouts/Layout.astro';
 import StoryCard from '../components/StoryCard.astro';
 import { getFallbackDailyChallenge } from '../lib/challenge';
@@ -18,9 +19,8 @@ const challenge = getFallbackDailyChallenge();
 
 		<section class='relative max-w-6xl mx-auto px-4 py-10 md:py-14' data-daily-challenge>
 			<nav class='flex items-center justify-between gap-4 mb-12'>
-				<div>
-					<p class='text-[10px] uppercase tracking-[0.45em] text-[#8a7767] mb-2'>PoetiKa</p>
-					<h1 class='text-2xl md:text-3xl italic font-bold text-[#201611]'>Escribir también puede ser un juego</h1>
+				<div class='max-w-[240px] sm:max-w-[320px] md:max-w-[420px]'>
+					<BrandLogo class='w-full' linkClass='transition-opacity hover:opacity-90' />
 				</div>
 
 				<div class='hidden md:flex items-center gap-3 text-sm text-[#6e6259]'>
@@ -32,15 +32,18 @@ const challenge = getFallbackDailyChallenge();
 				</div>
 			</nav>
 
-			<section class='grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-stretch mb-16'>
+			<section class='grid gap-8 lg:grid-cols-[1.15fr_0.85fr] items-stretch mb-16'>
 				<div class='relative bg-white/80 backdrop-blur border border-[#d8c8bb] shadow-[0_24px_70px_rgba(43,28,20,0.12)] p-8 md:p-12 overflow-hidden'>
 					<div class='absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#9f4f34] via-[#d18c6f] to-[#f1d7ca]'></div>
+					<div class='mb-8 w-full max-w-[420px] sm:max-w-[520px] lg:max-w-[620px]'>
+						<BrandLogo class='w-full' linkClass='inline-flex' />
+					</div>
 					<div class='flex items-center gap-2 mb-6 text-[11px] uppercase tracking-[0.35em] text-[#8a7767]'>
 						<span class='inline-flex h-6 w-6 items-center justify-center rounded-full border border-[#dbc9b9] bg-white/80 text-[10px] font-semibold text-[#9f4f34]'>P</span>
 						<span>Reto activo</span>
 					</div>
 
-					<h2 class='text-5xl md:text-7xl italic font-bold text-[#201611] leading-[0.92] max-w-xl'>
+					<h2 class='max-w-3xl text-4xl sm:text-5xl lg:text-6xl xl:text-7xl italic font-bold text-[#201611] leading-[1.02] tracking-[-0.04em]'>
 						Una historia, una hora, una corona.
 					</h2>
 
@@ -52,7 +55,7 @@ const challenge = getFallbackDailyChallenge();
 					<div class='mt-8 flex flex-col sm:flex-row gap-3'>
 						<a
 							href='/challenge'
-							class='inline-flex items-center justify-center rounded-full bg-[#201611] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#201611]/20 transition hover:-translate-y-0.5 hover:bg-[#35251d]'
+							class='inline-flex min-w-[180px] items-center justify-center rounded-full bg-[#9f4f34] px-6 py-3 text-sm font-semibold text-[#fffaf4] shadow-lg shadow-[#9f4f34]/25 transition hover:-translate-y-0.5 hover:bg-[#843e2a]'
 						>
 							Empezar el reto
 						</a>

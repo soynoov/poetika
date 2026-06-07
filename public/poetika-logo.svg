@@ -1,0 +1,23 @@
+<svg width="1600" height="550" viewBox="0 0 1600 550" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="550" fill="#FBF8F2"/>
+  <g transform="translate(120 90)">
+    <text
+      x="0"
+      y="260"
+      fill="#111111"
+      font-family="Brush Script MT, Segoe Script, Snell Roundhand, Apple Chancery, cursive"
+      font-size="240"
+      font-style="italic"
+      font-weight="400"
+      letter-spacing="1.5"
+    >Poetika</text>
+    <path
+      d="M385 270C510 280 660 292 838 312C1009 331 1176 330 1322 302"
+      stroke="#111111"
+      stroke-width="7"
+      stroke-linecap="round"
+      fill="none"
+      opacity="0.95"
+    />
+  </g>
+</svg>
