@@ -14,11 +14,11 @@ const challenge = getFallbackDailyChallenge();
   <main class='relative overflow-hidden'>
     <div class='pointer-events-none absolute inset-0'>
       <div
-        class='absolute -top-24 right-[-4rem] h-72 w-72 rounded-full bg-[#d87f5c]/20 blur-3xl'
+        class='absolute -top-24 -right-16 h-72 w-72 rounded-full bg-[#d87f5c]/20 blur-3xl'
       >
       </div>
       <div
-        class='absolute top-48 left-[-6rem] h-72 w-72 rounded-full bg-[#7d4a36]/15 blur-3xl'
+        class='absolute top-48 -left-24 h-72 w-72 rounded-full bg-[#7d4a36]/15 blur-3xl'
       >
       </div>
     </div>
@@ -28,14 +28,14 @@ const challenge = getFallbackDailyChallenge();
       data-daily-challenge
     >
       <nav class='flex items-center justify-between gap-4 mb-12'>
-        <div class='max-w-[240px] sm:max-w-[320px] md:max-w-[420px]'>
+        <div class='max-w-60 sm:max-w-[320px] md:max-w-105'>
           <BrandLogo
             class='w-full'
             linkClass='transition-opacity hover:opacity-90'
           />
         </div>
 
-        <div class='hidden md:flex items-center gap-3 text-sm text-[#6e6259]'>
+        <div class='hidden md:flex items-center gap-3 text-sm text-muted'>
           <a href='/challenge' class='transition hover:text-[#201611]'
             >Reto de hoy</a
           >
@@ -53,7 +53,7 @@ const challenge = getFallbackDailyChallenge();
           class='relative bg-white/80 backdrop-blur border border-[#d8c8bb] shadow-[0_24px_70px_rgba(43,28,20,0.12)] p-8 md:p-12 overflow-hidden'
         >
           <div
-            class='absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#9f4f34] via-[#d18c6f] to-[#f1d7ca]'
+            class='absolute inset-x-0 top-0 h-1 bg-linear-to-r from-accent via-[#d18c6f] to-[#f1d7ca]'
           >
           </div>
 
@@ -74,13 +74,13 @@ const challenge = getFallbackDailyChallenge();
           <div class='mt-8 flex flex-col sm:flex-row gap-3'>
             <a
               href='/challenge'
-              class='inline-flex min-w-[180px] items-center justify-center rounded-full bg-[#9f4f34] px-6 py-3 text-sm font-semibold text-[#fffaf4] shadow-lg shadow-[#9f4f34]/25 transition hover:-translate-y-0.5 hover:bg-[#843e2a]'
+              class='inline-flex min-w-45 items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-[#fffaf4] shadow-lg shadow-accent/25 transition hover:-translate-y-0.5 hover:bg-[#843e2a]'
             >
               Empezar el reto
             </a>
             <a
               href='/all'
-              class='inline-flex items-center justify-center rounded-full border border-[#cfb7a5] bg-white/70 px-6 py-3 text-sm font-semibold text-[#201611] transition hover:border-[#9f4f34] hover:text-[#9f4f34]'
+              class='inline-flex items-center justify-center rounded-full border border-[#cfb7a5] bg-white/70 px-6 py-3 text-sm font-semibold text-[#201611] transition hover:border-accent hover:text-accent'
             >
               Ver relatos de hoy
             </a>
@@ -218,7 +218,7 @@ const challenge = getFallbackDailyChallenge();
                 Tres pasos para entrar en juego
               </h3>
             </div>
-            <p class='max-w-xl text-sm md:text-base text-[#6e6259] leading-7'>
+            <p class='max-w-xl text-sm md:text-base text-muted leading-7'>
               La home deja visible el producto: reto, escritura y descubrimiento
               social.
             </p>
@@ -286,7 +286,7 @@ const challenge = getFallbackDailyChallenge();
             </div>
             <a
               href='/all'
-              class='text-sm font-semibold text-[#9f4f34] transition hover:text-[#201611]'
+              class='text-sm font-semibold text-accent transition hover:text-[#201611]'
             >
               Ver todos
             </a>
