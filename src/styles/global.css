@@ -37,6 +37,15 @@
   --accent-gold: #d8b400;
   --button-shadow: rgba(36, 55, 77, 0.2);
   --selection-bg: rgba(159, 79, 52, 0.18);
+  --home-cta-border: rgba(37, 57, 79, 0.18);
+  --home-cta-top: #4f667f;
+  --home-cta-bottom: #3b5067;
+  --home-cta-shadow-dark: rgba(36, 55, 77, 0.22);
+  --home-cta-shadow-light: rgba(255, 255, 255, 0.24);
+  --home-cta-inset-light: rgba(255, 255, 255, 0.14);
+  --home-cta-inset-dark: rgba(19, 31, 44, 0.16);
+  --home-cta-text: #f8fbff;
+  --home-cta-text-shadow: rgba(12, 18, 26, 0.28);
 }
 
 :root[data-theme='night'] {
@@ -57,6 +66,15 @@
   --accent-gold: #f0d764;
   --button-shadow: rgba(4, 9, 15, 0.36);
   --selection-bg: rgba(103, 162, 212, 0.24);
+  --home-cta-border: rgba(173, 198, 223, 0.14);
+  --home-cta-top: #2f4256;
+  --home-cta-bottom: #233446;
+  --home-cta-shadow-dark: rgba(2, 7, 13, 0.56);
+  --home-cta-shadow-light: rgba(87, 120, 154, 0.08);
+  --home-cta-inset-light: rgba(173, 198, 223, 0.08);
+  --home-cta-inset-dark: rgba(6, 12, 18, 0.4);
+  --home-cta-text: #edf4fb;
+  --home-cta-text-shadow: rgba(0, 0, 0, 0.34);
 }
 
 * {
@@ -133,31 +151,35 @@ body {
 
 .home-primary-button {
   position: relative;
-  border: 1px solid color-mix(in srgb, var(--surface-inverse) 12%, var(--ink-strong));
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--surface-inverse-soft) 86%, #4d6580) 0%,
-      color-mix(in srgb, var(--surface-inverse-soft) 72%, #24374d) 100%
-    );
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  border: 1px solid var(--home-cta-border);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--home-cta-top) 0%, var(--home-cta-bottom) 100%);
   box-shadow:
-    0 22px 36px var(--button-shadow),
-    0 3px 0 color-mix(in srgb, var(--ink-strong) 72%, #131f2c),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    14px 14px 30px var(--home-cta-shadow-dark),
+    -10px -10px 22px var(--home-cta-shadow-light),
+    inset 1px 1px 0 var(--home-cta-inset-light),
+    inset -1px -1px 0 var(--home-cta-inset-dark);
+  color: var(--home-cta-text);
   letter-spacing: 0.01em;
+  text-shadow: 0 1px 0 var(--home-cta-text-shadow);
+  padding-inline: 2rem;
 }
 
 .home-primary-button:hover {
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--surface-inverse-soft) 74%, #415a74) 0%,
-      color-mix(in srgb, var(--surface-inverse-soft) 60%, #1b2b3d) 100%
-    );
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--home-cta-top) 92%, #ffffff) 0%,
+    color-mix(in srgb, var(--home-cta-bottom) 94%, #000000) 100%
+  );
   box-shadow:
-    0 24px 38px color-mix(in srgb, var(--button-shadow) 110%, transparent),
-    0 3px 0 color-mix(in srgb, var(--ink-strong) 80%, #131f2c),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    16px 16px 32px var(--home-cta-shadow-dark),
+    -10px -10px 22px var(--home-cta-shadow-light),
+    inset 1px 1px 0 var(--home-cta-inset-light),
+    inset -1px -1px 0 var(--home-cta-inset-dark);
 }
 
 .home-primary-button:focus-visible {

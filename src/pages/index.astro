@@ -1,101 +1,115 @@
 ---
 import AppHeader from '../components/AppHeader.astro';
+import { getChallengeIcon } from '../lib/challenge-icons';
 import Layout from '../layouts/Layout.astro';
 import { getFallbackDailyChallenge } from '../lib/challenge';
 
 const challenge = getFallbackDailyChallenge();
-
-const challengeIcons = [
-	{
-		label: 'cloud',
-		path: 'M7 18a4.6 4.6 0 1 1 .94-9.1A5.5 5.5 0 0 1 18 11.5 3.5 3.5 0 1 1 18 18Z',
-	},
-	{
-		label: 'user',
-		path: 'M12 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 12 12Zm-6 8a6 6 0 0 1 12 0Z',
-	},
-	{
-		label: 'search',
-		path: 'm21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z',
-	},
-] as const;
 ---
 
 <Layout
   title='PoetiKa - Inicio'
   description='PoetiKa muestra el reto activo y los relatos publicados en una home simple centrada en la app.'
 >
-  <main class='home-paper min-h-screen text-[var(--ink-strong)]'>
-    <div class='mx-auto max-w-[1420px] px-4 sm:px-8 lg:px-14'>
+  <main class='home-paper min-h-screen text-(--ink-strong)'>
+    <div class='mx-auto max-w-355 px-4 sm:px-8 lg:px-14'>
       <AppHeader currentPath='/' />
 
-      <div class='home-rail mx-auto w-full max-w-[1390px]'>
-        <section class='mx-auto max-w-[1120px] px-2 pb-10 pt-18 text-center sm:px-4 sm:pt-20'>
+      <div class='home-rail mx-auto w-full max-w-347.5'>
+        <section
+          class='mx-auto max-w-280 px-2 pb-10 pt-18 text-center sm:px-4 sm:pt-20'
+        >
           <p class='app-kicker mb-4 text-[0.72rem] uppercase tracking-[0.32em]'>
             Reto activo
           </p>
-          <h1 class='app-title serif text-[3.2rem] font-semibold leading-none tracking-[-0.05em] sm:text-[4.7rem]'>
+          <h1
+            class='app-title serif text-[3.2rem] font-semibold leading-none tracking-[-0.05em] sm:text-[4.7rem]'
+          >
             Reto del dia
           </h1>
-          <p class='app-kicker mt-4 text-[0.88rem] uppercase tracking-[0.23em] sm:text-[1.02rem]'>
+          <p
+            class='app-kicker mt-4 text-[0.88rem] uppercase tracking-[0.23em] sm:text-[1.02rem]'
+          >
             Acepta el desafio y escribe tu historia
           </p>
 
           <div class='mt-16 grid gap-6 lg:grid-cols-3'>
-            {challenge.slots.map((slot, index) => {
-              const icon = challengeIcons[index] ?? challengeIcons[0];
+            {
+              challenge.slots.map((slot, index) => {
+                const icon = getChallengeIcon(slot.category);
 
-              return (
-                <article
-                  data-daily-slot={index}
-                  class='home-challenge-card flex min-h-[250px] flex-col items-center justify-center bg-[var(--surface-soft)] px-8 py-10 text-center'
-                >
-                  <svg
-                    viewBox='0 0 24 24'
-                    class='mb-9 h-11 w-11 text-[var(--ink-strong)]'
-                    fill='none'
-                    stroke='currentColor'
-                    stroke-width='1.8'
-                    stroke-linecap='round'
-                    stroke-linejoin='round'
-                    aria-hidden='true'
+                return (
+                  <article
+                    data-daily-slot={index}
+                    class='home-challenge-card flex min-h-62.5 flex-col items-center justify-center bg-(--surface-soft) px-8 py-10 text-center'
                   >
-                    <path d={icon.path}></path>
-                  </svg>
-                  <p data-daily-category class='mb-2 text-[0.9rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>
-                    {slot.category}
-                  </p>
-                  <div class='mb-4 h-px w-16 bg-[var(--frame-border)]'></div>
-                  <p data-daily-word class='app-title serif text-[2.05rem] font-semibold leading-tight tracking-[-0.03em] sm:text-[2.45rem]'>
-                    {slot.word}
-                  </p>
-                  <span data-daily-marker class='hidden'>{slot.marker}</span>
-                </article>
-              );
-            })}
+                    <svg
+                      viewBox='0 0 24 24'
+                      class='mb-9 h-11 w-11 text-(--ink-strong)'
+                      fill='none'
+                      stroke='currentColor'
+                      stroke-width='1.8'
+                      stroke-linecap='round'
+                      stroke-linejoin='round'
+                      aria-hidden='true'
+                    >
+                      <path d={icon.path} />
+                    </svg>
+                    <p
+                      data-daily-category
+                      class='mb-2 text-[0.9rem] uppercase tracking-[0.24em] text-(--ink-muted)'
+                    >
+                      {slot.category}
+                    </p>
+                    <div class='mb-4 h-px w-16 bg-(--frame-border)' />
+                    <p
+                      data-daily-word
+                      class='app-title serif text-[2.05rem] font-semibold leading-tight tracking-[-0.03em] sm:text-[2.45rem]'
+                    >
+                      {slot.word}
+                    </p>
+                    <span data-daily-marker class='hidden'>
+                      {slot.marker}
+                    </span>
+                  </article>
+                );
+              })
+            }
           </div>
 
           <div class='mt-14'>
             <a
               href='/write'
-              class='home-primary-button inline-flex min-w-[21rem] items-center justify-center px-10 py-5 text-[1rem] font-semibold text-white transition hover:-translate-y-0.5'
+              class='home-primary-button inline-flex min-w-[18.5rem] items-center justify-center px-8 py-4 text-[0.98rem] font-semibold transition hover:-translate-y-0.5'
             >
-              Participar en el reto
+              Escribe tu relato
             </a>
           </div>
         </section>
 
-        <section class='mx-auto max-w-[900px] px-2 pb-20 pt-18 sm:px-4'>
-          <div class='app-divider mb-8 flex items-end justify-between gap-4 border-b pb-3'>
-            <h2 class='app-title serif text-[2.2rem] font-semibold leading-none tracking-[-0.04em] sm:text-[3.2rem]'>
+        <section class='mx-auto max-w-225 px-2 pb-20 pt-18 sm:px-4'>
+          <div
+            class='app-divider mb-8 flex items-end justify-between gap-4 border-b pb-3'
+          >
+            <h2
+              class='app-title serif text-[2.2rem] font-semibold leading-none tracking-[-0.04em] sm:text-[3.2rem]'
+            >
               Relatos de hoy
             </h2>
-            <a href='/all' class='pb-1 text-[1rem] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]'>
+            <a
+              href='/all'
+              class='pb-1 text-[1rem] text-(--ink-muted) transition hover:text-(--ink-strong)'
+            >
               Ver todos
             </a>
           </div>
 
-          <div data-story-feed data-feed-mode='home-editorial' class='grid gap-9'></div>
+          <div
+            data-story-feed
+            data-feed-mode='home-editorial'
+            class='grid gap-9'
+          >
+          </div>
         </section>
       </div>
     </div>

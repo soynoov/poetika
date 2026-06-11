@@ -17,22 +17,6 @@ export const challengeWordCategories: ChallengeWordCategory[] = [
     ],
   },
   {
-    slug: 'estilo',
-    name: 'Estilo',
-    words: [
-      'primera persona',
-      'tercera persona',
-      'monologo interior',
-      'tono poetico',
-      'realismo sucio',
-    ],
-  },
-  {
-    slug: 'tematica',
-    name: 'Tematica',
-    words: ['misterio', 'terror', 'nostalgia', 'supervivencia', 'traicion'],
-  },
-  {
     slug: 'lugar',
     name: 'Lugar',
     words: [
@@ -57,17 +41,6 @@ export const challengeWordCategories: ChallengeWordCategory[] = [
     slug: 'personaje',
     name: 'Personaje',
     words: ['anciana', 'marinero', 'niño perdido', 'detective', 'heredera'],
-  },
-  {
-    slug: 'restriccion',
-    name: 'Restriccion',
-    words: [
-      'un solo lugar',
-      'sin dialogo',
-      'solo una noche',
-      'sin nombres propios',
-      'final inesperado',
-    ],
   },
   {
     slug: 'objeto',
