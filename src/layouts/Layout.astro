@@ -22,9 +22,80 @@ const {
     <link rel='icon' href='/favicon.svg' />
     <meta name='generator' content={Astro.generator} />
     <title>{title}</title>
+    <script is:inline>
+      (() => {
+        const storageKey = 'poetika:theme';
+        const root = document.documentElement;
+
+        try {
+          const savedTheme = localStorage.getItem(storageKey);
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = savedTheme === 'day' || savedTheme === 'night'
+            ? savedTheme
+            : prefersDark
+              ? 'night'
+              : 'day';
+
+          root.dataset.theme = theme;
+        } catch {
+          root.dataset.theme = 'day';
+        }
+      })();
+    </script>
   </head>
   <body>
     <slot />
+    <script is:inline>
+      (() => {
+        const storageKey = 'poetika:theme';
+        const root = document.documentElement;
+
+        function applyTheme(theme) {
+          root.dataset.theme = theme;
+          const toggle = document.querySelector('[data-theme-toggle]');
+          const moonIcon = document.querySelector('[data-theme-icon="moon"]');
+          const sunIcon = document.querySelector('[data-theme-icon="sun"]');
+
+          if (moonIcon instanceof SVGElement) {
+            moonIcon.classList.toggle('hidden', theme === 'night');
+          }
+
+          if (sunIcon instanceof SVGElement) {
+            sunIcon.classList.toggle('hidden', theme !== 'night');
+          }
+
+          if (toggle instanceof HTMLButtonElement) {
+            const nextLabel = theme === 'night'
+              ? toggle.dataset.themeLabelDark
+              : toggle.dataset.themeLabelLight;
+
+            if (nextLabel) {
+              toggle.setAttribute('aria-label', nextLabel);
+            }
+          }
+        }
+
+        applyTheme(root.dataset.theme === 'night' ? 'night' : 'day');
+
+        document.addEventListener('click', (event) => {
+          const target = event.target;
+          if (!(target instanceof Element)) return;
+
+          const toggle = target.closest('[data-theme-toggle]');
+          if (!(toggle instanceof HTMLButtonElement)) return;
+
+          const nextTheme = root.dataset.theme === 'night' ? 'day' : 'night';
+
+          try {
+            localStorage.setItem(storageKey, nextTheme);
+          } catch {
+            // Ignore localStorage failures.
+          }
+
+          applyTheme(nextTheme);
+        });
+      })();
+    </script>
   </body>
 </html>
 

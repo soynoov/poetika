@@ -15,6 +15,48 @@
   --color-muted: #6e6259;
   --color-accent: #9f4f34;
   --color-accent-soft: #e8c5b4;
+  --color-navy: #24374d;
+  --color-line-blue: rgba(141, 185, 217, 0.52);
+}
+
+:root {
+  --surface-base: #fbfaf7;
+  --surface-soft: rgba(255, 255, 255, 0.78);
+  --surface-strong: rgba(255, 255, 255, 0.9);
+  --surface-hover: rgba(255, 255, 255, 0.72);
+  --surface-inverse: #24374d;
+  --surface-inverse-soft: rgba(36, 55, 77, 0.94);
+  --frame-border: rgba(109, 127, 147, 0.16);
+  --frame-border-strong: rgba(36, 55, 77, 0.88);
+  --paper-line: rgba(114, 132, 151, 0.14);
+  --rail-line: rgba(141, 185, 217, 0.52);
+  --ink-strong: #24374d;
+  --ink-soft: #5a6b7f;
+  --ink-muted: #7f91a4;
+  --muted-strong: #65778a;
+  --accent-gold: #d8b400;
+  --button-shadow: rgba(36, 55, 77, 0.2);
+  --selection-bg: rgba(159, 79, 52, 0.18);
+}
+
+:root[data-theme='night'] {
+  --surface-base: #111a24;
+  --surface-soft: rgba(28, 42, 57, 0.82);
+  --surface-strong: rgba(24, 37, 51, 0.9);
+  --surface-hover: rgba(32, 47, 64, 0.78);
+  --surface-inverse: #edf3f8;
+  --surface-inverse-soft: rgba(237, 243, 248, 0.92);
+  --frame-border: rgba(128, 154, 180, 0.18);
+  --frame-border-strong: rgba(182, 205, 226, 0.52);
+  --paper-line: rgba(104, 129, 154, 0.18);
+  --rail-line: rgba(103, 162, 212, 0.34);
+  --ink-strong: #edf3f8;
+  --ink-soft: #bfd0e0;
+  --ink-muted: #8fa4ba;
+  --muted-strong: #b1c3d4;
+  --accent-gold: #f0d764;
+  --button-shadow: rgba(4, 9, 15, 0.36);
+  --selection-bg: rgba(103, 162, 212, 0.24);
 }
 
 * {
@@ -28,18 +70,10 @@ html {
 body {
   min-height: 100%;
   background:
-    radial-gradient(circle at top left, rgba(159, 79, 52, 0.16), transparent 28%),
-    radial-gradient(circle at top right, rgba(33, 25, 21, 0.08), transparent 22%),
-    linear-gradient(var(--color-lines) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-lines) 1px, transparent 1px);
-  background-color: var(--color-paper);
-  background-size:
-    auto,
-    auto,
-    100% 1.5rem,
-    1.5rem 100%;
-  background-position: center;
-  color: var(--color-ink);
+    radial-gradient(circle at top left, rgba(159, 79, 52, 0.08), transparent 26%),
+    radial-gradient(circle at top right, rgba(103, 162, 212, 0.06), transparent 24%);
+  background-color: var(--surface-base);
+  color: var(--ink-strong);
   font-family:
     'Inter',
     'Segoe UI',
@@ -50,6 +84,128 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.home-paper {
+  background:
+    linear-gradient(to bottom, color-mix(in srgb, var(--surface-base) 84%, transparent), color-mix(in srgb, var(--surface-base) 84%, transparent)),
+    repeating-linear-gradient(
+      to bottom,
+      var(--paper-line) 0,
+      var(--paper-line) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+  background-color: var(--surface-base);
+}
+
+.home-rail {
+  position: relative;
+}
+
+.home-rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 1.25rem;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(141, 185, 217, 0) 0%,
+    var(--rail-line) 4%,
+    var(--rail-line) 96%,
+    rgba(141, 185, 217, 0) 100%
+  );
+  pointer-events: none;
+}
+
+.home-challenge-card {
+  border: 2px solid var(--frame-border-strong);
+  box-shadow:
+    0 14px 34px color-mix(in srgb, var(--button-shadow) 24%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--surface-strong) 20%, transparent);
+  clip-path: polygon(0.8% 2%, 99.2% 0, 100% 98.6%, 1.2% 100%);
+}
+
+.home-primary-button {
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--surface-inverse) 12%, var(--ink-strong));
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface-inverse-soft) 86%, #4d6580) 0%,
+      color-mix(in srgb, var(--surface-inverse-soft) 72%, #24374d) 100%
+    );
+  box-shadow:
+    0 22px 36px var(--button-shadow),
+    0 3px 0 color-mix(in srgb, var(--ink-strong) 72%, #131f2c),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  letter-spacing: 0.01em;
+}
+
+.home-primary-button:hover {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface-inverse-soft) 74%, #415a74) 0%,
+      color-mix(in srgb, var(--surface-inverse-soft) 60%, #1b2b3d) 100%
+    );
+  box-shadow:
+    0 24px 38px color-mix(in srgb, var(--button-shadow) 110%, transparent),
+    0 3px 0 color-mix(in srgb, var(--ink-strong) 80%, #131f2c),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.home-primary-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--rail-line) 64%, transparent);
+  outline-offset: 4px;
+}
+
+.app-header {
+  backdrop-filter: blur(8px);
+  background: color-mix(in srgb, var(--surface-base) 82%, transparent);
+}
+
+.app-panel {
+  border: 1px solid var(--frame-border);
+  background: var(--surface-soft);
+  box-shadow: 0 18px 40px color-mix(in srgb, var(--button-shadow) 28%, transparent);
+}
+
+.app-divider {
+  border-color: color-mix(in srgb, var(--frame-border) 130%, transparent);
+}
+
+.app-chip {
+  border: 1px solid var(--frame-border);
+  background: var(--surface-strong);
+  color: var(--ink-soft);
+}
+
+.app-input {
+  border: 1px solid var(--frame-border);
+  background: var(--surface-strong);
+  color: var(--ink-strong);
+}
+
+.app-input::placeholder {
+  color: var(--ink-muted);
+}
+
+.app-input:focus {
+  border-color: color-mix(in srgb, var(--ink-strong) 42%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rail-line) 44%, transparent);
+  outline: none;
+}
+
+.theme-toggle:focus-visible,
+.app-link-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--rail-line) 64%, transparent);
+  outline-offset: 4px;
 }
 
 h1,
@@ -74,6 +230,12 @@ a {
 }
 
 ::selection {
-  background: rgba(159, 79, 52, 0.18);
-  color: var(--color-ink);
+  background: var(--selection-bg);
+  color: var(--ink-strong);
+}
+
+@media (max-width: 640px) {
+  .home-rail::before {
+    left: 0.55rem;
+  }
 }

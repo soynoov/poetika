@@ -1,5 +1,5 @@
 ---
-import BrandLogo from '../components/BrandLogo.astro';
+import AppHeader from '../components/AppHeader.astro';
 import Layout from '../layouts/Layout.astro';
 import { getFallbackDailyChallenge } from '../lib/challenge';
 
@@ -10,153 +10,124 @@ const challenge = getFallbackDailyChallenge();
 	title='PoetiKa - Escribir relato'
 	description='Escribe un relato anonimo con las 3 palabras del reto rotativo de 5 minutos y publicalo en local.'
 >
-	<main class='relative overflow-hidden'>
-		<div class='pointer-events-none absolute inset-0'>
-			<div class='absolute -top-24 -right-16 h-72 w-72 rounded-full bg-[#d87f5c]/20 blur-3xl'></div>
-			<div class='absolute top-48 -left-24 h-72 w-72 rounded-full bg-[#7d4a36]/15 blur-3xl'></div>
-		</div>
+	<main class='home-paper min-h-screen'>
+		<div class='mx-auto max-w-[1420px] px-4 sm:px-8 lg:px-14'>
+			<AppHeader currentPath='/write' />
 
-		<section class='relative mx-auto max-w-6xl px-4 py-10 md:py-14' data-write-page>
-			<nav class='mb-10 flex items-center justify-between gap-4'>
-				<div class='max-w-60 sm:max-w-[320px] md:max-w-[420px]'>
-					<BrandLogo class='w-full' linkClass='transition-opacity hover:opacity-90' />
-				</div>
-
-				<div class='hidden items-center gap-3 text-sm text-[#6e6259] md:flex'>
-					<a href='/challenge' class='transition hover:text-[#201611]'>Reto de hoy</a>
-					<span class='text-[#b89f8f]'>/</span>
-					<a href='/all' class='transition hover:text-[#201611]'>Feed</a>
-					<span class='text-[#b89f8f]'>/</span>
-					<a href='/' class='transition hover:text-[#201611]'>Home</a>
-				</div>
-			</nav>
-
-			<section class='grid items-start gap-8 lg:grid-cols-[0.95fr_1.05fr]'>
-				<aside class='relative overflow-hidden bg-[#1f1612] p-8 text-white shadow-[0_24px_70px_rgba(31,22,18,0.2)] md:p-10'>
-					<div class='absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(241,215,202,0.18),transparent_35%)]'></div>
-					<div class='relative'>
-						<p class='mb-4 text-[11px] uppercase tracking-[0.35em] text-[#c6b1a1]'>Reto de hoy</p>
-						<h1 data-write-summary class='mb-6 text-3xl font-bold italic leading-tight'>
+			<div class='home-rail mx-auto max-w-[1390px]'>
+				<section class='mx-auto grid max-w-[1180px] items-start gap-8 px-2 pb-20 pt-16 lg:grid-cols-[0.88fr_1.12fr] lg:px-4' data-write-page>
+					<aside class='app-panel self-start p-7 sm:p-8'>
+						<p class='app-kicker mb-4 text-[0.72rem] uppercase tracking-[0.32em]'>Reto actual</p>
+						<h1 data-write-summary class='app-title serif mb-6 text-[2.8rem] font-semibold leading-none tracking-[-0.05em]'>
 							{challenge.summary}
 						</h1>
 
 						<div class='space-y-4'>
-							<div class='flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3'>
-								<div class='flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xs font-semibold text-[#f1d7ca]'>
+							<div class='app-chip flex items-center gap-3 px-4 py-4'>
+								<div class='flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--surface-inverse)] text-sm font-semibold text-[var(--surface-base)]'>
 									<span data-write-marker-1>{challenge.slots[0].marker}</span>
 								</div>
 								<div>
-									<p data-write-category-1 class='text-xs uppercase tracking-[0.24em] text-[#a38f80]'>
-										{challenge.slots[0].category}
-									</p>
-									<p data-write-word-1 class='text-sm'>{challenge.slots[0].word}</p>
+									<p data-write-category-1 class='text-[0.75rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>{challenge.slots[0].category}</p>
+									<p data-write-word-1 class='serif mt-1 text-[1.35rem] font-semibold text-[var(--ink-strong)]'>{challenge.slots[0].word}</p>
 								</div>
 							</div>
-							<div class='flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3'>
-								<div class='flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xs font-semibold text-[#f1d7ca]'>
+							<div class='app-chip flex items-center gap-3 px-4 py-4'>
+								<div class='flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--surface-inverse)] text-sm font-semibold text-[var(--surface-base)]'>
 									<span data-write-marker-2>{challenge.slots[1].marker}</span>
 								</div>
 								<div>
-									<p data-write-category-2 class='text-xs uppercase tracking-[0.24em] text-[#a38f80]'>
-										{challenge.slots[1].category}
-									</p>
-									<p data-write-word-2 class='text-sm'>{challenge.slots[1].word}</p>
+									<p data-write-category-2 class='text-[0.75rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>{challenge.slots[1].category}</p>
+									<p data-write-word-2 class='serif mt-1 text-[1.35rem] font-semibold text-[var(--ink-strong)]'>{challenge.slots[1].word}</p>
 								</div>
 							</div>
-							<div class='flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3'>
-								<div class='flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xs font-semibold text-[#f1d7ca]'>
+							<div class='app-chip flex items-center gap-3 px-4 py-4'>
+								<div class='flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--surface-inverse)] text-sm font-semibold text-[var(--surface-base)]'>
 									<span data-write-marker-3>{challenge.slots[2].marker}</span>
 								</div>
 								<div>
-									<p data-write-category-3 class='text-xs uppercase tracking-[0.24em] text-[#a38f80]'>
-										{challenge.slots[2].category}
-									</p>
-									<p data-write-word-3 class='text-sm'>{challenge.slots[2].word}</p>
+									<p data-write-category-3 class='text-[0.75rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>{challenge.slots[2].category}</p>
+									<p data-write-word-3 class='serif mt-1 text-[1.35rem] font-semibold text-[var(--ink-strong)]'>{challenge.slots[2].word}</p>
 								</div>
 							</div>
 						</div>
 
-						<div class='mt-8 rounded-3xl border border-[#f1d7ca]/15 bg-[#2b1f19] p-5'>
-							<div class='mb-4 flex items-center justify-between'>
-								<p class='text-xs uppercase tracking-[0.3em] text-[#c6b1a1]'>Actualizacion</p>
-								<div class='flex items-center gap-2 text-[#f1d7ca]'>
-									<span class='inline-flex h-6 w-6 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[10px] font-semibold'>
-										D
-									</span>
-									<span class='text-sm' data-write-date>{challenge.dateKey}</span>
-								</div>
+						<div class='app-divider mt-8 border-t pt-5'>
+							<div class='flex items-center justify-between gap-3'>
+								<p class='text-[0.74rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>Bloque actual</p>
+								<span class='app-chip rounded-full px-3 py-1 text-[0.74rem]' data-write-date>{challenge.dateKey}</span>
 							</div>
-							<p class='text-sm leading-7 text-[#d8c5b7]'>
+							<p class='app-copy mt-4 text-sm leading-7'>
 								Este MVP publica en local. Todo lo que envies sale como anonimo y queda disponible en el feed de este navegador mientras testeamos retos de 5 minutos.
 							</p>
-							<p class='mt-3 text-[11px] uppercase tracking-[0.24em] text-[#a38f80]'>
+							<p class='mt-3 text-[0.72rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>
 								<span data-write-source>seleccion local cada 5 min</span>
 							</p>
 						</div>
-					</div>
-				</aside>
+					</aside>
 
-				<div class='border border-[#d8c8bb] bg-white/80 p-8 shadow-[0_24px_70px_rgba(43,28,20,0.12)] backdrop-blur md:p-10'>
-					<div class='mb-6 flex items-start justify-between gap-4'>
-						<div>
-							<p class='mb-2 text-[11px] uppercase tracking-[0.35em] text-[#8a7767]'>Escritura</p>
-							<h2 class='text-3xl font-bold italic text-[#201611]'>Publica tu relato</h2>
-						</div>
-						<div class='text-right'>
-							<p class='mb-2 text-[11px] uppercase tracking-[0.3em] text-[#8a7767]'>Palabras</p>
-							<p id='word-count' data-word-count class='text-3xl font-bold text-[#201611]'>0</p>
-						</div>
-					</div>
-
-					<form data-story-form class='space-y-5'>
-						<label class='block'>
-							<span class='mb-2 block text-[11px] uppercase tracking-[0.3em] text-[#8a7767]'>Titulo</span>
-							<input
-								data-story-title
-								type='text'
-								placeholder='Sin titulo'
-								class='w-full rounded-2xl border border-[#dbc9b9] bg-white px-4 py-3 text-[#201611] outline-none transition focus:border-[#9f4f34] focus:ring-2 focus:ring-[#9f4f34]/10'
-							/>
-						</label>
-
-						<div class='rounded-[1.75rem] border border-[#ecd9cc] bg-[#fffaf4] px-4 py-3 text-sm leading-7 text-[#6e6259]'>
-							Se publica como <span class='font-semibold text-[#201611]'>Anonimo</span>. El nombre de autor queda fuera del MVP.
-						</div>
-
-						<label class='block'>
-							<span class='mb-2 block text-[11px] uppercase tracking-[0.3em] text-[#8a7767]'>Relato</span>
-							<textarea
-								data-story-body
-								rows='14'
-								placeholder='Escribe aqui tu relato usando las 3 palabras del reto...'
-								class='w-full resize-y rounded-3xl border border-[#dbc9b9] bg-white px-4 py-4 text-[#201611] outline-none transition focus:border-[#9f4f34] focus:ring-2 focus:ring-[#9f4f34]/10'
-							></textarea>
-						</label>
-
-						<div class='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
-							<p data-save-status class='text-sm text-[#6e6259]'>El borrador se guarda automaticamente en este navegador.</p>
-							<button
-								type='submit'
-								class='inline-flex items-center justify-center rounded-full bg-[#9f4f34] px-6 py-3 text-sm font-semibold text-[#fffaf4] shadow-lg shadow-[#9f4f34]/25 transition hover:-translate-y-0.5 hover:bg-[#843e2a]'
-							>
-								Publicar relato
-							</button>
-						</div>
-					</form>
-
-					<section class='mt-10'>
-						<div class='mb-6 flex items-end justify-between gap-4 border-b border-[#dccaba] pb-4'>
+					<div class='app-panel p-7 sm:p-9'>
+						<div class='app-divider mb-7 flex items-start justify-between gap-4 border-b pb-4'>
 							<div>
-								<p class='mb-2 text-[11px] uppercase tracking-[0.35em] text-[#8a7767]'>Publicados</p>
-								<h3 class='text-2xl font-bold italic text-[#201611]'>Relatos del bloque actual</h3>
+								<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.32em]'>Escritura</p>
+								<h2 class='app-title serif text-[2.3rem] font-semibold tracking-[-0.04em]'>Publica tu relato</h2>
+							</div>
+							<div class='text-right'>
+								<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.24em]'>Palabras</p>
+								<p id='word-count' data-word-count class='app-title text-3xl font-semibold'>0</p>
 							</div>
 						</div>
 
-						<div data-story-list class='grid gap-4'></div>
-					</section>
-				</div>
-			</section>
-		</section>
+						<form data-story-form class='space-y-5'>
+							<label class='block'>
+								<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Titulo</span>
+								<input
+									data-story-title
+									type='text'
+									placeholder='Sin titulo'
+									class='app-input w-full px-4 py-3'
+								/>
+							</label>
+
+							<div class='app-chip rounded-[1.75rem] px-4 py-3 text-sm leading-7'>
+								Se publica como <span class='font-semibold text-[var(--ink-strong)]'>Anonimo</span>. El nombre de autor queda fuera del MVP.
+							</div>
+
+							<label class='block'>
+								<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Relato</span>
+								<textarea
+									data-story-body
+									rows='14'
+									placeholder='Escribe aqui tu relato usando las 3 palabras del reto...'
+									class='app-input w-full resize-y px-4 py-4'
+								></textarea>
+							</label>
+
+							<div class='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+								<p data-save-status class='app-copy text-sm'>El borrador se guarda automaticamente en este navegador.</p>
+								<button
+									type='submit'
+									class='home-primary-button inline-flex items-center justify-center px-8 py-4 text-sm font-semibold text-white'
+								>
+									Publicar relato
+								</button>
+							</div>
+						</form>
+
+						<section class='mt-10'>
+							<div class='app-divider mb-6 flex items-end justify-between gap-4 border-b pb-4'>
+								<div>
+									<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.32em]'>Publicados</p>
+									<h3 class='app-title serif text-[2rem] font-semibold tracking-[-0.04em]'>Relatos del bloque actual</h3>
+								</div>
+							</div>
+
+							<div data-story-list class='grid gap-4'></div>
+						</section>
+					</div>
+				</section>
+			</div>
+		</div>
 	</main>
 
 	<script type='module'>

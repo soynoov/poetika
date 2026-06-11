@@ -1,7 +1,7 @@
 ---
-import BrandLogo from '../components/BrandLogo.astro';
-import Layout from '../layouts/Layout.astro';
+import AppHeader from '../components/AppHeader.astro';
 import ChallengeCard from '../components/ChallengeCard.astro';
+import Layout from '../layouts/Layout.astro';
 import { getFallbackDailyChallenge } from '../lib/challenge';
 
 const challenge = getFallbackDailyChallenge();
@@ -11,81 +11,74 @@ const challenge = getFallbackDailyChallenge();
   title='PoetiKa - Reto del dia'
   description='Consulta el reto activo de PoetiKa: 3 palabras locales que cambian cada 5 minutos durante testing.'
 >
-  <main class='mx-auto max-w-4xl px-4 py-12' data-daily-challenge>
-    <div class='mx-auto mb-10 max-w-70 sm:max-w-90 md:max-w-105'>
-      <BrandLogo class='w-full' linkClass='justify-center' />
-    </div>
+  <main class='home-paper min-h-screen' data-daily-challenge>
+    <div class='mx-auto max-w-[1420px] px-4 sm:px-8 lg:px-14'>
+      <AppHeader currentPath='/challenge' />
 
-    <header class='mb-12 text-center'>
-      <p class='mb-3 text-[10px] uppercase tracking-[0.3em] text-slate-400'>
-        Reto activo
-      </p>
-      <h1 class='mb-2 text-5xl font-bold italic text-slate-800'>
-        Reto del dia
-      </h1>
-      <p class='mx-auto max-w-2xl text-sm text-slate-500'>
-        Las palabras se calculan de forma local y cambian cada 5 minutos.
-      </p>
-      <div class='mt-6 flex justify-center gap-3'>
-        <a
-          href='/write'
-          class='inline-flex items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-[#fffaf4] shadow-lg shadow-accent/20 transition hover:-translate-y-0.5 hover:bg-[#843e2a]'
-        >
-          Escribir relato
-        </a>
-        <a
-          href='/all'
-          class='inline-flex items-center justify-center rounded-full border border-[#dbc9b9] bg-white px-6 py-3 text-sm font-semibold text-[#201611] transition hover:border-[#9f4f34] hover:text-[#9f4f34]'
-        >
-          Ver feed
-        </a>
+      <div class='home-rail mx-auto max-w-[1390px]'>
+        <section class='mx-auto max-w-[1120px] px-2 pb-20 pt-16 sm:px-4 sm:pt-20'>
+          <header class='mb-14 text-center'>
+            <p class='app-kicker mb-4 text-[0.72rem] uppercase tracking-[0.32em]'>
+              Reto activo
+            </p>
+            <h1 class='app-title serif text-[3rem] font-semibold leading-none tracking-[-0.05em] sm:text-[4.4rem]'>
+              Reto del dia
+            </h1>
+            <p class='app-copy mx-auto mt-4 max-w-2xl text-base leading-8'>
+              Las palabras se calculan de forma local y cambian cada 5 minutos.
+            </p>
+            <div class='mt-8 flex flex-col justify-center gap-3 sm:flex-row'>
+              <a href='/write' class='home-primary-button inline-flex items-center justify-center px-8 py-4 text-sm font-semibold text-white'>
+                Escribir relato
+              </a>
+              <a href='/all' class='app-link-button inline-flex items-center justify-center border border-[var(--frame-border-strong)] bg-[var(--surface-strong)] px-8 py-4 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'>
+                Ver feed
+              </a>
+            </div>
+          </header>
+
+          <div class='mb-12 grid grid-cols-1 gap-6 md:grid-cols-3'>
+            <ChallengeCard
+              slot='0'
+              marker={challenge.slots[0].marker}
+              label={challenge.slots[0].category}
+              value={challenge.slots[0].word}
+              rotation='-rotate-1'
+            />
+            <ChallengeCard
+              slot='1'
+              marker={challenge.slots[1].marker}
+              label={challenge.slots[1].category}
+              value={challenge.slots[1].word}
+              rotation='rotate-0'
+            />
+            <ChallengeCard
+              slot='2'
+              marker={challenge.slots[2].marker}
+              label={challenge.slots[2].category}
+              value={challenge.slots[2].word}
+              rotation='rotate-1'
+            />
+          </div>
+
+          <section class='app-panel p-7 sm:p-9'>
+            <p class='app-kicker mb-2 text-[0.75rem] uppercase tracking-[0.26em]'>
+              Resumen
+            </p>
+            <h2 data-daily-summary class='app-title serif mb-4 text-[2rem] font-semibold'>
+              {challenge.summary}
+            </h2>
+            <p class='app-copy mb-4 text-base leading-8'>
+              El MVP usa un selector local de palabras para asegurar tres entradas nuevas cada 5 minutos sin depender de Supabase.
+            </p>
+            <div class='flex flex-col gap-2 text-[0.8rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>
+              <p>Fecha: <span data-daily-date>{challenge.dateKey}</span></p>
+              <p>Origen: <span data-daily-source>seleccion local cada 5 min</span></p>
+            </div>
+          </section>
+        </section>
       </div>
-    </header>
-
-    <div class='mb-10 grid grid-cols-1 gap-6 md:grid-cols-3'>
-      <ChallengeCard
-        slot='0'
-        marker={challenge.slots[0].marker}
-        label={challenge.slots[0].category}
-        value={challenge.slots[0].word}
-        rotation='-rotate-1'
-      />
-      <ChallengeCard
-        slot='1'
-        marker={challenge.slots[1].marker}
-        label={challenge.slots[1].category}
-        value={challenge.slots[1].word}
-        rotation='rotate-0'
-      />
-      <ChallengeCard
-        slot='2'
-        marker={challenge.slots[2].marker}
-        label={challenge.slots[2].category}
-        value={challenge.slots[2].word}
-        rotation='rotate-1'
-      />
     </div>
-
-    <section class='border border-slate-200 bg-white p-6 shadow-sm'>
-      <p class='mb-2 text-sm uppercase tracking-[0.2em] text-slate-500'>
-        Resumen
-      </p>
-      <h2
-        data-daily-summary
-        class='mb-3 text-2xl font-bold italic text-slate-800'
-      >
-        {challenge.summary}
-      </h2>
-      <p class='mb-2 leading-relaxed text-slate-700'>
-        El MVP usa un selector local de palabras para asegurar tres entradas nuevas cada 5 minutos sin depender de Supabase.
-      </p>
-      <p class='text-xs uppercase tracking-[0.25em] text-slate-400'>
-        Fecha: <span data-daily-date>{challenge.dateKey}</span>
-      </p>
-      <p class='mt-1 text-xs uppercase tracking-[0.25em] text-slate-400'>
-        Origen: <span data-daily-source>seleccion local cada 5 min</span>
-      </p>
-    </section>
   </main>
 
   <script type='module'>

@@ -1,0 +1,80 @@
+---
+import BrandLogo from './BrandLogo.astro';
+
+type Props = {
+	currentPath?: string;
+};
+
+const { currentPath = '/' } = Astro.props as Props;
+
+const navItems = [
+	{ href: '/', label: 'Inicio' },
+	{ href: '/write', label: 'Escribir' },
+	{ href: '/all', label: 'Rankings' },
+	{ href: '/u/demo', label: 'Perfil' },
+];
+---
+
+<header class='app-header border-b border-[var(--frame-border)]'>
+	<div class='mx-auto flex max-w-[1420px] items-center justify-between gap-6 px-4 py-5 sm:px-8 lg:px-14'>
+		<div class='flex min-w-0 items-center'>
+			<BrandLogo class='h-10 w-auto max-w-none' linkClass='opacity-95' />
+		</div>
+
+		<nav class='hidden items-center gap-10 text-[1.05rem] text-[var(--muted-strong)] md:flex'>
+			{navItems.map((item) => {
+				const isActive =
+					item.href === '/'
+						? currentPath === '/'
+						: currentPath === item.href || currentPath.startsWith(`${item.href}/`);
+
+				return (
+					<a
+						href={item.href}
+						class:list={[
+							'pb-1 transition hover:text-[var(--ink-strong)]',
+							isActive && 'border-b-2 border-[var(--ink-strong)] font-semibold text-[var(--ink-strong)]',
+						]}
+					>
+						{item.label}
+					</a>
+				);
+			})}
+		</nav>
+
+		<button
+			type='button'
+			class='theme-toggle inline-flex h-11 w-11 items-center justify-center rounded-full text-[var(--muted-strong)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--ink-strong)]'
+			aria-label='Cambiar tema'
+			data-theme-toggle
+			data-theme-label-light='Activar modo noche'
+			data-theme-label-dark='Activar modo dia'
+		>
+			<svg
+				data-theme-icon='moon'
+				viewBox='0 0 24 24'
+				class='h-7 w-7'
+				fill='none'
+				stroke='currentColor'
+				stroke-width='1.9'
+				stroke-linecap='round'
+				stroke-linejoin='round'
+			>
+				<path d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z'></path>
+			</svg>
+			<svg
+				data-theme-icon='sun'
+				viewBox='0 0 24 24'
+				class='hidden h-7 w-7'
+				fill='none'
+				stroke='currentColor'
+				stroke-width='1.9'
+				stroke-linecap='round'
+				stroke-linejoin='round'
+			>
+				<circle cx='12' cy='12' r='4'></circle>
+				<path d='M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77'></path>
+			</svg>
+		</button>
+	</div>
+</header>

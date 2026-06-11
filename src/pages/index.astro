@@ -1,175 +1,104 @@
 ---
-import BrandLogo from '../components/BrandLogo.astro';
+import AppHeader from '../components/AppHeader.astro';
 import Layout from '../layouts/Layout.astro';
 import { getFallbackDailyChallenge } from '../lib/challenge';
 
 const challenge = getFallbackDailyChallenge();
+
+const challengeIcons = [
+	{
+		label: 'cloud',
+		path: 'M7 18a4.6 4.6 0 1 1 .94-9.1A5.5 5.5 0 0 1 18 11.5 3.5 3.5 0 1 1 18 18Z',
+	},
+	{
+		label: 'user',
+		path: 'M12 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 12 12Zm-6 8a6 6 0 0 1 12 0Z',
+	},
+	{
+		label: 'search',
+		path: 'm21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z',
+	},
+] as const;
 ---
 
 <Layout
-  title='PoetiKa - Reto diario de escritura'
-  description='PoetiKa muestra 3 palabras nuevas cada 5 minutos para escribir, publicar relatos anonimos y votar tus favoritos.'
+  title='PoetiKa - Inicio'
+  description='PoetiKa muestra el reto activo y los relatos publicados en una home simple centrada en la app.'
 >
-  <main class='relative overflow-hidden'>
-    <div class='pointer-events-none absolute inset-0'>
-      <div class='absolute -top-24 -right-16 h-72 w-72 rounded-full bg-[#d87f5c]/20 blur-3xl'></div>
-      <div class='absolute top-48 -left-24 h-72 w-72 rounded-full bg-[#7d4a36]/15 blur-3xl'></div>
-    </div>
+  <main class='home-paper min-h-screen text-[var(--ink-strong)]'>
+    <div class='mx-auto max-w-[1420px] px-4 sm:px-8 lg:px-14'>
+      <AppHeader currentPath='/' />
 
-    <section class='relative mx-auto max-w-6xl px-4 py-10 md:py-14' data-daily-challenge>
-      <nav class='mb-12 flex items-center justify-between gap-4'>
-        <div class='max-w-60 sm:max-w-[320px] md:max-w-105'>
-          <BrandLogo class='w-full' linkClass='transition-opacity hover:opacity-90' />
-        </div>
-
-        <div class='hidden items-center gap-3 text-sm text-muted md:flex'>
-          <a href='/challenge' class='transition hover:text-[#201611]'>Reto de hoy</a>
-          <span class='text-[#b89f8f]'>/</span>
-          <a href='/write' class='transition hover:text-[#201611]'>Escribir</a>
-          <span class='text-[#b89f8f]'>/</span>
-          <a href='/all' class='transition hover:text-[#201611]'>Feed</a>
-        </div>
-      </nav>
-
-      <section class='mb-16 grid items-stretch gap-8 lg:grid-cols-[1.1fr_0.9fr]'>
-        <div class='relative overflow-hidden border border-[#d8c8bb] bg-white/80 p-8 shadow-[0_24px_70px_rgba(43,28,20,0.12)] backdrop-blur md:p-12'>
-          <div class='absolute inset-x-0 top-0 h-1 bg-linear-to-r from-accent via-[#d18c6f] to-[#f1d7ca]'></div>
-
-          <p class='mb-4 text-[11px] uppercase tracking-[0.35em] text-[#8a7767]'>
-            Producto minimo viable
+      <div class='home-rail mx-auto w-full max-w-[1390px]'>
+        <section class='mx-auto max-w-[1120px] px-2 pb-10 pt-18 text-center sm:px-4 sm:pt-20'>
+          <p class='app-kicker mb-4 text-[0.72rem] uppercase tracking-[0.32em]'>
+            Reto activo
           </p>
-          <h1 class='max-w-3xl text-4xl font-bold italic leading-[1.02] tracking-[-0.04em] text-[#201611] sm:text-5xl lg:text-6xl xl:text-7xl'>
-            Tres palabras nuevas. Un feed anonimo. Likes al instante.
+          <h1 class='app-title serif text-[3.2rem] font-semibold leading-none tracking-[-0.05em] sm:text-[4.7rem]'>
+            Reto del dia
           </h1>
-
-          <p class='mt-6 max-w-2xl text-base leading-8 text-[#5f5248] md:text-lg'>
-            Durante las pruebas el reto rota cada 5 minutos usando una seleccion determinista local. Escribes, publicas y votas sin registro.
+          <p class='app-kicker mt-4 text-[0.88rem] uppercase tracking-[0.23em] sm:text-[1.02rem]'>
+            Acepta el desafio y escribe tu historia
           </p>
 
-          <div class='mt-8 flex flex-col gap-3 sm:flex-row'>
+          <div class='mt-16 grid gap-6 lg:grid-cols-3'>
+            {challenge.slots.map((slot, index) => {
+              const icon = challengeIcons[index] ?? challengeIcons[0];
+
+              return (
+                <article
+                  data-daily-slot={index}
+                  class='home-challenge-card flex min-h-[250px] flex-col items-center justify-center bg-[var(--surface-soft)] px-8 py-10 text-center'
+                >
+                  <svg
+                    viewBox='0 0 24 24'
+                    class='mb-9 h-11 w-11 text-[var(--ink-strong)]'
+                    fill='none'
+                    stroke='currentColor'
+                    stroke-width='1.8'
+                    stroke-linecap='round'
+                    stroke-linejoin='round'
+                    aria-hidden='true'
+                  >
+                    <path d={icon.path}></path>
+                  </svg>
+                  <p data-daily-category class='mb-2 text-[0.9rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>
+                    {slot.category}
+                  </p>
+                  <div class='mb-4 h-px w-16 bg-[var(--frame-border)]'></div>
+                  <p data-daily-word class='app-title serif text-[2.05rem] font-semibold leading-tight tracking-[-0.03em] sm:text-[2.45rem]'>
+                    {slot.word}
+                  </p>
+                  <span data-daily-marker class='hidden'>{slot.marker}</span>
+                </article>
+              );
+            })}
+          </div>
+
+          <div class='mt-14'>
             <a
               href='/write'
-              class='inline-flex min-w-45 items-center justify-center rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-accent/25 transition hover:-translate-y-0.5 hover:bg-[#843e2a]'
+              class='home-primary-button inline-flex min-w-[21rem] items-center justify-center px-10 py-5 text-[1rem] font-semibold text-white transition hover:-translate-y-0.5'
             >
-              Publicar relato
-            </a>
-            <a
-              href='/all'
-              class='inline-flex min-w-45 items-center justify-center rounded-full border border-[#dbc9b9] bg-white/80 px-6 py-3 text-sm font-semibold text-[#201611] transition hover:border-[#9f4f34] hover:text-[#9f4f34]'
-            >
-              Ver feed del dia
+              Participar en el reto
             </a>
           </div>
+        </section>
 
-          <div class='mt-10 grid gap-4 sm:grid-cols-3'>
-            <div class='rounded-[1.75rem] border border-[#dbc9b9] bg-[#fffaf4] p-5'>
-              <p class='mb-2 text-[10px] uppercase tracking-[0.28em] text-[#8a7767]'>Reto</p>
-              <p class='text-3xl font-bold text-[#201611]'>5 min</p>
-              <p class='mt-2 text-sm leading-6 text-[#6e6259]'>Las tres palabras cambian cada cinco minutos.</p>
-            </div>
-            <div class='rounded-[1.75rem] border border-[#dbc9b9] bg-[#fffaf4] p-5'>
-              <p class='mb-2 text-[10px] uppercase tracking-[0.28em] text-[#8a7767]'>Publicados hoy</p>
-              <p data-home-total class='text-3xl font-bold text-[#201611]'>0</p>
-              <p class='mt-2 text-sm leading-6 text-[#6e6259]'>Relatos anonimos visibles en este navegador.</p>
-            </div>
-            <div class='rounded-[1.75rem] border border-[#dbc9b9] bg-[#fffaf4] p-5'>
-              <p class='mb-2 text-[10px] uppercase tracking-[0.28em] text-[#8a7767]'>Likes activos</p>
-              <p data-home-likes class='text-3xl font-bold text-[#201611]'>0</p>
-              <p class='mt-2 text-sm leading-6 text-[#6e6259]'>Votacion local instantanea sobre el feed de hoy.</p>
-            </div>
-          </div>
-        </div>
-
-        <aside class='relative overflow-hidden bg-[#1f1612] p-8 text-white shadow-[0_24px_70px_rgba(31,22,18,0.2)] md:p-10'>
-          <div class='absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(241,215,202,0.18),transparent_35%)]'></div>
-          <div class='relative'>
-            <p class='mb-4 text-[11px] uppercase tracking-[0.35em] text-[#c6b1a1]'>Reto de hoy</p>
-            <h2 data-daily-summary class='mb-6 text-3xl font-bold italic leading-tight capitalize'>
-              {challenge.summary}
+        <section class='mx-auto max-w-[900px] px-2 pb-20 pt-18 sm:px-4'>
+          <div class='app-divider mb-8 flex items-end justify-between gap-4 border-b pb-3'>
+            <h2 class='app-title serif text-[2.2rem] font-semibold leading-none tracking-[-0.04em] sm:text-[3.2rem]'>
+              Relatos de hoy
             </h2>
-
-            <div class='space-y-4'>
-              {challenge.slots.map((slot, index) => (
-                <div
-                  data-daily-slot={index}
-                  class='flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3'
-                >
-                  <div class='flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xs font-semibold text-[#f1d7ca]'>
-                    <span data-daily-marker>{slot.marker}</span>
-                  </div>
-                  <div>
-                    <p data-daily-category class='text-xs uppercase tracking-[0.24em] text-[#a38f80]'>
-                      {slot.category}
-                    </p>
-                    <p data-daily-word class='text-sm capitalize'>{slot.word}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div class='mt-8 rounded-3xl border border-[#f1d7ca]/15 bg-[#2b1f19] p-5'>
-              <div class='mb-4 flex items-center justify-between'>
-                <p class='text-xs uppercase tracking-[0.3em] text-[#c6b1a1]'>Actualizacion</p>
-                <div class='flex items-center gap-2 text-[#f1d7ca]'>
-                  <span class='inline-flex h-6 w-6 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[10px] font-semibold'>
-                    D
-                  </span>
-                  <span data-daily-date class='text-sm'>{challenge.dateKey}</span>
-                </div>
-              </div>
-              <p class='text-sm leading-7 text-[#d8c5b7]'>
-                Las palabras salen de un selector local estable por bloques de 5 minutos. No dependen de Supabase.
-              </p>
-              <p class='mt-3 text-[11px] uppercase tracking-[0.24em] text-[#a38f80]'>
-                <span data-daily-source>seleccion local cada 5 min</span>
-              </p>
-            </div>
+            <a href='/all' class='pb-1 text-[1rem] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]'>
+              Ver todos
+            </a>
           </div>
-        </aside>
-      </section>
 
-      <section class='mb-16'>
-        <div class='mb-8 flex flex-col gap-4 border-b border-[#dccaba] pb-4 md:flex-row md:items-end md:justify-between'>
-          <div>
-            <p class='mb-2 text-[11px] uppercase tracking-[0.35em] text-[#8a7767]'>Como funciona</p>
-            <h3 class='text-3xl font-bold italic text-[#201611]'>Un ciclo de prueba muy corto</h3>
-          </div>
-          <p class='max-w-xl text-sm leading-7 text-muted md:text-base'>
-            El MVP ya resuelve el loop principal: reto rotativo, escritura rapida, publicacion anonima y likes persistidos.
-          </p>
-        </div>
-
-        <div class='grid gap-4 md:grid-cols-3'>
-          <div class='border border-[#dbc9b9] bg-white/75 p-6 backdrop-blur'>
-            <p class='mb-3 text-[11px] uppercase tracking-[0.3em] text-[#9a8576]'>01</p>
-            <h4 class='mb-3 text-xl font-bold italic text-[#201611]'>Miras el reto</h4>
-            <p class='leading-7 text-[#5f5248]'>Cada bloque de cinco minutos genera una combinacion estable de tres palabras.</p>
-          </div>
-          <div class='border border-[#dbc9b9] bg-white/75 p-6 backdrop-blur'>
-            <p class='mb-3 text-[11px] uppercase tracking-[0.3em] text-[#9a8576]'>02</p>
-            <h4 class='mb-3 text-xl font-bold italic text-[#201611]'>Publicas anonimo</h4>
-            <p class='leading-7 text-[#5f5248]'>El editor guarda borrador en local y publica tu texto en el feed del dia con un click.</p>
-          </div>
-          <div class='border border-[#dbc9b9] bg-white/75 p-6 backdrop-blur'>
-            <p class='mb-3 text-[11px] uppercase tracking-[0.3em] text-[#9a8576]'>03</p>
-            <h4 class='mb-3 text-xl font-bold italic text-[#201611]'>Votas al vuelo</h4>
-            <p class='leading-7 text-[#5f5248]'>Los likes quedan persistidos por navegador y reordenan el feed automaticamente.</p>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <div class='mb-8 flex items-end justify-between gap-4 border-b border-[#dccaba] pb-4'>
-          <div>
-            <p class='mb-2 text-[11px] uppercase tracking-[0.35em] text-[#8a7767]'>Relatos de hoy</p>
-            <h3 class='text-3xl font-bold italic text-[#201611]'>Lo que ya esta en juego</h3>
-          </div>
-          <a href='/all' class='text-sm font-semibold text-accent transition hover:text-[#201611]'>Abrir feed completo</a>
-        </div>
-
-        <div data-story-feed data-feed-mode='home' class='grid gap-6'></div>
-      </section>
-    </section>
+          <div data-story-feed data-feed-mode='home-editorial' class='grid gap-9'></div>
+        </section>
+      </div>
+    </div>
   </main>
 
   <script type='module'>

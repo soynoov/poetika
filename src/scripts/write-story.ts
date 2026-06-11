@@ -47,7 +47,7 @@ function renderStoryList(challengeDate: string) {
 
 	if (!stories.length) {
 		container.innerHTML =
-			"<div class='rounded-[2rem] border border-dashed border-[#d6c3b3] bg-white/60 p-6 text-sm leading-7 text-[#6e6259]'>Todavia no has publicado nada hoy. Guarda tu relato y aparecera aqui con likes activos.</div>";
+			"<div class='app-panel rounded-[2rem] border-dashed p-6 text-sm leading-7 text-[var(--ink-soft)]'>Todavia no has publicado nada hoy. Guarda tu relato y aparecera aqui con likes activos.</div>";
 		return;
 	}
 
@@ -56,14 +56,14 @@ function renderStoryList(challengeDate: string) {
 			const liked = hasLikedStory(story.id);
 
 			return `
-				<article class="rounded-[2rem] border border-[#dbc9b9] bg-white/80 p-5 shadow-[0_12px_30px_rgba(43,28,20,0.06)]">
+				<article class="app-panel rounded-[2rem] p-5">
 					<div class="mb-4 flex items-start justify-between gap-4">
 						<div>
 							<div class="mb-2 flex items-center gap-3">
-								${index === 0 ? '<span class="inline-flex rounded-full bg-[#201611] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f1d7ca]">Mas votado</span>' : ''}
-								<p class="text-[10px] uppercase tracking-[0.24em] text-[#8a7767]">Anonimo</p>
+								${index === 0 ? '<span class="inline-flex rounded-full bg-[var(--surface-inverse)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--surface-base)]">Mas votado</span>' : ''}
+								<p class="text-[10px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">Anonimo</p>
 							</div>
-							<h4 class="text-xl italic font-bold text-[#201611]">${escapeHtml(story.title || 'Sin titulo')}</h4>
+							<h4 class="serif text-xl font-bold italic text-[var(--ink-strong)]">${escapeHtml(story.title || 'Sin titulo')}</h4>
 						</div>
 						<button
 							type="button"
@@ -71,8 +71,8 @@ function renderStoryList(challengeDate: string) {
 							data-story-id="${story.id}"
 							class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition ${
 								liked
-									? 'border-[#9f4f34] bg-[#9f4f34] text-[#fffaf4]'
-									: 'border-[#dbc9b9] bg-[#fffaf4] text-[#6e6259] hover:border-[#9f4f34] hover:text-[#9f4f34]'
+									? 'border-[var(--surface-inverse)] bg-[var(--surface-inverse)] text-[var(--surface-base)]'
+									: 'border-[var(--frame-border)] bg-[var(--surface-strong)] text-[var(--ink-soft)] hover:border-[var(--frame-border-strong)] hover:text-[var(--ink-strong)]'
 							}"
 							aria-pressed="${liked ? 'true' : 'false'}"
 						>
@@ -80,8 +80,8 @@ function renderStoryList(challengeDate: string) {
 							<span>${story.likes}</span>
 						</button>
 					</div>
-					<p class="mb-3 text-[11px] uppercase tracking-[0.24em] text-[#8a7767]">${story.wordCount} palabras</p>
-					<p class="text-sm leading-7 text-[#5f5248] whitespace-pre-wrap">${escapeHtml(story.body)}</p>
+					<p class="mb-3 text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">${story.wordCount} palabras</p>
+					<p class="text-sm leading-7 whitespace-pre-wrap text-[var(--ink-soft)]">${escapeHtml(story.body)}</p>
 				</article>
 			`;
 		})
