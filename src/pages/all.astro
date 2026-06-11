@@ -1,36 +1,73 @@
 ---
+import BrandLogo from '../components/BrandLogo.astro';
 import Layout from '../layouts/Layout.astro';
-import StoryCard from '../components/StoryCard.astro';
+import { getFallbackDailyChallenge } from '../lib/challenge';
+
+const challenge = getFallbackDailyChallenge();
 ---
 
-<Layout title='PoetiKa - Relatos'>
-	<main class='max-w-4xl mx-auto px-4 py-12'>
-		<header class='flex items-end justify-between gap-4 mb-10 border-b border-slate-200 pb-3'>
-			<div>
-				<p class='text-xs uppercase tracking-[0.35em] text-slate-400 mb-2'>Feed</p>
-				<h1 class='text-5xl italic font-bold text-slate-800'>Relatos</h1>
-			</div>
-			<p class='text-sm text-slate-500 max-w-sm text-right'>
-				Selección de ejemplo para la vista completa de relatos del día.
-			</p>
-		</header>
-
-		<div class='space-y-6'>
-			<StoryCard
-				title='Pasos de Algodón'
-				author='TintaRoja'
-				words={28}
-				likes={12}
-				hasCrown={true}
-				preview='Caminaba sin hacer ruido, pero el eco de mi propio miedo me delataba. La neblina ocultaba el puerto'
-			/>
-			<StoryCard
-				title='Sin título'
-				author='Heroyi'
-				words={17}
-				likes={1}
-				preview='En la Niebla espesa vi una silueta negra, no sabía qué era, pero eso no era humano'
-			/>
+<Layout title='PoetiKa - Feed del momento' description='Feed anonimo del reto activo de 5 minutos con likes locales y publicacion inmediata.'>
+	<main class='relative overflow-hidden'>
+		<div class='pointer-events-none absolute inset-0'>
+			<div class='absolute -top-24 right-0 h-72 w-72 rounded-full bg-[#d87f5c]/15 blur-3xl'></div>
+			<div class='absolute bottom-0 left-0 h-72 w-72 rounded-full bg-[#7d4a36]/10 blur-3xl'></div>
 		</div>
+
+		<section class='relative mx-auto max-w-6xl px-4 py-10 md:py-14'>
+			<nav class='mb-10 flex items-center justify-between gap-4'>
+				<div class='max-w-60 sm:max-w-[320px] md:max-w-[420px]'>
+					<BrandLogo class='w-full' linkClass='transition-opacity hover:opacity-90' />
+				</div>
+
+				<div class='hidden items-center gap-3 text-sm text-[#6e6259] md:flex'>
+					<a href='/' class='transition hover:text-[#201611]'>Home</a>
+					<span class='text-[#b89f8f]'>/</span>
+					<a href='/challenge' class='transition hover:text-[#201611]'>Reto</a>
+					<span class='text-[#b89f8f]'>/</span>
+					<a href='/write' class='transition hover:text-[#201611]'>Escribir</a>
+				</div>
+			</nav>
+
+			<section class='mb-10 grid gap-6 lg:grid-cols-[0.75fr_1.25fr]'>
+				<aside class='bg-[#1f1612] p-8 text-white shadow-[0_24px_70px_rgba(31,22,18,0.2)]'>
+					<p class='mb-4 text-[11px] uppercase tracking-[0.35em] text-[#c6b1a1]'>Reto activo</p>
+					<h1 class='mb-6 text-4xl font-bold italic leading-tight'>{challenge.summary}</h1>
+
+					<div class='space-y-4'>
+						{challenge.slots.map((slot) => (
+							<div class='rounded-2xl border border-white/10 bg-white/5 px-4 py-3'>
+								<p class='text-xs uppercase tracking-[0.24em] text-[#a38f80]'>{slot.category}</p>
+								<p class='mt-1 text-sm capitalize text-[#f6eee9]'>{slot.word}</p>
+							</div>
+						))}
+					</div>
+
+					<div class='mt-8 rounded-3xl border border-[#f1d7ca]/15 bg-[#2b1f19] p-5'>
+						<p class='text-[11px] uppercase tracking-[0.24em] text-[#a38f80]'>Fecha</p>
+						<p class='mt-2 text-lg text-[#f1d7ca]'>{challenge.dateKey}</p>
+						<p class='mt-3 text-sm leading-7 text-[#d8c5b7]'>El feed solo enseña relatos anonimos del reto activo. Los likes reordenan el listado al instante.</p>
+					</div>
+				</aside>
+
+				<div class='border border-[#d8c8bb] bg-white/80 p-8 shadow-[0_24px_70px_rgba(43,28,20,0.12)] backdrop-blur md:p-10'>
+					<div class='mb-6 flex flex-col gap-4 border-b border-[#dccaba] pb-4 md:flex-row md:items-end md:justify-between'>
+						<div>
+							<p class='mb-2 text-[11px] uppercase tracking-[0.35em] text-[#8a7767]'>Feed del momento</p>
+							<h2 class='text-3xl font-bold italic text-[#201611]'>Relatos anonimos en juego</h2>
+						</div>
+						<div class='rounded-full border border-[#dbc9b9] bg-[#fffaf4] px-4 py-2 text-sm text-[#6e6259]'>
+							<span class='font-semibold text-[#201611]' data-story-total>0</span> publicados hoy
+						</div>
+					</div>
+
+					<div data-story-feed data-feed-mode='full' class='grid gap-5'></div>
+				</div>
+			</section>
+		</section>
 	</main>
+
+	<script type='module'>
+		import { initStoryFeed } from '../scripts/story-feed';
+		initStoryFeed();
+	</script>
 </Layout>

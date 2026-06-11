@@ -3,10 +3,11 @@ import {
 	appendStory,
 	clearDraft,
 	countWords,
+	getStoriesForChallengeDate,
+	hasLikedStory,
 	loadDraft,
-	loadStoryList,
 	saveDraft,
-	syncStoryToSupabase,
+	toggleStoryLike,
 	type StoryRecord,
 } from '../lib/stories';
 
@@ -38,67 +39,83 @@ function escapeHtml(value: string) {
 		.replaceAll("'", '&#39;');
 }
 
-function renderStoryList(stories: StoryRecord[], challengeDate: string) {
+function renderStoryList(challengeDate: string) {
 	const container = getElement<HTMLElement>('[data-story-list]');
 	if (!container) return;
 
-	const filtered = stories.filter((story) => story.challengeDate === challengeDate);
+	const stories = getStoriesForChallengeDate(challengeDate);
 
-	if (!filtered.length) {
+	if (!stories.length) {
 		container.innerHTML =
-			"<p class='text-sm text-[#6e6259]'>Aún no has guardado ningún relato para este día.</p>";
+			"<div class='rounded-[2rem] border border-dashed border-[#d6c3b3] bg-white/60 p-6 text-sm leading-7 text-[#6e6259]'>Todavia no has publicado nada hoy. Guarda tu relato y aparecera aqui con likes activos.</div>";
 		return;
 	}
 
-	container.innerHTML = filtered
-		.map(
-			(story) => `
-				<article class="rounded-3xl border border-[#dbc9b9] bg-white/80 p-5 shadow-[0_12px_30px_rgba(43,28,20,0.06)]">
-					<div class="flex items-start justify-between gap-4 mb-3">
+	container.innerHTML = stories
+		.map((story, index) => {
+			const liked = hasLikedStory(story.id);
+
+			return `
+				<article class="rounded-[2rem] border border-[#dbc9b9] bg-white/80 p-5 shadow-[0_12px_30px_rgba(43,28,20,0.06)]">
+					<div class="mb-4 flex items-start justify-between gap-4">
 						<div>
-							<p class="text-[10px] uppercase tracking-[0.24em] text-[#8a7767] mb-2">${escapeHtml(
-								story.authorName,
-							)}</p>
-							<h4 class="text-xl italic font-bold text-[#201611]">${escapeHtml(story.title || 'Sin título')}</h4>
+							<div class="mb-2 flex items-center gap-3">
+								${index === 0 ? '<span class="inline-flex rounded-full bg-[#201611] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#f1d7ca]">Mas votado</span>' : ''}
+								<p class="text-[10px] uppercase tracking-[0.24em] text-[#8a7767]">Anonimo</p>
+							</div>
+							<h4 class="text-xl italic font-bold text-[#201611]">${escapeHtml(story.title || 'Sin titulo')}</h4>
 						</div>
-						<span class="text-[11px] uppercase tracking-[0.24em] text-[#8a7767]">${story.wordCount} palabras</span>
+						<button
+							type="button"
+							data-like-button
+							data-story-id="${story.id}"
+							class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition ${
+								liked
+									? 'border-[#9f4f34] bg-[#9f4f34] text-[#fffaf4]'
+									: 'border-[#dbc9b9] bg-[#fffaf4] text-[#6e6259] hover:border-[#9f4f34] hover:text-[#9f4f34]'
+							}"
+							aria-pressed="${liked ? 'true' : 'false'}"
+						>
+							<span>${liked ? '&#9829;' : '&#9825;'}</span>
+							<span>${story.likes}</span>
+						</button>
 					</div>
+					<p class="mb-3 text-[11px] uppercase tracking-[0.24em] text-[#8a7767]">${story.wordCount} palabras</p>
 					<p class="text-sm leading-7 text-[#5f5248] whitespace-pre-wrap">${escapeHtml(story.body)}</p>
 				</article>
-			`,
-		)
+			`;
+		})
 		.join('');
 }
 
-async function saveCurrentStory(challengeDate: string, sourceLabel: string) {
+async function saveCurrentStory(challengeDate: string) {
 	const title = getInputValue('[data-story-title]').trim();
 	const body = getInputValue('[data-story-body]').trim();
-	const authorName = getInputValue('[data-story-author]').trim() || 'Anónimo';
 
 	if (!body) {
-		setText('[data-save-status]', 'Escribe un relato antes de guardarlo.');
+		setText('[data-save-status]', 'Escribe un relato antes de publicarlo.');
 		return;
 	}
 
 	const story: StoryRecord = {
 		id: crypto.randomUUID(),
-		title: title || 'Sin título',
+		title: title || 'Sin titulo',
 		body,
-		authorName,
+		authorName: 'Anonimo',
 		wordCount: countWords(body),
+		likes: 0,
 		challengeDate,
 		createdAt: new Date().toISOString(),
-		source: sourceLabel === 'supabase' ? 'supabase' : 'local',
+		source: 'local',
 	};
 
-	const stories = appendStory(story);
-	await syncStoryToSupabase(story);
+	appendStory(story);
 	clearDraft(challengeDate);
 	setInputValue('[data-story-title]', '');
 	setInputValue('[data-story-body]', '');
 	setText('[data-word-count]', '0');
-	setText('[data-save-status]', 'Relato guardado.');
-	renderStoryList(stories, challengeDate);
+	setText('[data-save-status]', 'Relato publicado en local.');
+	renderStoryList(challengeDate);
 }
 
 export async function initWriteStory() {
@@ -110,7 +127,7 @@ export async function initWriteStory() {
 
 	setText('[data-write-date]', challenge.dateKey);
 	setText('[data-write-summary]', challenge.summary);
-	setText('[data-write-source]', challenge.source === 'database' ? 'desde base de datos' : 'con fallback local');
+	setText('[data-write-source]', 'seleccion local cada 5 min');
 	setText('[data-write-word-1]', challenge.slots[0].word);
 	setText('[data-write-word-2]', challenge.slots[1].word);
 	setText('[data-write-word-3]', challenge.slots[2].word);
@@ -122,28 +139,40 @@ export async function initWriteStory() {
 	setText('[data-write-marker-3]', challenge.slots[2].marker);
 	setInputValue('[data-story-title]', draft.title);
 	setInputValue('[data-story-body]', draft.body);
-	setInputValue('[data-story-author]', draft.authorName);
 	setText('[data-word-count]', String(countWords(draft.body)));
 
-	renderStoryList(loadStoryList(), challenge.dateKey);
+	renderStoryList(challenge.dateKey);
 
 	const autosave = () => {
 		saveDraft(challenge.dateKey, {
 			title: getInputValue('[data-story-title]'),
 			body: getInputValue('[data-story-body]'),
-			authorName: getInputValue('[data-story-author]') || 'Anónimo',
 		});
 		setText('[data-word-count]', String(countWords(getInputValue('[data-story-body]'))));
-		setText('[data-save-status]', 'Borrador guardado.');
+		setText('[data-save-status]', 'Borrador guardado en este navegador.');
 	};
 
 	getElement('[data-story-title]')?.addEventListener('input', autosave);
 	getElement('[data-story-body]')?.addEventListener('input', autosave);
-	getElement('[data-story-author]')?.addEventListener('input', autosave);
 
 	getElement<HTMLFormElement>('[data-story-form]')?.addEventListener('submit', async (event) => {
 		event.preventDefault();
-		setText('[data-save-status]', 'Guardando relato...');
-		await saveCurrentStory(challenge.dateKey, challenge.source);
+		setText('[data-save-status]', 'Publicando relato...');
+		await saveCurrentStory(challenge.dateKey);
+	});
+
+	getElement<HTMLElement>('[data-story-list]')?.addEventListener('click', (event) => {
+		const target = event.target;
+		if (!(target instanceof HTMLElement)) return;
+
+		const button = target.closest<HTMLElement>('[data-like-button]');
+		const storyId = button?.dataset.storyId;
+
+		if (!button || !storyId) {
+			return;
+		}
+
+		toggleStoryLike(storyId);
+		renderStoryList(challenge.dateKey);
 	});
 }
