@@ -1,5 +1,6 @@
 ---
 import BrandLogo from './BrandLogo.astro';
+import { koFiUrl } from '../lib/support';
 
 type Props = {
 	currentPath?: string;
@@ -11,7 +12,7 @@ const navItems = [
 	{ href: '/', label: 'Inicio' },
 	{ href: '/write', label: 'Escribir' },
 	{ href: '/all', label: 'Rankings' },
-	{ href: '/u/demo', label: 'Perfil' },
+	{ href: '/profile', label: 'Perfil', dynamicProfile: true },
 ];
 ---
 
@@ -31,6 +32,7 @@ const navItems = [
 				return (
 					<a
 						href={item.href}
+						data-profile-link={item.dynamicProfile ? 'true' : undefined}
 						class:list={[
 							'pb-1 transition hover:text-[var(--ink-strong)]',
 							isActive && 'border-b-2 border-[var(--ink-strong)] font-semibold text-[var(--ink-strong)]',
@@ -42,39 +44,80 @@ const navItems = [
 			})}
 		</nav>
 
-		<button
-			type='button'
-			class='theme-toggle inline-flex h-11 w-11 items-center justify-center rounded-full text-[var(--muted-strong)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--ink-strong)]'
-			aria-label='Cambiar tema'
-			data-theme-toggle
-			data-theme-label-light='Activar modo noche'
-			data-theme-label-dark='Activar modo dia'
-		>
-			<svg
-				data-theme-icon='moon'
-				viewBox='0 0 24 24'
-				class='h-7 w-7'
-				fill='none'
-				stroke='currentColor'
-				stroke-width='1.9'
-				stroke-linecap='round'
-				stroke-linejoin='round'
+		<div class='flex items-center gap-3'>
+			{koFiUrl && (
+				<a
+					href={koFiUrl}
+					target='_blank'
+					rel='noreferrer'
+					class='app-link-button hidden items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-4 py-2 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)] lg:inline-flex'
+				>
+					Ko-fi
+				</a>
+			)}
+			<span
+				data-session-state
+				class='hidden rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-3 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)] sm:inline-flex'
 			>
-				<path d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z'></path>
-			</svg>
-			<svg
-				data-theme-icon='sun'
-				viewBox='0 0 24 24'
-				class='hidden h-7 w-7'
-				fill='none'
-				stroke='currentColor'
-				stroke-width='1.9'
-				stroke-linecap='round'
-				stroke-linejoin='round'
+				Sesion cerrada
+			</span>
+			<a
+				href='/auth'
+				data-guest-only
+				class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-4 py-2 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
 			>
-				<circle cx='12' cy='12' r='4'></circle>
-				<path d='M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77'></path>
-			</svg>
-		</button>
+				Entrar
+			</a>
+			<div data-auth-only class='hidden items-center gap-3'>
+				<a
+					href='/profile'
+					data-profile-link='true'
+					class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-4 py-2 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
+				>
+					<span data-session-label>Mi perfil</span>
+				</a>
+				<button
+					type='button'
+					data-sign-out-button
+					class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-4 py-2 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
+				>
+					Salir
+				</button>
+			</div>
+			<button
+				type='button'
+				class='theme-toggle inline-flex h-11 w-11 items-center justify-center rounded-full text-[var(--muted-strong)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--ink-strong)]'
+				aria-label='Cambiar tema'
+				data-theme-toggle
+				data-theme-label-light='Activar modo noche'
+				data-theme-label-dark='Activar modo dia'
+			>
+				<svg
+					data-theme-icon='moon'
+					viewBox='0 0 24 24'
+					class='h-7 w-7'
+					fill='none'
+					stroke='currentColor'
+					stroke-width='1.9'
+					stroke-linecap='round'
+					stroke-linejoin='round'
+				>
+					<path d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z'></path>
+				</svg>
+				<svg
+					data-theme-icon='sun'
+					viewBox='0 0 24 24'
+					class='hidden h-7 w-7'
+					fill='none'
+					stroke='currentColor'
+					stroke-width='1.9'
+					stroke-linecap='round'
+					stroke-linejoin='round'
+				>
+					<circle cx='12' cy='12' r='4'></circle>
+					<path d='M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77'></path>
+				</svg>
+			</button>
+		</div>
 	</div>
 </header>

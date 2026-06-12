@@ -1,11 +1,12 @@
+import { getSession, onAuthStateChange } from '../lib/auth';
 import { loadDailyChallenge } from '../lib/challenge';
+import { ensureProfileForUser } from '../lib/profiles';
 import {
-	appendStory,
 	clearDraft,
 	countWords,
-	getStoriesForChallengeDate,
-	hasLikedStory,
+	fetchStoriesForChallengeDate,
 	loadDraft,
+	publishStory,
 	saveDraft,
 	toggleStoryLike,
 	type StoryRecord,
@@ -39,56 +40,75 @@ function escapeHtml(value: string) {
 		.replaceAll("'", '&#39;');
 }
 
-function renderStoryList(challengeDate: string) {
+let activeChallengeDate = '';
+
+function renderPublishGate(isSignedIn: boolean, label: string) {
+	getElement<HTMLElement>('[data-auth-gate]')?.classList.toggle('hidden', isSignedIn);
+	getElement<HTMLElement>('[data-editor-shell]')?.classList.toggle('opacity-60', !isSignedIn);
+	const submitButton = getElement<HTMLButtonElement>('[data-story-submit]');
+	if (submitButton) {
+		submitButton.disabled = !isSignedIn;
+	}
+	setText('[data-write-author]', label);
+}
+
+function renderStoryList(stories: StoryRecord[]) {
 	const container = getElement<HTMLElement>('[data-story-list]');
 	if (!container) return;
 
-	const stories = getStoriesForChallengeDate(challengeDate);
-
 	if (!stories.length) {
 		container.innerHTML =
-			"<div class='app-panel rounded-[2rem] border-dashed p-6 text-sm leading-7 text-[var(--ink-soft)]'>Todavia no has publicado nada hoy. Guarda tu relato y aparecera aqui con likes activos.</div>";
+			"<div class='app-panel rounded-[2rem] border-dashed p-6 text-sm leading-7 text-[var(--ink-soft)]'>Todavia no hay relatos en este bloque. Publica el primero y abre la ronda.</div>";
 		return;
 	}
 
 	container.innerHTML = stories
-		.map((story, index) => {
-			const liked = hasLikedStory(story.id);
-
-			return `
-				<article class="app-panel rounded-[2rem] p-5">
-					<div class="mb-4 flex items-start justify-between gap-4">
-						<div>
-							<div class="mb-2 flex items-center gap-3">
-								${index === 0 ? '<span class="inline-flex rounded-full bg-[var(--surface-inverse)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--surface-base)]">Mas votado</span>' : ''}
-								<p class="text-[10px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">Anonimo</p>
-							</div>
-							<h4 class="serif text-xl font-bold italic text-[var(--ink-strong)]">${escapeHtml(story.title || 'Sin titulo')}</h4>
+		.map((story, index) => `
+			<article class="app-panel rounded-[2rem] p-5">
+				<div class="mb-4 flex items-start justify-between gap-4">
+					<div>
+						<div class="mb-2 flex items-center gap-3">
+							${index === 0 ? '<span class="inline-flex rounded-full bg-[var(--surface-inverse)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--surface-base)]">Mas votado</span>' : ''}
+							<a href="/profile?u=${encodeURIComponent(story.author.username)}" class="text-[10px] uppercase tracking-[0.24em] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]">@${escapeHtml(story.author.username)}</a>
 						</div>
-						<button
-							type="button"
-							data-like-button
-							data-story-id="${story.id}"
-							class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition ${
-								liked
-									? 'border-[var(--surface-inverse)] bg-[var(--surface-inverse)] text-[var(--surface-base)]'
-									: 'border-[var(--frame-border)] bg-[var(--surface-strong)] text-[var(--ink-soft)] hover:border-[var(--frame-border-strong)] hover:text-[var(--ink-strong)]'
-							}"
-							aria-pressed="${liked ? 'true' : 'false'}"
-						>
-							<span>${liked ? '&#9829;' : '&#9825;'}</span>
-							<span>${story.likes}</span>
-						</button>
+						<h4 class="serif text-xl font-bold italic text-[var(--ink-strong)]">${escapeHtml(story.title || 'Sin titulo')}</h4>
+						<p class="mt-2 text-sm text-[var(--ink-soft)]">${escapeHtml(story.author.displayName)}</p>
 					</div>
-					<p class="mb-3 text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">${story.wordCount} palabras</p>
-					<p class="text-sm leading-7 whitespace-pre-wrap text-[var(--ink-soft)]">${escapeHtml(story.body)}</p>
-				</article>
-			`;
-		})
+					<button
+						type="button"
+						data-like-button
+						data-story-id="${story.id}"
+						class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition ${
+							story.viewerHasLiked
+								? 'border-[var(--surface-inverse)] bg-[var(--surface-inverse)] text-[var(--surface-base)]'
+								: 'border-[var(--frame-border)] bg-[var(--surface-strong)] text-[var(--ink-soft)] hover:border-[var(--frame-border-strong)] hover:text-[var(--ink-strong)]'
+						}"
+						aria-pressed="${story.viewerHasLiked ? 'true' : 'false'}"
+					>
+						<span>${story.viewerHasLiked ? '&#9829;' : '&#9825;'}</span>
+						<span>${story.likes}</span>
+					</button>
+				</div>
+				<p class="mb-3 text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">${story.wordCount} palabras</p>
+				<p class="text-sm leading-7 whitespace-pre-wrap text-[var(--ink-soft)]">${escapeHtml(story.body)}</p>
+			</article>
+		`)
 		.join('');
 }
 
+async function refreshStoryList() {
+	const session = await getSession();
+	const stories = await fetchStoriesForChallengeDate(activeChallengeDate, session?.user.id);
+	renderStoryList(stories);
+}
+
 async function saveCurrentStory(challengeDate: string) {
+	const session = await getSession();
+	if (!session?.user) {
+		setText('[data-save-status]', 'Necesitas entrar para publicar.');
+		return;
+	}
+
 	const title = getInputValue('[data-story-title]').trim();
 	const body = getInputValue('[data-story-body]').trim();
 
@@ -97,25 +117,19 @@ async function saveCurrentStory(challengeDate: string) {
 		return;
 	}
 
-	const story: StoryRecord = {
-		id: crypto.randomUUID(),
+	await publishStory({
+		authorId: session.user.id,
 		title: title || 'Sin titulo',
 		body,
-		authorName: 'Anonimo',
-		wordCount: countWords(body),
-		likes: 0,
 		challengeDate,
-		createdAt: new Date().toISOString(),
-		source: 'local',
-	};
+	});
 
-	appendStory(story);
 	clearDraft(challengeDate);
 	setInputValue('[data-story-title]', '');
 	setInputValue('[data-story-body]', '');
 	setText('[data-word-count]', '0');
-	setText('[data-save-status]', 'Relato publicado en local.');
-	renderStoryList(challengeDate);
+	setText('[data-save-status]', 'Relato publicado en Poetika.');
+	await refreshStoryList();
 }
 
 export async function initWriteStory() {
@@ -124,6 +138,7 @@ export async function initWriteStory() {
 
 	const challenge = await loadDailyChallenge();
 	const draft = loadDraft(challenge.dateKey);
+	activeChallengeDate = challenge.dateKey;
 
 	setText('[data-write-date]', challenge.dateKey);
 	setText('[data-write-summary]', challenge.summary);
@@ -141,7 +156,15 @@ export async function initWriteStory() {
 	setInputValue('[data-story-body]', draft.body);
 	setText('[data-word-count]', String(countWords(draft.body)));
 
-	renderStoryList(challenge.dateKey);
+	const session = await getSession();
+	if (session?.user) {
+		const profile = await ensureProfileForUser(session.user);
+		renderPublishGate(true, profile?.display_name ?? session.user.email ?? 'Escritor');
+	} else {
+		renderPublishGate(false, 'Entrar para publicar');
+	}
+
+	await refreshStoryList();
 
 	const autosave = () => {
 		saveDraft(challenge.dateKey, {
@@ -161,18 +184,35 @@ export async function initWriteStory() {
 		await saveCurrentStory(challenge.dateKey);
 	});
 
-	getElement<HTMLElement>('[data-story-list]')?.addEventListener('click', (event) => {
+	getElement<HTMLElement>('[data-story-list]')?.addEventListener('click', async (event) => {
 		const target = event.target;
 		if (!(target instanceof HTMLElement)) return;
 
 		const button = target.closest<HTMLElement>('[data-like-button]');
 		const storyId = button?.dataset.storyId;
-
 		if (!button || !storyId) {
 			return;
 		}
 
-		toggleStoryLike(storyId);
-		renderStoryList(challenge.dateKey);
+		const currentSession = await getSession();
+		if (!currentSession?.user) {
+			setText('[data-save-status]', 'Entra para dar likes.');
+			return;
+		}
+
+		await toggleStoryLike(storyId, currentSession.user.id);
+		await refreshStoryList();
+	});
+
+	onAuthStateChange(async (nextSession) => {
+		if (!nextSession?.user) {
+			renderPublishGate(false, 'Entrar para publicar');
+			await refreshStoryList();
+			return;
+		}
+
+		const profile = await ensureProfileForUser(nextSession.user);
+		renderPublishGate(true, profile?.display_name ?? nextSession.user.email ?? 'Escritor');
+		await refreshStoryList();
 	});
 }

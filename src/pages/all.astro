@@ -6,7 +6,10 @@ import { getFallbackDailyChallenge } from '../lib/challenge';
 const challenge = getFallbackDailyChallenge();
 ---
 
-<Layout title='PoetiKa - Feed del momento' description='Feed anonimo del reto activo de 5 minutos con likes locales y publicacion inmediata.'>
+<Layout
+	title='PoetiKa - Feed del momento'
+	description='Feed del reto activo de 5 minutos con perfiles reales, likes persistentes y publicacion inmediata.'
+>
 	<main class='home-paper min-h-screen'>
 		<div class='mx-auto max-w-[1420px] px-4 sm:px-8 lg:px-14'>
 			<AppHeader currentPath='/all' />
@@ -31,7 +34,9 @@ const challenge = getFallbackDailyChallenge();
 						<div class='app-divider mt-8 border-t pt-5'>
 							<p class='text-[0.74rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>Fecha</p>
 							<p class='app-title mt-2 text-lg'>{challenge.dateKey}</p>
-							<p class='app-copy mt-3 text-sm leading-7'>El feed solo enseña relatos anonimos del reto activo. Los likes reordenan el listado al instante.</p>
+							<p class='app-copy mt-3 text-sm leading-7'>
+								El feed enseña los relatos del reto activo. Los likes persisten y reordenan el listado al instante.
+							</p>
 						</div>
 					</aside>
 
@@ -39,7 +44,7 @@ const challenge = getFallbackDailyChallenge();
 						<div class='app-divider mb-7 flex flex-col gap-4 border-b pb-4 md:flex-row md:items-end md:justify-between'>
 							<div>
 								<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.32em]'>Feed del momento</p>
-								<h2 class='app-title serif text-[2.4rem] font-semibold tracking-[-0.04em]'>Relatos anonimos en juego</h2>
+								<h2 class='app-title serif text-[2.4rem] font-semibold tracking-[-0.04em]'>Relatos en juego</h2>
 							</div>
 							<div class='app-chip rounded-full px-4 py-2 text-sm'>
 								<span class='font-semibold text-[var(--ink-strong)]' data-story-total>0</span> publicados ahora
@@ -54,7 +59,8 @@ const challenge = getFallbackDailyChallenge();
 	</main>
 
 	<script type='module'>
-		import { initStoryFeed } from '../scripts/story-feed';
+		import { initStoryFeed } from '../scripts/story-feed.ts';
+
 		initStoryFeed();
 	</script>
 </Layout>

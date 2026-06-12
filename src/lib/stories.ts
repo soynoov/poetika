@@ -1,15 +1,28 @@
 import { supabase } from './supabase';
+import type { Database } from '../types/database';
+
+export type StoryRow = Database['public']['Tables']['stories']['Row'];
+export type StoryLikeRow = Database['public']['Tables']['story_likes']['Row'];
+
+export type StoryAuthor = {
+	id: string;
+	username: string;
+	displayName: string;
+	avatarUrl: string | null;
+};
 
 export type StoryRecord = {
 	id: string;
 	title: string;
 	body: string;
-	authorName: 'Anonimo';
 	wordCount: number;
 	likes: number;
 	challengeDate: string;
 	createdAt: string;
-	source: 'local' | 'supabase';
+	updatedAt: string;
+	author: StoryAuthor;
+	viewerHasLiked: boolean;
+	isOwnedByViewer: boolean;
 };
 
 export type StoryDraft = {
@@ -17,9 +30,14 @@ export type StoryDraft = {
 	body: string;
 };
 
-const STORY_STORAGE_KEY = 'poetika:stories';
+export type ProfileStoryStats = {
+	totalStories: number;
+	totalLikes: number;
+	topStories: number;
+	activeDays: number;
+};
+
 const DRAFT_STORAGE_PREFIX = 'poetika:draft:';
-const STORY_LIKES_STORAGE_KEY = 'poetika:story-likes';
 
 function hasWindow() {
 	return typeof window !== 'undefined';
@@ -43,7 +61,7 @@ function safeWrite(key: string, value: unknown) {
 	try {
 		window.localStorage.setItem(key, JSON.stringify(value));
 	} catch {
-		// Ignore storage quota and serialization errors.
+		// Ignore quota and serialization errors.
 	}
 }
 
@@ -52,40 +70,6 @@ export function countWords(text: string) {
 		.trim()
 		.split(/\s+/)
 		.filter(Boolean).length;
-}
-
-export function loadStoryList() {
-	const stories = safeRead<StoryRecord[]>(STORY_STORAGE_KEY, []);
-
-	return stories.map((story) => ({
-		...story,
-		authorName: 'Anonimo' as const,
-		likes: Number.isFinite(story.likes) ? story.likes : 0,
-	}));
-}
-
-export function saveStoryList(stories: StoryRecord[]) {
-	safeWrite(STORY_STORAGE_KEY, stories);
-}
-
-export function sortStories(stories: StoryRecord[]) {
-	return [...stories].sort((left, right) => {
-		if (right.likes !== left.likes) {
-			return right.likes - left.likes;
-		}
-
-		return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
-	});
-}
-
-export function appendStory(story: StoryRecord) {
-	const stories = sortStories([story, ...loadStoryList()]);
-	saveStoryList(stories);
-	return stories;
-}
-
-export function getStoriesForChallengeDate(challengeDate: string) {
-	return sortStories(loadStoryList().filter((story) => story.challengeDate === challengeDate));
 }
 
 export function loadDraft(dateKey: string) {
@@ -104,47 +88,6 @@ export function clearDraft(dateKey: string) {
 	window.localStorage.removeItem(`${DRAFT_STORAGE_PREFIX}${dateKey}`);
 }
 
-export function loadLikedStoryIds() {
-	return safeRead<string[]>(STORY_LIKES_STORAGE_KEY, []);
-}
-
-function saveLikedStoryIds(storyIds: string[]) {
-	safeWrite(STORY_LIKES_STORAGE_KEY, storyIds);
-}
-
-export function hasLikedStory(storyId: string) {
-	return loadLikedStoryIds().includes(storyId);
-}
-
-export function toggleStoryLike(storyId: string) {
-	const likedStoryIds = new Set(loadLikedStoryIds());
-	const stories = loadStoryList();
-	const story = stories.find((item) => item.id === storyId);
-
-	if (!story) {
-		return {
-			stories,
-			liked: likedStoryIds.has(storyId),
-		};
-	}
-
-	if (likedStoryIds.has(storyId)) {
-		likedStoryIds.delete(storyId);
-		story.likes = Math.max(0, story.likes - 1);
-	} else {
-		likedStoryIds.add(storyId);
-		story.likes += 1;
-	}
-
-	saveStoryList(sortStories(stories));
-	saveLikedStoryIds([...likedStoryIds]);
-
-	return {
-		stories: sortStories(stories),
-		liked: likedStoryIds.has(storyId),
-	};
-}
-
 export function buildStoryPreview(body: string, limit = 180) {
 	const normalized = body.replace(/\s+/g, ' ').trim();
 
@@ -155,27 +98,237 @@ export function buildStoryPreview(body: string, limit = 180) {
 	return `${normalized.slice(0, limit).trimEnd()}...`;
 }
 
-export async function syncStoryToSupabase(story: StoryRecord) {
+async function getProfilesMap(userIds: string[]) {
+	if (!supabase || !userIds.length) {
+		return new Map<string, StoryAuthor>();
+	}
+
+	const uniqueUserIds = [...new Set(userIds)];
+	const { data, error } = await supabase
+		.from('profiles')
+		.select('user_id, username, display_name, avatar_url')
+		.in('user_id', uniqueUserIds);
+
+	if (error) {
+		throw error;
+	}
+
+	return new Map(
+		(data ?? []).map((profile) => [
+			profile.user_id,
+			{
+				id: profile.user_id,
+				username: profile.username,
+				displayName: profile.display_name,
+				avatarUrl: profile.avatar_url,
+			},
+		]),
+	);
+}
+
+async function getLikesMap(storyIds: string[]) {
+	if (!supabase || !storyIds.length) {
+		return new Map<string, StoryLikeRow[]>();
+	}
+
+	const { data, error } = await supabase
+		.from('story_likes')
+		.select('story_id, user_id, created_at')
+		.in('story_id', storyIds);
+
+	if (error) {
+		throw error;
+	}
+
+	const likesByStory = new Map<string, StoryLikeRow[]>();
+
+	for (const like of data ?? []) {
+		const likes = likesByStory.get(like.story_id) ?? [];
+		likes.push(like);
+		likesByStory.set(like.story_id, likes);
+	}
+
+	return likesByStory;
+}
+
+function mapStoryRecord(
+	story: StoryRow,
+	author: StoryAuthor | undefined,
+	likes: StoryLikeRow[],
+	viewerId?: string,
+): StoryRecord {
+	return {
+		id: story.id,
+		title: story.title,
+		body: story.body,
+		wordCount: story.word_count,
+		likes: likes.length,
+		challengeDate: story.challenge_date,
+		createdAt: story.created_at,
+		updatedAt: story.updated_at,
+		author:
+			author ?? {
+				id: story.author_id,
+				username: 'writer',
+				displayName: 'Writer',
+				avatarUrl: null,
+			},
+		viewerHasLiked: viewerId ? likes.some((like) => like.user_id === viewerId) : false,
+		isOwnedByViewer: viewerId === story.author_id,
+	};
+}
+
+export async function fetchStoriesForChallengeDate(challengeDate: string, viewerId?: string) {
 	if (!supabase) {
-		return null;
+		return [];
+	}
+
+	const { data, error } = await supabase
+		.from('stories')
+		.select('*')
+		.eq('challenge_date', challengeDate)
+		.order('created_at', { ascending: false });
+
+	if (error) {
+		throw error;
+	}
+
+	const stories = data ?? [];
+	const [profilesMap, likesMap] = await Promise.all([
+		getProfilesMap(stories.map((story) => story.author_id)),
+		getLikesMap(stories.map((story) => story.id)),
+	]);
+
+	return stories
+		.map((story) =>
+			mapStoryRecord(
+				story,
+				profilesMap.get(story.author_id),
+				likesMap.get(story.id) ?? [],
+				viewerId,
+			),
+		)
+		.sort((left, right) => {
+			if (right.likes !== left.likes) {
+				return right.likes - left.likes;
+			}
+
+			return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
+		});
+}
+
+export async function fetchStoriesByAuthorId(authorId: string, viewerId?: string) {
+	if (!supabase) {
+		return [];
+	}
+
+	const { data, error } = await supabase
+		.from('stories')
+		.select('*')
+		.eq('author_id', authorId)
+		.order('created_at', { ascending: false });
+
+	if (error) {
+		throw error;
+	}
+
+	const stories = data ?? [];
+	const [profilesMap, likesMap] = await Promise.all([
+		getProfilesMap([authorId]),
+		getLikesMap(stories.map((story) => story.id)),
+	]);
+
+	return stories.map((story) =>
+		mapStoryRecord(
+			story,
+			profilesMap.get(story.author_id),
+			likesMap.get(story.id) ?? [],
+			viewerId,
+		),
+	);
+}
+
+export async function publishStory(input: {
+	authorId: string;
+	title: string;
+	body: string;
+	challengeDate: string;
+}) {
+	if (!supabase) {
+		throw new Error('Supabase no esta configurado.');
 	}
 
 	const { data, error } = await supabase
 		.from('stories')
 		.insert({
-			title: story.title,
-			body: story.body,
-			author_name: story.authorName,
-			word_count: story.wordCount,
-			challenge_date: story.challengeDate,
-			source: story.source,
+			author_id: input.authorId,
+			title: input.title.trim() || 'Sin titulo',
+			body: input.body.trim(),
+			challenge_date: input.challengeDate,
+			word_count: countWords(input.body),
 		})
-		.select()
+		.select('*')
 		.maybeSingle();
 
 	if (error) {
-		return null;
+		throw error;
 	}
 
 	return data;
+}
+
+export async function toggleStoryLike(storyId: string, viewerId: string) {
+	if (!supabase) {
+		throw new Error('Supabase no esta configurado.');
+	}
+
+	const { data: existing, error: readError } = await supabase
+		.from('story_likes')
+		.select('story_id, user_id')
+		.eq('story_id', storyId)
+		.eq('user_id', viewerId)
+		.maybeSingle();
+
+	if (readError) {
+		throw readError;
+	}
+
+	if (existing) {
+		const { error } = await supabase
+			.from('story_likes')
+			.delete()
+			.eq('story_id', storyId)
+			.eq('user_id', viewerId);
+
+		if (error) {
+			throw error;
+		}
+
+		return false;
+	}
+
+	const { error } = await supabase.from('story_likes').insert({
+		story_id: storyId,
+		user_id: viewerId,
+	});
+
+	if (error) {
+		throw error;
+	}
+
+	return true;
+}
+
+export async function getProfileStoryStats(authorId: string) {
+	const stories = await fetchStoriesByAuthorId(authorId);
+	const totalLikes = stories.reduce((sum, story) => sum + story.likes, 0);
+	const activeDays = new Set(stories.map((story) => story.challengeDate)).size;
+	const topStories = stories.filter((story) => story.likes > 0).length;
+
+	return {
+		totalStories: stories.length,
+		totalLikes,
+		topStories,
+		activeDays,
+	} satisfies ProfileStoryStats;
 }

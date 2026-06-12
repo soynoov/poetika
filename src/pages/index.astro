@@ -1,6 +1,8 @@
 ---
 import AppHeader from '../components/AppHeader.astro';
 import { getChallengeIcon } from '../lib/challenge-icons';
+import KoFiWidget from '../components/KoFiWidget.astro';
+import { koFiUrl, koFiWidget } from '../lib/support';
 import Layout from '../layouts/Layout.astro';
 import { getFallbackDailyChallenge } from '../lib/challenge';
 
@@ -110,14 +112,39 @@ const challenge = getFallbackDailyChallenge();
             class='grid gap-9'
           >
           </div>
+
+          {(koFiUrl || koFiWidget) && (
+            <div class='mt-10 app-panel rounded-[2rem] px-7 py-6'>
+              <p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.3em]'>
+                Ko-fi
+              </p>
+              <div class='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
+                <p class='app-copy max-w-2xl text-sm leading-7'>
+                  Apoya Poetika para seguir puliendo la experiencia de escritura, perfiles y retos.
+                </p>
+                {koFiWidget ? (
+                  <KoFiWidget class='kofi-widget-shell self-start md:self-center' />
+                ) : (
+                  <a
+                    href={koFiUrl}
+                    target='_blank'
+                    rel='noreferrer'
+                    class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-5 py-3 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
+                  >
+                    Apoyar en Ko-fi
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </div>
   </main>
 
   <script type='module'>
-    import { initDailyChallenge } from '../scripts/daily-challenge';
-    import { initStoryFeed } from '../scripts/story-feed';
+    import { initDailyChallenge } from '../scripts/daily-challenge.ts';
+    import { initStoryFeed } from '../scripts/story-feed.ts';
 
     initDailyChallenge();
     initStoryFeed();

@@ -1,0 +1,120 @@
+---
+import AppHeader from '../components/AppHeader.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title='PoetiKa - Perfil'
+	description='Perfil publico y panel personal de escritura dentro de PoetiKa.'
+>
+	<main class='home-paper min-h-screen' data-profile-page>
+		<div class='mx-auto max-w-[1420px] px-4 sm:px-8 lg:px-14'>
+			<AppHeader currentPath='/profile' />
+
+			<div class='home-rail mx-auto max-w-[1390px]'>
+				<section class='mx-auto max-w-[1080px] px-2 pb-20 pt-16 sm:px-4'>
+					<section data-profile-guest-card class='mb-8 hidden app-panel rounded-[2rem] p-7 sm:p-9'>
+						<p class='app-kicker mb-3 text-[0.72rem] uppercase tracking-[0.32em]'>Perfil</p>
+						<h1 class='app-title serif text-[2.8rem] font-semibold tracking-[-0.05em]'>
+							Tu portal todavia esta cerrado
+						</h1>
+						<p class='app-copy mt-4 max-w-2xl text-base leading-8'>
+							Inicia sesion o crea una cuenta para ver tu perfil, guardar tu firma y publicar relatos con identidad.
+						</p>
+						<div class='mt-6 flex flex-col gap-3 sm:flex-row'>
+							<a
+								href='/auth'
+								class='home-primary-button inline-flex items-center justify-center px-8 py-4 text-sm font-semibold'
+							>
+								Entrar en Poetika
+							</a>
+							<a
+								href='/all'
+								class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-6 py-4 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
+							>
+								Ver relatos
+							</a>
+						</div>
+					</section>
+
+					<header class='app-divider mb-10 border-b pb-6'>
+						<p class='app-kicker mb-3 text-[0.72rem] uppercase tracking-[0.32em]'>Perfil</p>
+						<h1 data-profile-display-name class='app-title serif text-[3.6rem] font-semibold tracking-[-0.05em]'>
+							Cargando perfil...
+						</h1>
+						<p data-profile-handle class='mt-3 text-[0.9rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>
+							@poetika
+						</p>
+						<p data-profile-bio class='app-copy mt-4 max-w-2xl text-base leading-8'>
+							Todavia no ha escrito una bio en su cuaderno.
+						</p>
+						<p data-profile-status class='mt-4 text-sm text-[var(--ink-soft)]'></p>
+					</header>
+
+					<section class='grid grid-cols-1 gap-4 sm:grid-cols-3'>
+						<div class='app-panel p-6'>
+							<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.24em]'>Likes</p>
+							<p data-profile-total-likes class='app-title text-4xl font-semibold'>0</p>
+						</div>
+						<div class='app-panel p-6'>
+							<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.24em]'>Relatos</p>
+							<p data-profile-total-stories class='app-title text-4xl font-semibold'>0</p>
+						</div>
+						<div class='app-panel p-6'>
+							<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.24em]'>Dias activos</p>
+							<p data-profile-active-days class='app-title text-4xl font-semibold'>0</p>
+						</div>
+					</section>
+
+					<section data-profile-editor class='mt-8 hidden app-panel p-7 sm:p-9'>
+						<div class='app-divider mb-6 border-b pb-4'>
+							<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.32em]'>Tu portal</p>
+							<h2 class='app-title serif text-[2rem] font-semibold tracking-[-0.04em]'>Editar perfil</h2>
+						</div>
+
+						<form data-profile-form class='grid gap-4 md:grid-cols-2'>
+							<label class='block md:col-span-1'>
+								<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Nombre visible</span>
+								<input data-profile-edit-display-name type='text' class='app-input w-full px-4 py-3' />
+							</label>
+							<label class='block md:col-span-1'>
+								<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Username</span>
+								<input data-profile-edit-username type='text' class='app-input w-full px-4 py-3 lowercase' />
+							</label>
+							<label class='block md:col-span-2'>
+								<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Avatar URL</span>
+								<input data-profile-edit-avatar type='url' class='app-input w-full px-4 py-3' />
+							</label>
+							<label class='block md:col-span-2'>
+								<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Bio</span>
+								<textarea data-profile-edit-bio rows='4' class='app-input w-full resize-y px-4 py-4'></textarea>
+							</label>
+							<div class='md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+								<p data-profile-form-status class='app-copy text-sm'>Ajusta tu firma publica y guarda cuando quieras.</p>
+								<button type='submit' class='home-primary-button inline-flex px-8 py-4 text-sm font-semibold'>
+									Guardar perfil
+								</button>
+							</div>
+						</form>
+					</section>
+
+					<section class='mt-10'>
+						<div class='app-divider mb-6 flex items-end justify-between gap-4 border-b pb-4'>
+							<div>
+								<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.32em]'>Biblioteca</p>
+								<h2 class='app-title serif text-[2rem] font-semibold tracking-[-0.04em]'>Relatos publicados</h2>
+							</div>
+						</div>
+						<div data-profile-story-list class='grid gap-5'></div>
+					</section>
+				</section>
+			</div>
+		</div>
+	</main>
+
+	<script type='module'>
+		import { initProfilePage } from '../scripts/profile-page.ts';
+
+		initProfilePage();
+	</script>
+</Layout>

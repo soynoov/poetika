@@ -28,7 +28,7 @@ const challenge = getFallbackDailyChallenge();
               Las palabras se calculan de forma local y cambian cada 5 minutos.
             </p>
             <div class='mt-8 flex flex-col justify-center gap-3 sm:flex-row'>
-              <a href='/write' class='home-primary-button inline-flex items-center justify-center px-8 py-4 text-sm font-semibold text-white'>
+              <a href='/write' class='home-primary-button inline-flex items-center justify-center px-8 py-4 text-sm font-semibold'>
                 Escribir relato
               </a>
               <a href='/all' class='app-link-button inline-flex items-center justify-center border border-[var(--frame-border-strong)] bg-[var(--surface-strong)] px-8 py-4 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'>
@@ -82,7 +82,7 @@ const challenge = getFallbackDailyChallenge();
   </main>
 
   <script type='module'>
-    import { initDailyChallenge } from '../scripts/daily-challenge';
+    import { initDailyChallenge } from '../scripts/daily-challenge.ts';
     initDailyChallenge();
   </script>
 </Layout>

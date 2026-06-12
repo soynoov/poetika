@@ -1,0 +1,193 @@
+---
+import AppHeader from '../../components/AppHeader.astro';
+import KoFiWidget from '../../components/KoFiWidget.astro';
+import { koFiUrl, koFiWidget } from '../../lib/support';
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+	title='PoetiKa - Acceso'
+	description='Crea tu cuenta en PoetiKa para publicar relatos, votar y construir tu perfil.'
+>
+	<main class='home-paper min-h-screen' data-auth-page>
+		<div class='mx-auto max-w-[1420px] px-4 sm:px-8 lg:px-14'>
+			<AppHeader currentPath='/auth' />
+
+			<div class='home-rail mx-auto max-w-[1390px]'>
+				<section class='mx-auto grid max-w-[1180px] gap-8 px-2 pb-20 pt-16 lg:grid-cols-2 lg:px-4'>
+					<section class='app-panel p-7 sm:p-9'>
+						<p class='app-kicker mb-4 text-[0.72rem] uppercase tracking-[0.32em]'>Portal</p>
+						<h1 class='app-title serif text-[2.9rem] font-semibold leading-none tracking-[-0.05em]'>
+							Entra en tu cuaderno
+						</h1>
+						<p class='app-copy mt-5 max-w-xl text-base leading-8'>
+							Con cuenta puedes publicar relatos reales, votar, editar tu perfil y aparecer en el feed con tu firma.
+						</p>
+
+						<div class='mt-8 space-y-4'>
+							<div class='app-chip rounded-[1.5rem] px-5 py-4'>
+								<p class='text-[0.75rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>Publica</p>
+								<p class='mt-2 text-sm leading-7 text-[var(--ink-soft)]'>
+									Tus relatos quedan asociados a tu perfil y visibles en el reto activo.
+								</p>
+							</div>
+							<div class='app-chip rounded-[1.5rem] px-5 py-4'>
+								<p class='text-[0.75rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>Vota</p>
+								<p class='mt-2 text-sm leading-7 text-[var(--ink-soft)]'>
+									Los likes persisten en Supabase y ordenan el ranking en tiempo real.
+								</p>
+							</div>
+							<div class='app-chip rounded-[1.5rem] px-5 py-4'>
+								<p class='text-[0.75rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>Perfil</p>
+								<p class='mt-2 text-sm leading-7 text-[var(--ink-soft)]'>
+									Elige tu username, tu firma y la bio que acompañara a tus textos.
+								</p>
+							</div>
+						</div>
+
+						{(koFiUrl || koFiWidget) && (
+							<div class='mt-8 app-panel rounded-[1.8rem] p-5'>
+								<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.24em]'>Ko-fi</p>
+								<p class='app-copy text-sm leading-7'>
+									Si te gusta el proyecto, puedes apoyarlo para seguir iterando la experiencia.
+								</p>
+								<div class='mt-4'>
+									{koFiWidget ? (
+										<KoFiWidget class='kofi-widget-shell' />
+									) : (
+										<a
+											href={koFiUrl}
+											target='_blank'
+											rel='noreferrer'
+											class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-5 py-3 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
+										>
+											Apoyar en Ko-fi
+										</a>
+									)}
+								</div>
+							</div>
+						)}
+					</section>
+
+					<section class='space-y-6'>
+						<section data-auth-status-card data-tone='neutral' class='app-status-card app-panel p-6'>
+							<div class='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+								<div>
+									<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.32em]'>Estado</p>
+									<p data-auth-session-state class='text-sm font-semibold text-[var(--ink-strong)]'>
+										Sesion cerrada
+									</p>
+								</div>
+								<button
+									type='button'
+									data-auth-go-profile
+									class='app-link-button hidden items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-4 py-2 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
+								>
+									Ir al perfil
+								</button>
+							</div>
+							<p data-auth-status class='app-copy mt-4 text-sm leading-7'>
+								Tu cuenta se conecta con Supabase en tiempo real.
+							</p>
+							<p data-auth-hint class='mt-3 hidden text-[0.74rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>
+								Si la confirmacion por email esta activa, vuelve despues de verificar el correo.
+							</p>
+						</section>
+
+						<div data-auth-forms class='space-y-6'>
+						<section class='app-panel p-7 sm:p-9'>
+							<div class='app-divider mb-6 border-b pb-4'>
+								<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.32em]'>Acceso</p>
+								<h2 class='app-title serif text-[2rem] font-semibold tracking-[-0.04em]'>Iniciar sesion</h2>
+							</div>
+
+							<button
+								type='button'
+								data-google-sign-in
+								class='app-link-button mb-5 inline-flex w-full items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-5 py-3 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
+							>
+								Entrar con Google
+							</button>
+
+							<form data-sign-in-form novalidate class='space-y-4'>
+								<label class='block'>
+									<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Email</span>
+									<input data-sign-in-email type='email' required autocomplete='email' class='app-input w-full px-4 py-3' />
+								</label>
+								<label class='block'>
+									<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Password</span>
+									<input data-sign-in-password type='password' required autocomplete='current-password' class='app-input w-full px-4 py-3' />
+								</label>
+								<button type='submit' class='home-primary-button inline-flex px-8 py-4 text-sm font-semibold'>
+									Entrar en Poetika
+								</button>
+							</form>
+						</section>
+
+						<section class='app-panel p-7 sm:p-9'>
+							<div class='app-divider mb-6 border-b pb-4'>
+								<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.32em]'>Registro</p>
+								<h2 class='app-title serif text-[2rem] font-semibold tracking-[-0.04em]'>Crear cuenta</h2>
+							</div>
+
+							<form data-sign-up-form novalidate class='space-y-4'>
+								<label class='block'>
+									<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Nombre visible</span>
+									<input data-sign-up-display-name type='text' required minlength='2' autocomplete='nickname' class='app-input w-full px-4 py-3' />
+								</label>
+								<label class='block'>
+									<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Username</span>
+									<input data-sign-up-username type='text' required minlength='3' maxlength='24' pattern='[a-z0-9_]+' autocomplete='username' class='app-input w-full px-4 py-3 lowercase' />
+								</label>
+								<label class='block'>
+									<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Email</span>
+									<input data-sign-up-email type='email' required autocomplete='email' class='app-input w-full px-4 py-3' />
+								</label>
+								<label class='block'>
+									<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Password</span>
+									<input data-sign-up-password type='password' required minlength='6' autocomplete='new-password' class='app-input w-full px-4 py-3' />
+								</label>
+								<button type='submit' data-sign-up-submit class='home-primary-button inline-flex px-8 py-4 text-sm font-semibold'>
+									Crear cuenta
+								</button>
+							</form>
+						</section>
+						</div>
+
+						<section data-auth-active-session class='hidden app-panel p-7 sm:p-9'>
+							<div class='app-divider mb-6 border-b pb-4'>
+								<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.32em]'>Sesion activa</p>
+								<h2 class='app-title serif text-[2rem] font-semibold tracking-[-0.04em]'>Ya estas dentro</h2>
+							</div>
+							<p class='app-copy text-base leading-8'>
+								No necesitas volver a iniciar sesion ni registrarte. Desde aqui puedes ir a tu perfil o salir cuando quieras.
+							</p>
+							<div class='mt-6 flex flex-col gap-3 sm:flex-row'>
+								<button
+									type='button'
+									data-auth-go-profile-secondary
+									class='home-primary-button inline-flex items-center justify-center px-8 py-4 text-sm font-semibold'
+								>
+									Ir a mi perfil
+								</button>
+								<button
+									type='button'
+									data-auth-sign-out
+									class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-6 py-4 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
+								>
+									Cerrar sesion
+								</button>
+							</div>
+						</section>
+					</section>
+				</section>
+			</div>
+		</div>
+	</main>
+
+	<script type='module'>
+		import { initAuthPortal } from '../../scripts/auth-portal.ts';
+
+		initAuthPortal();
+	</script>
+</Layout>

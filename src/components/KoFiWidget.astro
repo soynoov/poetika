@@ -1,0 +1,37 @@
+---
+import { koFiWidget } from '../lib/support';
+
+type Props = {
+	class?: string;
+};
+
+const { class: className = '' } = Astro.props as Props;
+---
+
+{
+	koFiWidget && (
+		<div class={className}>
+			<div id='kofi-widget-slot'></div>
+			<script
+				type='text/javascript'
+				src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'
+			></script>
+			<script
+				is:inline
+				define:vars={{
+					buttonText: koFiWidget.buttonText,
+					color: koFiWidget.color,
+					widgetId: koFiWidget.id,
+				}}
+			>
+				(() => {
+					const widget = window.kofiwidget2;
+					if (!widget) return;
+
+					widget.init(buttonText, color, widgetId);
+					widget.draw();
+				})();
+			</script>
+		</div>
+	)
+}

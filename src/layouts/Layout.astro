@@ -45,6 +45,11 @@ const {
   </head>
   <body>
     <slot />
+    <script type='module'>
+      import { initHeaderSession } from '../scripts/header-session.ts';
+
+      initHeaderSession();
+    </script>
     <script is:inline>
       (() => {
         const storageKey = 'poetika:theme';

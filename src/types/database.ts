@@ -7,159 +7,103 @@ export type Json =
 	| Json[];
 
 export type Database = {
+	__InternalSupabase: {
+		PostgrestVersion: '14.1';
+	};
 	public: {
 		Tables: {
-			challenge_categories: {
+			profiles: {
 				Row: {
-					active: boolean;
+					avatar_url: string | null;
+					bio: string | null;
 					created_at: string;
-					description: string | null;
-					id: string;
-					name: string;
-					slug: string;
-					sort_order: number;
+					display_name: string;
 					updated_at: string;
+					user_id: string;
+					username: string;
 				};
 				Insert: {
-					active?: boolean;
+					avatar_url?: string | null;
+					bio?: string | null;
 					created_at?: string;
-					description?: string | null;
-					id?: string;
-					name: string;
-					slug: string;
-					sort_order?: number;
+					display_name: string;
 					updated_at?: string;
+					user_id: string;
+					username: string;
 				};
 				Update: {
-					active?: boolean;
+					avatar_url?: string | null;
+					bio?: string | null;
 					created_at?: string;
-					description?: string | null;
-					id?: string;
-					name?: string;
-					slug?: string;
-					sort_order?: number;
+					display_name?: string;
 					updated_at?: string;
+					user_id?: string;
+					username?: string;
 				};
 				Relationships: [];
 			};
-			challenge_words: {
+			stories: {
 				Row: {
-					active: boolean;
-					category_id: string;
+					author_id: string;
+					body: string;
+					challenge_date: string;
 					created_at: string;
 					id: string;
-					sort_order: number;
+					title: string;
 					updated_at: string;
-					word: string;
+					word_count: number;
 				};
 				Insert: {
-					active?: boolean;
-					category_id: string;
+					author_id: string;
+					body: string;
+					challenge_date: string;
 					created_at?: string;
 					id?: string;
-					sort_order?: number;
+					title: string;
 					updated_at?: string;
-					word: string;
+					word_count?: number;
 				};
 				Update: {
-					active?: boolean;
-					category_id?: string;
+					author_id?: string;
+					body?: string;
+					challenge_date?: string;
 					created_at?: string;
 					id?: string;
-					sort_order?: number;
+					title?: string;
 					updated_at?: string;
-					word?: string;
+					word_count?: number;
 				};
 				Relationships: [];
 			};
-				daily_challenges: {
+			story_likes: {
 				Row: {
-					challenge_date: string;
-					first_category_id: string;
-					first_word_id: string;
-					second_category_id: string;
-					second_word_id: string;
-					third_category_id: string;
-					third_word_id: string;
-					generated_at: string;
+					created_at: string;
+					story_id: string;
+					user_id: string;
 				};
 				Insert: {
-					challenge_date?: string;
-					first_category_id: string;
-					first_word_id: string;
-					second_category_id: string;
-					second_word_id: string;
-					third_category_id: string;
-					third_word_id: string;
-					generated_at?: string;
+					created_at?: string;
+					story_id: string;
+					user_id: string;
 				};
 				Update: {
-					challenge_date?: string;
-					first_category_id?: string;
-					first_word_id?: string;
-					second_category_id?: string;
-					second_word_id?: string;
-					third_category_id?: string;
-					third_word_id?: string;
-					generated_at?: string;
+					created_at?: string;
+					story_id?: string;
+					user_id?: string;
 				};
-					Relationships: [];
-				};
-				stories: {
-					Row: {
-						author_name: string;
-						body: string;
-						challenge_date: string;
-						created_at: string;
-						id: string;
-						source: string;
-						title: string;
-						updated_at: string;
-						word_count: number;
-					};
-					Insert: {
-						author_name?: string;
-						body: string;
-						challenge_date: string;
-						created_at?: string;
-						id?: string;
-						source?: string;
-						title: string;
-						updated_at?: string;
-						word_count?: number;
-					};
-					Update: {
-						author_name?: string;
-						body?: string;
-						challenge_date?: string;
-						created_at?: string;
-						id?: string;
-						source?: string;
-						title?: string;
-						updated_at?: string;
-						word_count?: number;
-					};
-					Relationships: [];
-				};
-			};
-		Views: Record<string, never>;
-		Functions: {
-			get_daily_challenge: {
-				Args: {
-					requested_date?: string;
-				};
-				Returns: {
-					challenge_date: string;
-					first_category: string;
-					first_word: string;
-					second_category: string;
-					second_word: string;
-					third_category: string;
-					third_word: string;
-					generated_at: string;
-				}[];
+				Relationships: [
+					{
+						foreignKeyName: 'story_likes_story_id_fkey';
+						columns: ['story_id'];
+						isOneToOne: false;
+						referencedRelation: 'stories';
+						referencedColumns: ['id'];
+					},
+				];
 			};
 		};
+		Views: Record<string, never>;
+		Functions: Record<string, never>;
 		Enums: Record<string, never>;
 		CompositeTypes: Record<string, never>;
 	};

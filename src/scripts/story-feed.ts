@@ -1,8 +1,8 @@
+import { getSession } from '../lib/auth';
 import { getMadridDateKey } from '../lib/challenge';
 import {
 	buildStoryPreview,
-	getStoriesForChallengeDate,
-	hasLikedStory,
+	fetchStoriesForChallengeDate,
 	toggleStoryLike,
 	type StoryRecord,
 } from '../lib/stories';
@@ -45,14 +45,6 @@ function buildEmptyState(mode: FeedMode) {
 		`;
 	}
 
-	if (mode === 'home') {
-		return `
-			<div class="app-panel rounded-[2rem] border-dashed p-8 text-center text-sm leading-7 text-[var(--ink-soft)]">
-				Aun no hay relatos publicados hoy. Publica el primero y abre el feed del dia.
-			</div>
-		`;
-	}
-
 	if (mode === 'home-editorial') {
 		return `
 			<div class="app-panel rounded-[2rem] p-10 text-center">
@@ -65,13 +57,12 @@ function buildEmptyState(mode: FeedMode) {
 	return `
 		<div class="app-panel rounded-[2rem] border-dashed p-10 text-center">
 			<p class="mb-3 text-[11px] uppercase tracking-[0.35em] text-[var(--ink-muted)]">Feed vacio</p>
-			<p class="text-sm leading-7 text-[var(--ink-soft)]">Todavia no hay relatos anonimos para el reto de hoy. Publica uno desde la pagina de escritura.</p>
+			<p class="text-sm leading-7 text-[var(--ink-soft)]">Todavia no hay relatos publicados para el reto actual.</p>
 		</div>
 	`;
 }
 
 function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
-	const liked = hasLikedStory(story.id);
 	const preview = buildStoryPreview(story.body, mode === 'home' ? 140 : 220);
 	const crown = index === 0 && mode !== 'compact';
 	const crownMarkup =
@@ -92,16 +83,19 @@ function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
 							${crownMarkup}
 							<h3 class="serif text-[2.25rem] font-semibold leading-none tracking-[-0.03em] text-[var(--ink-strong)]">${escapeHtml(story.title || 'Sin titulo')}</h3>
 						</div>
-						<p class="text-sm tracking-[0.03em] text-[var(--ink-muted)]">Anonimo · ${story.wordCount} palabras</p>
+						<p class="text-sm tracking-[0.03em] text-[var(--ink-muted)]">
+							<a href="/profile?u=${encodeURIComponent(story.author.username)}" class="transition hover:text-[var(--ink-strong)]">${escapeHtml(story.author.displayName)}</a>
+							· ${story.wordCount} palabras
+						</p>
 					</div>
 					<button
 						type="button"
 						data-like-button
 						data-story-id="${story.id}"
 						class="inline-flex items-center gap-1.5 text-[1.05rem] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]"
-						aria-pressed="${liked ? 'true' : 'false'}"
+						aria-pressed="${story.viewerHasLiked ? 'true' : 'false'}"
 					>
-						<span>${liked ? '&#9829;' : '&#9825;'}</span>
+						<span>${story.viewerHasLiked ? '&#9829;' : '&#9825;'}</span>
 						<span class="text-base">${story.likes}</span>
 					</button>
 				</div>
@@ -112,26 +106,27 @@ function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
 
 	return `
 		<article class="app-panel rounded-[2rem] p-6">
-			<div class="flex items-start justify-between gap-4 mb-5">
+			<div class="mb-5 flex items-start justify-between gap-4">
 				<div class="min-w-0">
-					<div class="flex items-center gap-3 mb-3">
+					<div class="mb-3 flex items-center gap-3">
 						${crownMarkup}
-						<p class="text-[10px] uppercase tracking-[0.28em] text-[var(--ink-muted)]">Anonimo</p>
+						<a href="/profile?u=${encodeURIComponent(story.author.username)}" class="text-[10px] uppercase tracking-[0.28em] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]">@${escapeHtml(story.author.username)}</a>
 					</div>
 					<h3 class="serif text-2xl font-bold italic text-[var(--ink-strong)]">${escapeHtml(story.title || 'Sin titulo')}</h3>
+					<p class="mt-2 text-sm text-[var(--ink-soft)]">${escapeHtml(story.author.displayName)}</p>
 				</div>
 				<button
 					type="button"
 					data-like-button
 					data-story-id="${story.id}"
 					class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition ${
-						liked
+						story.viewerHasLiked
 							? 'border-[var(--surface-inverse)] bg-[var(--surface-inverse)] text-[var(--surface-base)]'
 							: 'border-[var(--frame-border)] bg-[var(--surface-strong)] text-[var(--ink-soft)] hover:border-[var(--frame-border-strong)] hover:text-[var(--ink-strong)]'
 					}"
-					aria-pressed="${liked ? 'true' : 'false'}"
+					aria-pressed="${story.viewerHasLiked ? 'true' : 'false'}"
 				>
-					<span>${liked ? '&#9829;' : '&#9825;'}</span>
+					<span>${story.viewerHasLiked ? '&#9829;' : '&#9825;'}</span>
 					<span>${story.likes}</span>
 				</button>
 			</div>
@@ -162,9 +157,10 @@ function updateHomeStats(stories: StoryRecord[]) {
 	);
 }
 
-function refreshStoryFeeds() {
+async function refreshStoryFeeds() {
 	const dateKey = getMadridDateKey();
-	const todayStories = getStoriesForChallengeDate(dateKey);
+	const session = await getSession();
+	const todayStories = await fetchStoriesForChallengeDate(dateKey, session?.user.id);
 
 	document.querySelectorAll<HTMLElement>('[data-story-feed]').forEach((root) => {
 		const mode = (root.dataset.feedMode as FeedMode | undefined) ?? 'full';
@@ -187,7 +183,7 @@ export function initStoryFeed() {
 
 	refreshStoryFeeds();
 
-	document.addEventListener('click', (event) => {
+	document.addEventListener('click', async (event) => {
 		const target = event.target;
 		if (!(target instanceof HTMLElement)) return;
 
@@ -198,7 +194,13 @@ export function initStoryFeed() {
 			return;
 		}
 
-		toggleStoryLike(storyId);
-		refreshStoryFeeds();
+		const session = await getSession();
+		if (!session?.user) {
+			window.location.href = '/auth';
+			return;
+		}
+
+		await toggleStoryLike(storyId, session.user.id);
+		await refreshStoryFeeds();
 	});
 }

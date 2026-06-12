@@ -1,41 +1,25 @@
 # PoetiKa
 
-PoetiKa es una plataforma de escritura creativa donde cada día se publica un reto nuevo con 3 palabras sacadas de 3 categorías distintas. La idea es convertir la escritura corta en una experiencia social, rápida y competitiva.
+PoetiKa es una app de escritura creativa con una estética editorial de papel y un reto rotativo de 3 palabras.
 
-## Qué hace
+## Estado actual
 
-- Genera un reto diario con 3 palabras aleatorias.
-- Guarda las palabras en Supabase para que se puedan crear, editar, desactivar o eliminar.
-- Persiste el reto diario para que se mantenga estable durante 24 horas.
-- Muestra una home editorial con el reto activo, el feed de relatos y acceso al perfil.
-- Está pensada para desplegarse en Vercel.
+- El reto cambia cada 5 minutos para testing.
+- Las palabras siguen calculándose en local.
+- Los usuarios, perfiles, relatos y likes ya persisten en Supabase.
+- La app está preparada para desplegarse en Vercel.
 
-## Cómo funciona el reto diario
+## Funcionalidad activa
 
-1. Las palabras viven en una base de datos.
-2. Cada palabra pertenece a una categoría.
-3. Una vez al día se seleccionan 3 palabras de 3 categorías distintas.
-4. Esa combinación se guarda como el reto del día.
-5. La web lee ese reto y lo muestra en la home y en la pantalla del desafío.
-
-## Estructura del proyecto
-
-- `src/pages/`: páginas públicas del sitio.
-- `src/components/`: bloques reutilizables de la interfaz.
-- `src/lib/`: cliente y lógica de datos.
-- `supabase/migrations/`: esquema SQL de la base de datos.
-- `.codex/poetika.md`: notas internas de desarrollo.
-
-## Stack
-
-- Astro
-- TypeScript
-- Tailwind CSS
-- Supabase
+- Registro e inicio de sesión con Supabase Auth.
+- Perfil editable con `display_name`, `username`, bio y avatar URL.
+- Publicación de relatos reales asociados al usuario.
+- Feed del reto activo con likes persistentes.
+- Perfil público accesible desde `/profile?u=username`.
 
 ## Variables de entorno
 
-Necesitas definir estas variables para conectar la app con Supabase:
+Define estas variables tanto en local como en Vercel:
 
 ```bash
 PUBLIC_SUPABASE_URL=
@@ -44,12 +28,17 @@ PUBLIC_SUPABASE_ANON_KEY=
 
 ## Base de datos
 
-La migración principal crea:
+La migración `supabase/migrations/20260612_user_portal_and_posts.sql` crea y protege:
 
-- `challenge_categories`
-- `challenge_words`
-- `daily_challenges`
-- la función `get_daily_challenge(requested_date)`
+- `profiles`
+- `stories`
+- `story_likes`
+
+Incluye:
+
+- trigger automático para crear perfil al registrarse
+- políticas RLS para lectura pública y escritura solo del propietario
+- soporte de `username` único
 
 ## Desarrollo
 
@@ -58,10 +47,9 @@ npm install
 npm run dev
 ```
 
-## Publicación
+## Verificación
 
-El proyecto está preparado para publicarse en Vercel usando el repositorio de GitHub y las variables de entorno de Supabase.
-
-## Estado
-
-En desarrollo activo.
+```bash
+npx tsc --noEmit
+npm run build
+```
