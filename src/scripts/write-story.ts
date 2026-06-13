@@ -211,7 +211,7 @@ export async function initWriteStory() {
 
 	setText('[data-write-date]', challenge.dateKey);
 	setText('[data-write-summary]', challenge.summary);
-	setText('[data-write-source]', 'seleccion local cada 5 min');
+	setText('[data-write-source]', 'seleccion local diaria');
 	setText('[data-write-word-1]', challenge.slots[0].word);
 	setText('[data-write-word-2]', challenge.slots[1].word);
 	setText('[data-write-word-3]', challenge.slots[2].word);

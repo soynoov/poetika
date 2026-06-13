@@ -9,7 +9,7 @@ const challenge = getFallbackDailyChallenge();
 
 <Layout
   title='PoetiKa - Reto del dia'
-  description='Consulta el reto activo de PoetiKa: 3 palabras locales que cambian cada 5 minutos durante testing.'
+  description='Consulta el reto activo de PoetiKa: 3 palabras locales unificadas para todo el dia.'
 >
   <main class='home-paper min-h-screen' data-daily-challenge>
     <div class='mx-auto max-w-[1420px] px-4 sm:px-8 lg:px-14'>
@@ -25,7 +25,7 @@ const challenge = getFallbackDailyChallenge();
               Reto del dia
             </h1>
             <p class='app-copy mx-auto mt-4 max-w-2xl text-base leading-8'>
-              Las palabras se calculan de forma local y cambian cada 5 minutos.
+              Las palabras se calculan de forma local y se mantienen unificadas durante todo el dia.
             </p>
             <div class='mt-8 flex flex-col justify-center gap-3 sm:flex-row'>
               <a href='/write' class='home-primary-button inline-flex items-center justify-center px-8 py-4 text-sm font-semibold'>
@@ -69,11 +69,11 @@ const challenge = getFallbackDailyChallenge();
               {challenge.summary}
             </h2>
             <p class='app-copy mb-4 text-base leading-8'>
-              El MVP usa un selector local de palabras para asegurar tres entradas nuevas cada 5 minutos sin depender de Supabase.
+              El MVP usa un selector local diario para asegurar las mismas tres palabras en toda la web sin depender de Supabase.
             </p>
             <div class='flex flex-col gap-2 text-[0.8rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>
               <p>Fecha: <span data-daily-date>{challenge.dateKey}</span></p>
-              <p>Origen: <span data-daily-source>seleccion local cada 5 min</span></p>
+              <p>Origen: <span data-daily-source>seleccion local diaria</span></p>
             </div>
           </section>
         </section>

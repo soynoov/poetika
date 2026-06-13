@@ -23,7 +23,7 @@ export async function initDailyChallenge() {
 	for (const root of roots) {
 		setText(root.querySelector('[data-daily-date]'), challenge.dateKey);
 		setText(root.querySelector('[data-daily-summary]'), challenge.summary);
-		setText(root.querySelector('[data-daily-source]'), 'seleccion local cada 5 min');
+		setText(root.querySelector('[data-daily-source]'), 'seleccion local diaria');
 
 		const cards = Array.from(root.querySelectorAll<HTMLElement>('[data-daily-slot]'));
 		challenge.slots.forEach((slot, index) => {
