@@ -3,6 +3,37 @@ import { supabase } from './supabase';
 
 export type AuthChangeHandler = (session: Session | null) => void;
 
+const configuredSiteUrl = normalizeBaseUrl(import.meta.env.PUBLIC_SITE_URL ?? '');
+
+function normalizeBaseUrl(value: string) {
+	const trimmed = value.trim();
+	if (!trimmed) {
+		return '';
+	}
+
+	if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+		return trimmed.replace(/\/+$/, '');
+	}
+
+	return `https://${trimmed}`.replace(/\/+$/, '');
+}
+
+function getAuthRedirectOrigin() {
+	if (typeof window === 'undefined') {
+		return configuredSiteUrl || undefined;
+	}
+
+	const currentOrigin = window.location.origin;
+	const isLocalHost =
+		window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+	if (isLocalHost) {
+		return currentOrigin;
+	}
+
+	return configuredSiteUrl || currentOrigin;
+}
+
 export function isSupabaseConfigured() {
 	return Boolean(supabase);
 }
@@ -70,8 +101,8 @@ export async function signInWithGoogle() {
 		throw new Error('Supabase no esta configurado.');
 	}
 
-	const redirectTo =
-		typeof window !== 'undefined' ? `${window.location.origin}/profile` : undefined;
+	const redirectOrigin = getAuthRedirectOrigin();
+	const redirectTo = redirectOrigin ? `${redirectOrigin}/profile` : undefined;
 
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: 'google',
