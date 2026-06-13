@@ -6,6 +6,7 @@ import {
 	toggleStoryLike,
 	type StoryRecord,
 } from '../lib/stories';
+import { formatMadridTime } from '../lib/time';
 
 type FeedMode = 'home' | 'home-editorial' | 'full' | 'compact';
 
@@ -27,14 +28,6 @@ function escapeHtml(value: string) {
 		.replaceAll('>', '&gt;')
 		.replaceAll('"', '&quot;')
 		.replaceAll("'", '&#39;');
-}
-
-function formatTime(value: string) {
-	return new Intl.DateTimeFormat('es-ES', {
-		hour: '2-digit',
-		minute: '2-digit',
-		hour12: false,
-	}).format(new Date(value));
 }
 
 function buildEmptyState(mode: FeedMode) {
@@ -131,7 +124,7 @@ function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
 					<span>${story.likes}</span>
 				</button>
 			</div>
-			<p class="mb-4 text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">${story.wordCount} palabras / ${formatTime(story.createdAt)}</p>
+			<p class="mb-4 text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">${story.wordCount} palabras / ${formatMadridTime(story.createdAt)}</p>
 			<p class="text-sm leading-7 text-[var(--ink-soft)]">${escapeHtml(preview)}</p>
 		</article>
 	`;

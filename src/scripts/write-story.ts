@@ -11,6 +11,7 @@ import {
 	toggleStoryLike,
 	type StoryRecord,
 } from '../lib/stories';
+import { formatMadridDateTime } from '../lib/time';
 
 function getElement<T extends HTMLElement>(selector: string) {
 	return document.querySelector<T>(selector);
@@ -40,15 +41,71 @@ function escapeHtml(value: string) {
 		.replaceAll("'", '&#39;');
 }
 
+function normalizeForWordMatch(value: string) {
+	return value
+		.toLocaleLowerCase('es-ES')
+		.normalize('NFD')
+		.replace(/\p{Diacritic}/gu, '')
+		.replace(/[^\p{L}\p{N}]+/gu, ' ')
+		.replace(/\s+/g, ' ')
+		.trim();
+}
+
 let activeChallengeDate = '';
+let publishEnabledBySession = false;
+let requiredChallengeWords: string[] = [];
+
+function getMissingChallengeWords(body: string) {
+	const normalizedBody = normalizeForWordMatch(body);
+	if (!normalizedBody) {
+		return [...requiredChallengeWords];
+	}
+
+	const paddedBody = ` ${normalizedBody} `;
+	return requiredChallengeWords.filter((word) => {
+		const normalizedWord = normalizeForWordMatch(word);
+		return !normalizedWord || !paddedBody.includes(` ${normalizedWord} `);
+	});
+}
+
+function renderWordRequirementStatus(body: string) {
+	const field = getElement<HTMLTextAreaElement>('[data-story-body]');
+	const status = getElement<HTMLElement>('[data-required-words-status]');
+	const submitButton = getElement<HTMLButtonElement>('[data-story-submit]');
+	const missingWords = getMissingChallengeWords(body);
+	const canSubmit = publishEnabledBySession && missingWords.length === 0;
+
+	if (submitButton) {
+		submitButton.disabled = !canSubmit;
+	}
+
+	if (field) {
+		field.setAttribute('aria-invalid', missingWords.length > 0 ? 'true' : 'false');
+	}
+
+	if (!status) {
+		return;
+	}
+
+	if (!body.trim()) {
+		status.textContent = `Tu pagina debe integrar estas 3 palabras: ${requiredChallengeWords.join(', ')}.`;
+		return;
+	}
+
+	if (missingWords.length) {
+		const noun = missingWords.length > 1 ? 'palabras' : 'palabra';
+		status.textContent = `Falta integrar esta ${noun}: ${missingWords.join(', ')}.`;
+		return;
+	}
+
+	status.textContent = 'Las 3 palabras del dia ya estan integradas.';
+}
 
 function renderPublishGate(isSignedIn: boolean, label: string) {
 	getElement<HTMLElement>('[data-auth-gate]')?.classList.toggle('hidden', isSignedIn);
 	getElement<HTMLElement>('[data-editor-shell]')?.classList.toggle('opacity-60', !isSignedIn);
-	const submitButton = getElement<HTMLButtonElement>('[data-story-submit]');
-	if (submitButton) {
-		submitButton.disabled = !isSignedIn;
-	}
+	publishEnabledBySession = isSignedIn;
+	renderWordRequirementStatus(getInputValue('[data-story-body]'));
 	setText('[data-write-author]', label);
 }
 
@@ -58,7 +115,7 @@ function renderStoryList(stories: StoryRecord[]) {
 
 	if (!stories.length) {
 		container.innerHTML =
-			"<div class='app-panel rounded-[2rem] border-dashed p-6 text-sm leading-7 text-[var(--ink-soft)]'>Todavia no hay relatos en este bloque. Publica el primero y abre la ronda.</div>";
+			"<div class='app-panel rounded-[2rem] border-dashed p-6 text-sm leading-7 text-[var(--ink-soft)]'>Todavia no hay paginas en este bloque. Publica la primera y abre la ronda.</div>";
 		return;
 	}
 
@@ -68,7 +125,7 @@ function renderStoryList(stories: StoryRecord[]) {
 				<div class="mb-4 flex items-start justify-between gap-4">
 					<div>
 						<div class="mb-2 flex items-center gap-3">
-							${index === 0 ? '<span class="inline-flex rounded-full bg-[var(--surface-inverse)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--surface-base)]">Mas votado</span>' : ''}
+							${index === 0 ? '<span class="inline-flex rounded-full bg-[var(--surface-inverse)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--surface-base)]">Mas votada</span>' : ''}
 							<a href="/profile?u=${encodeURIComponent(story.author.username)}" class="text-[10px] uppercase tracking-[0.24em] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]">@${escapeHtml(story.author.username)}</a>
 						</div>
 						<h4 class="serif text-xl font-bold italic text-[var(--ink-strong)]">${escapeHtml(story.title || 'Sin titulo')}</h4>
@@ -89,7 +146,7 @@ function renderStoryList(stories: StoryRecord[]) {
 						<span>${story.likes}</span>
 					</button>
 				</div>
-				<p class="mb-3 text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">${story.wordCount} palabras</p>
+				<p class="mb-3 text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">${story.wordCount} palabras / ${formatMadridDateTime(story.createdAt)}</p>
 				<p class="text-sm leading-7 whitespace-pre-wrap text-[var(--ink-soft)]">${escapeHtml(story.body)}</p>
 			</article>
 		`)
@@ -113,7 +170,17 @@ async function saveCurrentStory(challengeDate: string) {
 	const body = getInputValue('[data-story-body]').trim();
 
 	if (!body) {
-		setText('[data-save-status]', 'Escribe un relato antes de publicarlo.');
+		setText('[data-save-status]', 'Escribe una pagina antes de publicarla.');
+		return;
+	}
+
+	const missingWords = getMissingChallengeWords(body);
+	if (missingWords.length) {
+		const noun = missingWords.length > 1 ? 'palabras' : 'palabra';
+		setText(
+			'[data-save-status]',
+			`No puedes publicar todavia. Falta esta ${noun}: ${missingWords.join(', ')}.`,
+		);
 		return;
 	}
 
@@ -128,7 +195,8 @@ async function saveCurrentStory(challengeDate: string) {
 	setInputValue('[data-story-title]', '');
 	setInputValue('[data-story-body]', '');
 	setText('[data-word-count]', '0');
-	setText('[data-save-status]', 'Relato publicado en Poetika.');
+	renderWordRequirementStatus('');
+	setText('[data-save-status]', 'Pagina publicada en Poetika.');
 	await refreshStoryList();
 }
 
@@ -139,6 +207,7 @@ export async function initWriteStory() {
 	const challenge = await loadDailyChallenge();
 	const draft = loadDraft(challenge.dateKey);
 	activeChallengeDate = challenge.dateKey;
+	requiredChallengeWords = challenge.slots.map((slot) => slot.word);
 
 	setText('[data-write-date]', challenge.dateKey);
 	setText('[data-write-summary]', challenge.summary);
@@ -155,6 +224,7 @@ export async function initWriteStory() {
 	setInputValue('[data-story-title]', draft.title);
 	setInputValue('[data-story-body]', draft.body);
 	setText('[data-word-count]', String(countWords(draft.body)));
+	renderWordRequirementStatus(draft.body);
 
 	const session = await getSession();
 	if (session?.user) {
@@ -167,11 +237,13 @@ export async function initWriteStory() {
 	await refreshStoryList();
 
 	const autosave = () => {
+		const body = getInputValue('[data-story-body]');
 		saveDraft(challenge.dateKey, {
 			title: getInputValue('[data-story-title]'),
-			body: getInputValue('[data-story-body]'),
+			body,
 		});
-		setText('[data-word-count]', String(countWords(getInputValue('[data-story-body]'))));
+		setText('[data-word-count]', String(countWords(body)));
+		renderWordRequirementStatus(body);
 		setText('[data-save-status]', 'Borrador guardado en este navegador.');
 	};
 
@@ -180,7 +252,7 @@ export async function initWriteStory() {
 
 	getElement<HTMLFormElement>('[data-story-form]')?.addEventListener('submit', async (event) => {
 		event.preventDefault();
-		setText('[data-save-status]', 'Publicando relato...');
+		setText('[data-save-status]', 'Publicando pagina...');
 		await saveCurrentStory(challenge.dateKey);
 	});
 
