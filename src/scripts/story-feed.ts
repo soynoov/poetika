@@ -10,6 +10,13 @@ import { formatMadridTime } from '../lib/time';
 
 type FeedMode = 'home-editorial' | 'full';
 
+const crownIconMarkup = `
+	<svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		<path d="M4 18h16l-1.5-8-4.5 3-2.5-5-2.5 5-4.5-3L4 18Z"></path>
+		<path d="M6 18v2h12v-2"></path>
+	</svg>
+`;
+
 function getElement<T extends HTMLElement>(selector: string, root: ParentNode = document) {
 	return root.querySelector<T>(selector);
 }
@@ -54,10 +61,10 @@ function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
 	const crownMarkup =
 		mode === 'home-editorial'
 			? crown
-				? '<span class="text-[1.35rem] leading-none text-[#d8b400]">TOP</span>'
+				? `<span class="inline-flex items-center justify-center text-[#d8b400]">${crownIconMarkup}</span>`
 				: ''
 			: crown
-				? '<span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#201611] text-xs font-semibold text-[#f1d7ca]">TOP</span>'
+				? `<span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#201611] text-[#f1d7ca]">${crownIconMarkup}</span>`
 				: '';
 
 	if (mode === 'home-editorial') {

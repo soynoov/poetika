@@ -14,6 +14,13 @@ import {
 } from '../lib/stories';
 import { formatMadridDateTime } from '../lib/time';
 
+const crownIconMarkup = `
+	<svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+		<path d="M4 18h16l-1.5-8-4.5 3-2.5-5-2.5 5-4.5-3L4 18Z"></path>
+		<path d="M6 18v2h12v-2"></path>
+	</svg>
+`;
+
 function getElement<T extends HTMLElement>(selector: string) {
 	return document.querySelector<T>(selector);
 }
@@ -167,7 +174,7 @@ function renderStoryList(stories: StoryRecord[]) {
 				<div class="mb-4 flex items-start justify-between gap-4">
 					<div>
 						<div class="mb-2 flex items-center gap-3">
-							${index === 0 ? '<span class="inline-flex rounded-full bg-[var(--surface-inverse)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--surface-base)]">Mas votada</span>' : ''}
+							${index === 0 ? `<span class="inline-flex items-center gap-1.5 rounded-full bg-[var(--surface-inverse)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--surface-base)]">${crownIconMarkup}<span>Mas votada</span></span>` : ''}
 							<a href="/profile?u=${encodeURIComponent(story.author.username)}" class="text-[10px] uppercase tracking-[0.24em] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]">@${escapeHtml(story.author.username)}</a>
 						</div>
 						<p class="text-sm text-[var(--ink-soft)]">${escapeHtml(story.author.displayName)}</p>
