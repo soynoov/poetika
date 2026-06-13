@@ -43,7 +43,7 @@ function buildEmptyState(mode: FeedMode) {
 		return `
 			<div class="app-panel rounded-[2rem] p-10 text-center">
 				<p class="mb-3 text-[11px] uppercase tracking-[0.35em] text-[var(--ink-muted)]">Sin relatos aun</p>
-				<p class="text-base leading-8 text-[var(--ink-soft)]">Publica el primer relato del bloque actual y aparecera aqui.</p>
+				<p class="text-base leading-8 text-[var(--ink-soft)]">Publica el primer relato del reto de hoy y aparecera aqui.</p>
 			</div>
 		`;
 	}
@@ -62,7 +62,7 @@ function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
 	const crownMarkup =
 		mode === 'home-editorial'
 			? crown
-				? '<span class="text-[1.35rem] leading-none text-[#d8b400]">♕</span>'
+				? '<span class="text-[1.35rem] leading-none text-[#d8b400]">TOP</span>'
 				: ''
 			: crown
 				? '<span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#201611] text-xs font-semibold text-[#f1d7ca]">TOP</span>'
@@ -75,11 +75,10 @@ function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
 					<div class="min-w-0">
 						<div class="mb-2 flex items-center gap-3">
 							${crownMarkup}
-							<h3 class="serif text-[2.25rem] font-semibold leading-none tracking-[-0.03em] text-[var(--ink-strong)]">${escapeHtml(story.title || 'Sin titulo')}</h3>
+							<a href="/profile?u=${encodeURIComponent(story.author.username)}" class="text-sm uppercase tracking-[0.28em] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]">@${escapeHtml(story.author.username)}</a>
 						</div>
 						<p class="text-sm tracking-[0.03em] text-[var(--ink-muted)]">
-							<a href="/profile?u=${encodeURIComponent(story.author.username)}" class="transition hover:text-[var(--ink-strong)]">${escapeHtml(story.author.displayName)}</a>
-							· ${story.wordCount} palabras
+							${escapeHtml(story.author.displayName)} / ${story.wordCount} palabras
 						</p>
 					</div>
 					<button
@@ -106,8 +105,7 @@ function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
 						${crownMarkup}
 						<a href="/profile?u=${encodeURIComponent(story.author.username)}" class="text-[10px] uppercase tracking-[0.28em] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]">@${escapeHtml(story.author.username)}</a>
 					</div>
-					<h3 class="serif text-2xl font-bold italic text-[var(--ink-strong)]">${escapeHtml(story.title || 'Sin titulo')}</h3>
-					<p class="mt-2 text-sm text-[var(--ink-soft)]">${escapeHtml(story.author.displayName)}</p>
+					<p class="text-sm text-[var(--ink-soft)]">${escapeHtml(story.author.displayName)}</p>
 				</div>
 				<button
 					type="button"

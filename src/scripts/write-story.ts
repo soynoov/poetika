@@ -115,7 +115,7 @@ function renderStoryList(stories: StoryRecord[]) {
 
 	if (!stories.length) {
 		container.innerHTML =
-			"<div class='app-panel rounded-[2rem] border-dashed p-6 text-sm leading-7 text-[var(--ink-soft)]'>Todavia no hay paginas en este bloque. Publica la primera y abre la ronda.</div>";
+			"<div class='app-panel rounded-[2rem] border-dashed p-6 text-sm leading-7 text-[var(--ink-soft)]'>Todavia no hay paginas en este reto. Publica la primera y abre la ronda.</div>";
 		return;
 	}
 
@@ -128,8 +128,7 @@ function renderStoryList(stories: StoryRecord[]) {
 							${index === 0 ? '<span class="inline-flex rounded-full bg-[var(--surface-inverse)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--surface-base)]">Mas votada</span>' : ''}
 							<a href="/profile?u=${encodeURIComponent(story.author.username)}" class="text-[10px] uppercase tracking-[0.24em] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]">@${escapeHtml(story.author.username)}</a>
 						</div>
-						<h4 class="serif text-xl font-bold italic text-[var(--ink-strong)]">${escapeHtml(story.title || 'Sin titulo')}</h4>
-						<p class="mt-2 text-sm text-[var(--ink-soft)]">${escapeHtml(story.author.displayName)}</p>
+						<p class="text-sm text-[var(--ink-soft)]">${escapeHtml(story.author.displayName)}</p>
 					</div>
 					<button
 						type="button"
@@ -166,7 +165,6 @@ async function saveCurrentStory(challengeDate: string) {
 		return;
 	}
 
-	const title = getInputValue('[data-story-title]').trim();
 	const body = getInputValue('[data-story-body]').trim();
 
 	if (!body) {
@@ -186,13 +184,12 @@ async function saveCurrentStory(challengeDate: string) {
 
 	await publishStory({
 		authorId: session.user.id,
-		title: title || 'Sin titulo',
+		title: '',
 		body,
 		challengeDate,
 	});
 
 	clearDraft(challengeDate);
-	setInputValue('[data-story-title]', '');
 	setInputValue('[data-story-body]', '');
 	setText('[data-word-count]', '0');
 	renderWordRequirementStatus('');
@@ -215,13 +212,18 @@ export async function initWriteStory() {
 	setText('[data-write-word-1]', challenge.slots[0].word);
 	setText('[data-write-word-2]', challenge.slots[1].word);
 	setText('[data-write-word-3]', challenge.slots[2].word);
+	setText('[data-write-mobile-word-1]', challenge.slots[0].word);
+	setText('[data-write-mobile-word-2]', challenge.slots[1].word);
+	setText('[data-write-mobile-word-3]', challenge.slots[2].word);
 	setText('[data-write-category-1]', challenge.slots[0].category);
 	setText('[data-write-category-2]', challenge.slots[1].category);
 	setText('[data-write-category-3]', challenge.slots[2].category);
+	setText('[data-write-mobile-category-1]', challenge.slots[0].category);
+	setText('[data-write-mobile-category-2]', challenge.slots[1].category);
+	setText('[data-write-mobile-category-3]', challenge.slots[2].category);
 	setText('[data-write-marker-1]', challenge.slots[0].marker);
 	setText('[data-write-marker-2]', challenge.slots[1].marker);
 	setText('[data-write-marker-3]', challenge.slots[2].marker);
-	setInputValue('[data-story-title]', draft.title);
 	setInputValue('[data-story-body]', draft.body);
 	setText('[data-word-count]', String(countWords(draft.body)));
 	renderWordRequirementStatus(draft.body);
@@ -239,7 +241,7 @@ export async function initWriteStory() {
 	const autosave = () => {
 		const body = getInputValue('[data-story-body]');
 		saveDraft(challenge.dateKey, {
-			title: getInputValue('[data-story-title]'),
+			title: '',
 			body,
 		});
 		setText('[data-word-count]', String(countWords(body)));
@@ -247,7 +249,6 @@ export async function initWriteStory() {
 		setText('[data-save-status]', 'Borrador guardado en este navegador.');
 	};
 
-	getElement('[data-story-title]')?.addEventListener('input', autosave);
 	getElement('[data-story-body]')?.addEventListener('input', autosave);
 
 	getElement<HTMLFormElement>('[data-story-form]')?.addEventListener('submit', async (event) => {

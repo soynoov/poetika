@@ -65,7 +65,7 @@ function renderStoryList(
 				<article class="app-panel rounded-[2rem] p-6">
 					<div class="mb-4 flex items-start justify-between gap-4">
 						<div>
-							<h3 class="serif text-2xl font-semibold text-[var(--ink-strong)]">${escapeHtml(story.title)}</h3>
+							<p class="text-[10px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">@${escapeHtml(story.author.username)}</p>
 							<p class="mt-2 text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">${story.wordCount} palabras / ${story.likes} likes / ${formatMadridDateTime(story.createdAt)}</p>
 						</div>
 						<a href="/write" class="app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]">

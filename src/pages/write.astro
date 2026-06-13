@@ -16,7 +16,7 @@ const challenge = getFallbackDailyChallenge();
 
 			<div class='home-rail mx-auto max-w-[1390px]'>
 				<section class='mx-auto grid max-w-[1180px] items-start gap-8 px-2 pb-20 pt-16 lg:grid-cols-[0.88fr_1.12fr] lg:px-4' data-write-page>
-					<aside class='app-panel self-start p-7 sm:p-8'>
+					<aside class='app-panel hidden self-start p-7 sm:p-8 lg:block'>
 						<p class='app-kicker mb-4 text-[0.72rem] uppercase tracking-[0.32em]'>Reto actual</p>
 						<h1 data-write-summary class='app-title serif mb-6 text-[2.8rem] font-semibold leading-none tracking-[-0.05em]'>
 							{challenge.summary}
@@ -79,15 +79,23 @@ const challenge = getFallbackDailyChallenge();
 						</div>
 
 						<form data-story-form class='space-y-5'>
-							<label class='block'>
-								<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Titulo</span>
-								<input
-									data-story-title
-									type='text'
-									placeholder='Sin titulo'
-									class='app-input w-full px-4 py-3'
-								/>
-							</label>
+							<div class='app-panel sticky top-3 z-10 rounded-[1.75rem] p-4 lg:hidden'>
+								<p class='app-kicker mb-3 text-[0.72rem] uppercase tracking-[0.24em]'>Palabras del dia</p>
+								<div class='grid gap-3 sm:grid-cols-3'>
+									<div class='app-chip px-3 py-3'>
+										<p data-write-mobile-category-1 class='text-[0.68rem] uppercase tracking-[0.2em] text-[var(--ink-muted)]'>{challenge.slots[0].category}</p>
+										<p data-write-mobile-word-1 class='serif mt-1 text-[1.15rem] font-semibold text-[var(--ink-strong)]'>{challenge.slots[0].word}</p>
+									</div>
+									<div class='app-chip px-3 py-3'>
+										<p data-write-mobile-category-2 class='text-[0.68rem] uppercase tracking-[0.2em] text-[var(--ink-muted)]'>{challenge.slots[1].category}</p>
+										<p data-write-mobile-word-2 class='serif mt-1 text-[1.15rem] font-semibold text-[var(--ink-strong)]'>{challenge.slots[1].word}</p>
+									</div>
+									<div class='app-chip px-3 py-3'>
+										<p data-write-mobile-category-3 class='text-[0.68rem] uppercase tracking-[0.2em] text-[var(--ink-muted)]'>{challenge.slots[2].category}</p>
+										<p data-write-mobile-word-3 class='serif mt-1 text-[1.15rem] font-semibold text-[var(--ink-strong)]'>{challenge.slots[2].word}</p>
+									</div>
+								</div>
+							</div>
 
 							<div class='app-chip rounded-[1.75rem] px-4 py-3 text-sm leading-7'>
 								Se publica como <span data-write-author class='font-semibold text-[var(--ink-strong)]'>Entrar para publicar</span>.
