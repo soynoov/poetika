@@ -114,8 +114,13 @@ function renderPublishGate(isSignedIn: boolean, label: string) {
 function renderDailyPublishLimit() {
 	const submitButton = getElement<HTMLButtonElement>('[data-story-submit]');
 	const bodyField = getElement<HTMLTextAreaElement>('[data-story-body]');
+	const composeState = getElement<HTMLElement>('[data-compose-state]');
+	const publishedState = getElement<HTMLElement>('[data-published-state]');
 
 	if (hasPublishedToday) {
+		composeState?.classList.add('hidden');
+		publishedState?.classList.remove('hidden');
+
 		if (submitButton) {
 			submitButton.disabled = true;
 		}
@@ -124,12 +129,20 @@ function renderDailyPublishLimit() {
 			bodyField.disabled = true;
 		}
 
+		setText('[data-published-title]', 'Ya has publicado tu pagina de hoy.');
+		setText(
+			'[data-published-message]',
+			'Vuelve manana con el siguiente reto. Tu espacio de hoy ya esta completo.',
+		);
 		setText(
 			'[data-save-status]',
 			'Ya has publicado tu pagina de hoy. Vuelve manana con el siguiente reto.',
 		);
 		return;
 	}
+
+	composeState?.classList.remove('hidden');
+	publishedState?.classList.add('hidden');
 
 	if (bodyField) {
 		bodyField.disabled = false;
@@ -250,12 +263,18 @@ export async function initWriteStory() {
 	setText('[data-write-word-1]', challenge.slots[0].word);
 	setText('[data-write-word-2]', challenge.slots[1].word);
 	setText('[data-write-word-3]', challenge.slots[2].word);
+	setText('[data-published-word-1]', challenge.slots[0].word);
+	setText('[data-published-word-2]', challenge.slots[1].word);
+	setText('[data-published-word-3]', challenge.slots[2].word);
 	setText('[data-write-mobile-word-1]', challenge.slots[0].word);
 	setText('[data-write-mobile-word-2]', challenge.slots[1].word);
 	setText('[data-write-mobile-word-3]', challenge.slots[2].word);
 	setText('[data-write-category-1]', challenge.slots[0].category);
 	setText('[data-write-category-2]', challenge.slots[1].category);
 	setText('[data-write-category-3]', challenge.slots[2].category);
+	setText('[data-published-category-1]', challenge.slots[0].category);
+	setText('[data-published-category-2]', challenge.slots[1].category);
+	setText('[data-published-category-3]', challenge.slots[2].category);
 	setText('[data-write-mobile-category-1]', challenge.slots[0].category);
 	setText('[data-write-mobile-category-2]', challenge.slots[1].category);
 	setText('[data-write-mobile-category-3]', challenge.slots[2].category);
@@ -283,7 +302,6 @@ export async function initWriteStory() {
 	const autosave = () => {
 		const body = getInputValue('[data-story-body]');
 		saveDraft(challenge.dateKey, {
-			title: '',
 			body,
 		});
 		setText('[data-word-count]', String(countWords(body)));

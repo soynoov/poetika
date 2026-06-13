@@ -78,6 +78,43 @@ const challenge = getFallbackDailyChallenge();
 							</div>
 						</div>
 
+						<div data-published-state class='hidden'>
+							<div class='rounded-[2rem] border border-[var(--frame-border-strong)] bg-[var(--surface-strong)] px-5 py-6 sm:px-8 sm:py-8'>
+								<p class='app-kicker mb-3 text-[0.72rem] uppercase tracking-[0.28em]'>Reto completado</p>
+								<h3 data-published-title class='app-title serif text-[2.2rem] leading-none font-semibold tracking-[-0.04em] sm:text-[3rem]'>
+									Ya has publicado tu pagina de hoy.
+								</h3>
+								<p data-published-message class='app-copy mt-4 max-w-2xl text-base leading-8'>
+									Vuelve manana con el siguiente reto.
+								</p>
+
+								<div class='mt-6 grid gap-3 sm:grid-cols-3'>
+									<div class='app-chip px-4 py-4'>
+										<p data-published-category-1 class='text-[0.7rem] uppercase tracking-[0.2em] text-[var(--ink-muted)]'>{challenge.slots[0].category}</p>
+										<p data-published-word-1 class='serif mt-1 text-[1.2rem] font-semibold text-[var(--ink-strong)]'>{challenge.slots[0].word}</p>
+									</div>
+									<div class='app-chip px-4 py-4'>
+										<p data-published-category-2 class='text-[0.7rem] uppercase tracking-[0.2em] text-[var(--ink-muted)]'>{challenge.slots[1].category}</p>
+										<p data-published-word-2 class='serif mt-1 text-[1.2rem] font-semibold text-[var(--ink-strong)]'>{challenge.slots[1].word}</p>
+									</div>
+									<div class='app-chip px-4 py-4'>
+										<p data-published-category-3 class='text-[0.7rem] uppercase tracking-[0.2em] text-[var(--ink-muted)]'>{challenge.slots[2].category}</p>
+										<p data-published-word-3 class='serif mt-1 text-[1.2rem] font-semibold text-[var(--ink-strong)]'>{challenge.slots[2].word}</p>
+									</div>
+								</div>
+
+								<div class='mt-6 flex flex-col gap-3 sm:flex-row'>
+									<a href='/all' class='home-primary-button inline-flex items-center justify-center px-8 py-4 text-sm font-semibold'>
+										Ver paginas de hoy
+									</a>
+									<a href='/profile' class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-6 py-4 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'>
+										Ir a mi perfil
+									</a>
+								</div>
+							</div>
+						</div>
+
+						<div data-compose-state>
 						<form data-story-form class='space-y-5'>
 							<div class='app-panel sticky top-3 z-10 rounded-[1.75rem] p-4 lg:hidden'>
 								<p class='app-kicker mb-3 text-[0.72rem] uppercase tracking-[0.24em]'>Palabras del dia</p>
@@ -141,6 +178,7 @@ const challenge = getFallbackDailyChallenge();
 
 							<div data-story-list class='grid gap-4'></div>
 						</section>
+						</div>
 					</div>
 				</section>
 			</div>
