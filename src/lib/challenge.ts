@@ -8,10 +8,8 @@ export type DailyChallengeSlot = {
 
 export type DailyChallenge = {
 	dateKey: string;
-	generatedAt: string;
 	slots: [DailyChallengeSlot, DailyChallengeSlot, DailyChallengeSlot];
 	summary: string;
-	source: 'local';
 };
 
 const MADRID_TIME_ZONE = 'Europe/Madrid';
@@ -58,6 +56,7 @@ function createSeededRandom(seed: string) {
 	let state = hashString(seed) || 1;
 
 	return () => {
+		// Keep the same seed producing the same daily words on every client.
 		state += 0x6d2b79f5;
 		let t = Math.imul(state ^ (state >>> 15), 1 | state);
 		t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
@@ -101,47 +100,8 @@ export function getFallbackDailyChallenge(dateKey = getMadridDateKey()): DailyCh
 
 	return {
 		dateKey,
-		generatedAt: new Date().toISOString(),
 		slots,
 		summary: buildSummary(slots),
-		source: 'local',
-	};
-}
-
-export function mapRpcChallenge(row: {
-	challenge_date: string;
-	first_category: string;
-	first_word: string;
-	second_category: string;
-	second_word: string;
-	third_category: string;
-	third_word: string;
-	generated_at: string;
-}): DailyChallenge {
-	const slots: DailyChallenge['slots'] = [
-		{
-			category: row.first_category,
-			marker: markerFor(row.first_category),
-			word: row.first_word,
-		},
-		{
-			category: row.second_category,
-			marker: markerFor(row.second_category),
-			word: row.second_word,
-		},
-		{
-			category: row.third_category,
-			marker: markerFor(row.third_category),
-			word: row.third_word,
-		},
-	];
-
-	return {
-		dateKey: row.challenge_date,
-		generatedAt: row.generated_at,
-		slots,
-		summary: buildSummary(slots),
-		source: 'local',
 	};
 }
 

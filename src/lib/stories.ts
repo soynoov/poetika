@@ -13,7 +13,6 @@ export type StoryAuthor = {
 
 export type StoryRecord = {
 	id: string;
-	title: string;
 	body: string;
 	wordCount: number;
 	likes: number;
@@ -26,14 +25,12 @@ export type StoryRecord = {
 };
 
 export type StoryDraft = {
-	title: string;
 	body: string;
 };
 
 export type ProfileStoryStats = {
 	totalStories: number;
 	totalLikes: number;
-	topStories: number;
 	activeDays: number;
 };
 
@@ -74,7 +71,6 @@ export function countWords(text: string) {
 
 export function loadDraft(dateKey: string) {
 	return safeRead<StoryDraft>(`${DRAFT_STORAGE_PREFIX}${dateKey}`, {
-		title: '',
 		body: '',
 	});
 }
@@ -159,7 +155,6 @@ function mapStoryRecord(
 ): StoryRecord {
 	return {
 		id: story.id,
-		title: story.title,
 		body: story.body,
 		wordCount: story.word_count,
 		likes: likes.length,
@@ -343,12 +338,10 @@ export async function getProfileStoryStats(authorId: string) {
 	const stories = await fetchStoriesByAuthorId(authorId);
 	const totalLikes = stories.reduce((sum, story) => sum + story.likes, 0);
 	const activeDays = new Set(stories.map((story) => story.challengeDate)).size;
-	const topStories = stories.filter((story) => story.likes > 0).length;
 
 	return {
 		totalStories: stories.length,
 		totalLikes,
-		topStories,
 		activeDays,
 	} satisfies ProfileStoryStats;
 }

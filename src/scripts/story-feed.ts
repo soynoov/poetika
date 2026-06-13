@@ -8,7 +8,7 @@ import {
 } from '../lib/stories';
 import { formatMadridTime } from '../lib/time';
 
-type FeedMode = 'home' | 'home-editorial' | 'full' | 'compact';
+type FeedMode = 'home-editorial' | 'full';
 
 function getElement<T extends HTMLElement>(selector: string, root: ParentNode = document) {
 	return root.querySelector<T>(selector);
@@ -31,14 +31,6 @@ function escapeHtml(value: string) {
 }
 
 function buildEmptyState(mode: FeedMode) {
-	if (mode === 'compact') {
-		return `
-			<div class="app-panel rounded-[2rem] border-dashed p-6 text-sm leading-7 text-[var(--ink-soft)]">
-				Tu primer relato publicado aparecera aqui. Cuando lo guardes, tambien podras darle likes desde el feed.
-			</div>
-		`;
-	}
-
 	if (mode === 'home-editorial') {
 		return `
 			<div class="app-panel rounded-[2rem] p-10 text-center">
@@ -57,8 +49,8 @@ function buildEmptyState(mode: FeedMode) {
 }
 
 function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
-	const preview = buildStoryPreview(story.body, mode === 'home' ? 140 : 220);
-	const crown = index === 0 && mode !== 'compact';
+	const preview = buildStoryPreview(story.body, 220);
+	const crown = index === 0;
 	const crownMarkup =
 		mode === 'home-editorial'
 			? crown
@@ -134,19 +126,11 @@ function renderFeed(root: HTMLElement, stories: StoryRecord[], mode: FeedMode) {
 		return;
 	}
 
-	const limit = mode === 'home' || mode === 'home-editorial' ? 3 : stories.length;
+	const limit = mode === 'home-editorial' ? 3 : stories.length;
 	root.innerHTML = stories
 		.slice(0, limit)
 		.map((story, index) => buildStoryCard(story, index, mode))
 		.join('');
-}
-
-function updateHomeStats(stories: StoryRecord[]) {
-	setText('[data-home-total]', String(stories.length));
-	setText(
-		'[data-home-likes]',
-		String(stories.reduce((total, story) => total + story.likes, 0)),
-	);
 }
 
 async function refreshStoryFeeds() {
@@ -158,10 +142,6 @@ async function refreshStoryFeeds() {
 		const mode = (root.dataset.feedMode as FeedMode | undefined) ?? 'full';
 		renderFeed(root, todayStories, mode);
 	});
-
-	if (document.querySelector('[data-home-total]')) {
-		updateHomeStats(todayStories);
-	}
 
 	if (document.querySelector('[data-story-total]')) {
 		setText('[data-story-total]', String(todayStories.length));

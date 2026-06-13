@@ -28,6 +28,7 @@ const {
         const root = document.documentElement;
 
         try {
+          // Apply theme before paint to avoid the day/night flash on navigation.
           const savedTheme = localStorage.getItem(storageKey);
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           const theme = savedTheme === 'day' || savedTheme === 'night'

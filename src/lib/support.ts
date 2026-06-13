@@ -16,7 +16,3 @@ export const koFiWidget = koFiWidgetId
 			buttonText: koFiButtonText || 'Support me on Ko-fi',
 		}
 	: null;
-
-export function hasKoFiSupport() {
-	return Boolean(koFiUrl || koFiWidget);
-}
