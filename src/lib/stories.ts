@@ -217,6 +217,26 @@ export async function fetchStoriesForChallengeDate(challengeDate: string, viewer
 		});
 }
 
+export async function hasAuthorStoryForChallengeDate(authorId: string, challengeDate: string) {
+	if (!supabase) {
+		return false;
+	}
+
+	const { data, error } = await supabase
+		.from('stories')
+		.select('id')
+		.eq('author_id', authorId)
+		.eq('challenge_date', challengeDate)
+		.limit(1)
+		.maybeSingle();
+
+	if (error) {
+		throw error;
+	}
+
+	return Boolean(data?.id);
+}
+
 export async function fetchStoriesByAuthorId(authorId: string, viewerId?: string) {
 	if (!supabase) {
 		return [];

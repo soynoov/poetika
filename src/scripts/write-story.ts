@@ -5,6 +5,7 @@ import {
 	clearDraft,
 	countWords,
 	fetchStoriesForChallengeDate,
+	hasAuthorStoryForChallengeDate,
 	loadDraft,
 	publishStory,
 	saveDraft,
@@ -54,6 +55,7 @@ function normalizeForWordMatch(value: string) {
 let activeChallengeDate = '';
 let publishEnabledBySession = false;
 let requiredChallengeWords: string[] = [];
+let hasPublishedToday = false;
 
 function getMissingChallengeWords(body: string) {
 	const normalizedBody = normalizeForWordMatch(body);
@@ -107,6 +109,33 @@ function renderPublishGate(isSignedIn: boolean, label: string) {
 	publishEnabledBySession = isSignedIn;
 	renderWordRequirementStatus(getInputValue('[data-story-body]'));
 	setText('[data-write-author]', label);
+}
+
+function renderDailyPublishLimit() {
+	const submitButton = getElement<HTMLButtonElement>('[data-story-submit]');
+	const bodyField = getElement<HTMLTextAreaElement>('[data-story-body]');
+
+	if (hasPublishedToday) {
+		if (submitButton) {
+			submitButton.disabled = true;
+		}
+
+		if (bodyField) {
+			bodyField.disabled = true;
+		}
+
+		setText(
+			'[data-save-status]',
+			'Ya has publicado tu pagina de hoy. Vuelve manana con el siguiente reto.',
+		);
+		return;
+	}
+
+	if (bodyField) {
+		bodyField.disabled = false;
+	}
+
+	renderWordRequirementStatus(getInputValue('[data-story-body]'));
 }
 
 function renderStoryList(stories: StoryRecord[]) {
@@ -167,6 +196,14 @@ async function saveCurrentStory(challengeDate: string) {
 
 	const body = getInputValue('[data-story-body]').trim();
 
+	if (hasPublishedToday) {
+		setText(
+			'[data-save-status]',
+			'Ya has publicado tu pagina de hoy. Vuelve manana con el siguiente reto.',
+		);
+		return;
+	}
+
 	if (!body) {
 		setText('[data-save-status]', 'Escribe una pagina antes de publicarla.');
 		return;
@@ -189,11 +226,12 @@ async function saveCurrentStory(challengeDate: string) {
 		challengeDate,
 	});
 
+	hasPublishedToday = true;
 	clearDraft(challengeDate);
 	setInputValue('[data-story-body]', '');
 	setText('[data-word-count]', '0');
 	renderWordRequirementStatus('');
-	setText('[data-save-status]', 'Pagina publicada en Poetika.');
+	renderDailyPublishLimit();
 	await refreshStoryList();
 }
 
@@ -231,9 +269,13 @@ export async function initWriteStory() {
 	const session = await getSession();
 	if (session?.user) {
 		const profile = await ensureProfileForUser(session.user);
+		hasPublishedToday = await hasAuthorStoryForChallengeDate(session.user.id, challenge.dateKey);
 		renderPublishGate(true, profile?.display_name ?? session.user.email ?? 'Escritor');
+		renderDailyPublishLimit();
 	} else {
+		hasPublishedToday = false;
 		renderPublishGate(false, 'Entrar para publicar');
+		renderDailyPublishLimit();
 	}
 
 	await refreshStoryList();
@@ -254,7 +296,20 @@ export async function initWriteStory() {
 	getElement<HTMLFormElement>('[data-story-form]')?.addEventListener('submit', async (event) => {
 		event.preventDefault();
 		setText('[data-save-status]', 'Publicando pagina...');
-		await saveCurrentStory(challenge.dateKey);
+		try {
+			await saveCurrentStory(challenge.dateKey);
+		} catch (error) {
+			const message =
+				error && typeof error === 'object' && 'code' in error && error.code === '23505'
+					? 'Ya has publicado tu pagina de hoy. Vuelve manana con el siguiente reto.'
+					: error instanceof Error
+						? error.message
+						: 'No se pudo publicar la pagina.';
+			hasPublishedToday =
+				message === 'Ya has publicado tu pagina de hoy. Vuelve manana con el siguiente reto.';
+			renderDailyPublishLimit();
+			setText('[data-save-status]', message);
+		}
 	});
 
 	getElement<HTMLElement>('[data-story-list]')?.addEventListener('click', async (event) => {
@@ -279,13 +334,17 @@ export async function initWriteStory() {
 
 	onAuthStateChange(async (nextSession) => {
 		if (!nextSession?.user) {
+			hasPublishedToday = false;
 			renderPublishGate(false, 'Entrar para publicar');
+			renderDailyPublishLimit();
 			await refreshStoryList();
 			return;
 		}
 
 		const profile = await ensureProfileForUser(nextSession.user);
+		hasPublishedToday = await hasAuthorStoryForChallengeDate(nextSession.user.id, challenge.dateKey);
 		renderPublishGate(true, profile?.display_name ?? nextSession.user.email ?? 'Escritor');
+		renderDailyPublishLimit();
 		await refreshStoryList();
 	});
 }
