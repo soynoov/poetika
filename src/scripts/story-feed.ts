@@ -1,7 +1,6 @@
 import { getSession } from '../lib/auth';
 import { getMadridDateKey } from '../lib/challenge';
 import {
-	buildStoryPreview,
 	fetchStoriesForChallengeDate,
 	toggleStoryLike,
 	type StoryRecord,
@@ -56,7 +55,6 @@ function buildEmptyState(mode: FeedMode) {
 }
 
 function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
-	const preview = buildStoryPreview(story.body, 220);
 	const crown = index === 0;
 	const crownMarkup =
 		mode === 'home-editorial'
@@ -91,7 +89,7 @@ function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
 						<span class="text-base">${story.likes}</span>
 					</button>
 				</div>
-				<p class="max-w-5xl text-[1.15rem] leading-9 text-[var(--ink-soft)]">${escapeHtml(preview)}</p>
+				<p class="max-w-5xl text-[1.15rem] leading-9 whitespace-pre-wrap break-words text-[var(--ink-soft)]">${escapeHtml(story.body)}</p>
 			</article>
 		`;
 	}
@@ -122,7 +120,7 @@ function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
 				</button>
 			</div>
 			<p class="mb-4 text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">${story.wordCount} palabras / ${formatMadridTime(story.createdAt)}</p>
-			<p class="text-sm leading-7 text-[var(--ink-soft)]">${escapeHtml(preview)}</p>
+			<p class="text-sm leading-7 whitespace-pre-wrap break-words text-[var(--ink-soft)]">${escapeHtml(story.body)}</p>
 		</article>
 	`;
 }

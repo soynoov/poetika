@@ -6,7 +6,6 @@ import {
 	updateCurrentProfile,
 } from '../lib/profiles';
 import {
-	buildStoryPreview,
 	fetchStoriesByAuthorId,
 	getProfileStoryStats,
 } from '../lib/stories';
@@ -72,7 +71,7 @@ function renderStoryList(
 							Responder
 						</a>
 					</div>
-					<p class="text-sm leading-7 text-[var(--ink-soft)]">${escapeHtml(buildStoryPreview(story.body, 260))}</p>
+					<p class="text-sm leading-7 whitespace-pre-wrap break-words text-[var(--ink-soft)]">${escapeHtml(story.body)}</p>
 				</article>
 			`,
 		)
