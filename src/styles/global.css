@@ -1135,9 +1135,12 @@ a {
   position: fixed;
   inset: 0;
   z-index: 60;
+  padding: 1rem;
+}
+
+.profile-settings-sheet:not(.hidden) {
   display: grid;
   place-items: center;
-  padding: 1rem;
 }
 
 .profile-settings-backdrop {
