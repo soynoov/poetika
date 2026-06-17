@@ -1178,14 +1178,8 @@ a {
   background: rgba(255, 255, 255, 0.02);
   color: #d7cbff;
   padding: 0.45rem 0.85rem;
-  font-family:
-    'Berista Regular',
-    'Iowan Old Style',
-    'Palatino Linotype',
-    'Book Antiqua',
-    Georgia,
-    serif;
-  font-size: 1rem;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
   line-height: 1;
 }
 
@@ -1194,10 +1188,32 @@ a {
   color: var(--ink-strong);
   font-size: clamp(1.05rem, 3.8vw, 1.35rem);
   line-height: 1.7;
+  white-space: normal;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 5;
   overflow: hidden;
+}
+
+.profile-story-body p {
+  margin: 0;
+}
+
+.profile-story-body p + p {
+  margin-top: 1.1rem;
+}
+
+.profile-story-highlight {
+  font-family:
+    'Berista Regular',
+    'Iowan Old Style',
+    'Palatino Linotype',
+    'Book Antiqua',
+    Georgia,
+    serif;
+  font-size: 1.08em;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 .profile-story-card.is-expanded .profile-story-body {

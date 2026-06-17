@@ -77,11 +77,20 @@ function highlightChallengeWords(body: string, words: string[]) {
 
 		const pattern = new RegExp(`(^|[^\\p{L}\\p{N}])(${escapeRegExp(word)})(?=[^\\p{L}\\p{N}]|$)`, 'giu');
 		html = html.replace(pattern, (_, prefix: string, match: string) => {
-			return `${prefix}<strong>${match}</strong>`;
+			return `${prefix}<strong class="profile-story-highlight">${match}</strong>`;
 		});
 	}
 
 	return html;
+}
+
+function formatStoryBody(body: string, words: string[]) {
+	return body
+		.split(/\n\s*\n/g)
+		.map((paragraph) => paragraph.trim())
+		.filter(Boolean)
+		.map((paragraph) => `<p>${highlightChallengeWords(paragraph, words).replace(/\n/g, '<br>')}</p>`)
+		.join('');
 }
 
 function toggleGuestState(showGuest: boolean) {
@@ -190,7 +199,7 @@ function renderStoryList(
 					<div class="profile-story-tags">
 						${dailyWords.map((word) => `<span class="profile-story-tag">${escapeHtml(word)}</span>`).join('')}
 					</div>
-					<p class="profile-story-body" data-story-body>${highlightChallengeWords(story.body, dailyWords)}</p>
+					<div class="profile-story-body" data-story-body>${formatStoryBody(story.body, dailyWords)}</div>
 					<button type="button" class="profile-story-toggle hidden" data-story-toggle aria-expanded="false">
 						Leer mas
 					</button>
