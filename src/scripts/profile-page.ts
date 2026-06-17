@@ -133,6 +133,37 @@ function setProfileTab(mode: 'stories' | 'likes') {
 	});
 }
 
+function setupStoryExpansions(root: ParentNode = document) {
+	root.querySelectorAll<HTMLElement>('[data-story-expandable]').forEach((card) => {
+		const body = card.querySelector<HTMLElement>('[data-story-body]');
+		const button = card.querySelector<HTMLButtonElement>('[data-story-toggle]');
+
+		if (!body || !button) {
+			return;
+		}
+
+		const collapsed = () => !card.classList.contains('is-expanded');
+		const syncButton = () => {
+			button.textContent = collapsed() ? 'Leer mas' : 'Leer menos';
+			button.setAttribute('aria-expanded', collapsed() ? 'false' : 'true');
+		};
+
+		requestAnimationFrame(() => {
+			const hasOverflow = body.scrollHeight > body.clientHeight + 4;
+			button.classList.toggle('hidden', !hasOverflow);
+			if (!hasOverflow) {
+				card.classList.remove('is-expanded');
+			}
+			syncButton();
+		});
+
+		button.addEventListener('click', () => {
+			card.classList.toggle('is-expanded');
+			syncButton();
+		});
+	});
+}
+
 function renderStoryList(
 	markupSelector: string,
 	stories: Awaited<ReturnType<typeof fetchStoriesByAuthorId>>,
@@ -155,11 +186,14 @@ function renderStoryList(
 				const dailyWords = challenge.slots.map((slot) => slot.word);
 
 				return `
-				<article class="profile-story-card">
+				<article class="profile-story-card" data-story-expandable>
 					<div class="profile-story-tags">
 						${dailyWords.map((word) => `<span class="profile-story-tag">${escapeHtml(word)}</span>`).join('')}
 					</div>
-					<p class="profile-story-body">${highlightChallengeWords(story.body, dailyWords)}</p>
+					<p class="profile-story-body" data-story-body>${highlightChallengeWords(story.body, dailyWords)}</p>
+					<button type="button" class="profile-story-toggle hidden" data-story-toggle aria-expanded="false">
+						Leer mas
+					</button>
 					<div class="profile-story-footer">
 						<div class="profile-story-metrics">
 							<span>${story.wordCount} palabras</span>
@@ -172,6 +206,8 @@ function renderStoryList(
 			},
 		)
 		.join('');
+
+	setupStoryExpansions(root);
 }
 
 export async function initProfilePage() {
