@@ -76,7 +76,7 @@ async function renderSignedIn() {
 
 	const settingsLinks = document.querySelectorAll<HTMLAnchorElement>('[data-profile-settings-link]');
 	settingsLinks.forEach((link) => {
-		link.href = profile ? `/profile?u=${encodeURIComponent(profile.username)}#settings` : '/profile';
+		link.href = profile ? `/profile?u=${encodeURIComponent(profile.username)}` : '/profile';
 	});
 
 	const labels = document.querySelectorAll<HTMLElement>('[data-session-label]');
@@ -105,5 +105,15 @@ export async function initHeaderSession() {
 		await signOut();
 		renderSignedOut();
 		window.location.href = '/';
+	});
+
+	document.querySelectorAll<HTMLAnchorElement>('[data-profile-settings-link]').forEach((link) => {
+		link.addEventListener('click', () => {
+			try {
+				sessionStorage.setItem('poetika:open-settings', '1');
+			} catch {
+				// Ignore sessionStorage failures.
+			}
+		});
 	});
 }

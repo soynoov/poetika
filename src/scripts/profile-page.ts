@@ -334,16 +334,10 @@ export async function initProfilePage() {
 
 	const openSettings = () => {
 		toggleSettingsSheet(true);
-		if (window.location.hash !== '#settings') {
-			window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#settings`);
-		}
 	};
 
 	const closeSettings = () => {
 		toggleSettingsSheet(false);
-		if (window.location.hash === '#settings') {
-			window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-		}
 	};
 
 	const syncProfileUI = (profile: {
@@ -481,7 +475,17 @@ export async function initProfilePage() {
 		});
 	});
 
-	if (window.location.hash === '#settings') {
+	let shouldOpenSettings = false;
+	try {
+		shouldOpenSettings = sessionStorage.getItem('poetika:open-settings') === '1';
+		if (shouldOpenSettings) {
+			sessionStorage.removeItem('poetika:open-settings');
+		}
+	} catch {
+		shouldOpenSettings = false;
+	}
+
+	if (shouldOpenSettings) {
 		openSettings();
 	}
 }
