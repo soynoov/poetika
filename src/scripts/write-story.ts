@@ -1,5 +1,6 @@
 import { getSession, onAuthStateChange } from '../lib/auth';
 import { loadDailyChallenge } from '../lib/challenge';
+import { getChallengeIcon } from '../lib/challenge-icons';
 import { ensureProfileForUser } from '../lib/profiles';
 import {
 	clearDraft,
@@ -33,6 +34,11 @@ function setText(selector: string, value: string) {
 function setInputValue(selector: string, value: string) {
 	const node = getElement<HTMLInputElement | HTMLTextAreaElement>(selector);
 	if (node) node.value = value;
+}
+
+function setIconPath(selector: string, value: string) {
+	const node = getElement<SVGPathElement>(selector);
+	if (node) node.setAttribute('d', value);
 }
 
 function getInputValue(selector: string) {
@@ -288,6 +294,9 @@ export async function initWriteStory() {
 	setText('[data-write-marker-1]', challenge.slots[0].marker);
 	setText('[data-write-marker-2]', challenge.slots[1].marker);
 	setText('[data-write-marker-3]', challenge.slots[2].marker);
+	setIconPath('[data-write-slot="0"] [data-write-icon-path]', getChallengeIcon(challenge.slots[0].category).path);
+	setIconPath('[data-write-slot="1"] [data-write-icon-path]', getChallengeIcon(challenge.slots[1].category).path);
+	setIconPath('[data-write-slot="2"] [data-write-icon-path]', getChallengeIcon(challenge.slots[2].category).path);
 	setInputValue('[data-story-body]', draft.body);
 	setText('[data-word-count]', String(countWords(draft.body)));
 	renderWordRequirementStatus(draft.body);
