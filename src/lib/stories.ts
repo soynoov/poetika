@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import type { Database } from '../types/database';
+import { getMadridDateKey } from './challenge';
 
 export type StoryRow = Database['public']['Tables']['stories']['Row'];
 export type StoryLikeRow = Database['public']['Tables']['story_likes']['Row'];
@@ -30,8 +31,8 @@ export type StoryDraft = {
 
 export type ProfileStoryStats = {
 	totalStories: number;
-	totalLikes: number;
-	activeDays: number;
+	currentStreak: number;
+	streakActive: boolean;
 };
 
 export type LeaderboardEntry = {
@@ -347,13 +348,35 @@ export async function toggleStoryLike(storyId: string, viewerId: string) {
 
 export async function getProfileStoryStats(authorId: string) {
 	const stories = await fetchStoriesByAuthorId(authorId);
-	const totalLikes = stories.reduce((sum, story) => sum + story.likes, 0);
-	const activeDays = new Set(stories.map((story) => story.challengeDate)).size;
+	const uniqueDates = [...new Set(stories.map((story) => story.challengeDate))].sort((left, right) =>
+		right.localeCompare(left),
+	);
+	const todayKey = getMadridDateKey();
+	const streakActive = uniqueDates[0] === todayKey;
+	let currentStreak = 0;
+
+	if (uniqueDates.length) {
+		let previousDate = new Date(`${uniqueDates[0]}T00:00:00`);
+		currentStreak = 1;
+
+		for (let index = 1; index < uniqueDates.length; index += 1) {
+			const currentDate = new Date(`${uniqueDates[index]}T00:00:00`);
+			const diffInDays =
+				(previousDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24);
+
+			if (diffInDays !== 1) {
+				break;
+			}
+
+			currentStreak += 1;
+			previousDate = currentDate;
+		}
+	}
 
 	return {
 		totalStories: stories.length,
-		totalLikes,
-		activeDays,
+		currentStreak,
+		streakActive,
 	} satisfies ProfileStoryStats;
 }
 

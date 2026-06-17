@@ -46,6 +46,15 @@ function setImage(selector: string, value: string | null) {
 	image.classList.add('hidden');
 }
 
+function setInputValues(selectors: string[], value: string) {
+	for (const selector of selectors) {
+		const field = getElement<HTMLInputElement>(selector);
+		if (field) {
+			field.value = value;
+		}
+	}
+}
+
 function escapeHtml(value: string) {
 	return value
 		.replaceAll('&', '&amp;')
@@ -81,6 +90,7 @@ function toggleGuestState(showGuest: boolean) {
 
 function setAvatar(displayName: string, avatarUrl: string | null) {
 	setImage('[data-profile-avatar]', avatarUrl);
+	setImage('[data-profile-edit-avatar-preview]', avatarUrl);
 	setText(
 		'[data-profile-avatar-fallback]',
 		displayName
@@ -91,6 +101,19 @@ function setAvatar(displayName: string, avatarUrl: string | null) {
 			.join('') || 'P',
 	);
 	getElement<HTMLElement>('[data-profile-avatar-fallback]')?.classList.toggle('hidden', Boolean(avatarUrl?.trim()));
+	setText(
+		'[data-profile-edit-avatar-preview-fallback]',
+		displayName
+			.trim()
+			.split(/\s+/)
+			.slice(0, 2)
+			.map((part) => part.slice(0, 1).toUpperCase())
+			.join('') || 'P',
+	);
+	getElement<HTMLElement>('[data-profile-edit-avatar-preview-fallback]')?.classList.toggle(
+		'hidden',
+		Boolean(avatarUrl?.trim()),
+	);
 }
 
 function toggleEditor(open: boolean) {
@@ -181,9 +204,16 @@ export async function initProfilePage() {
 		targetProfile.bio?.trim() || 'Todavia no ha escrito una bio en su cuaderno.',
 	);
 	setAvatar(targetProfile.display_name, targetProfile.avatar_url);
-	setText('[data-profile-total-likes]', String(stats.totalLikes));
 	setText('[data-profile-total-stories]', String(stats.totalStories));
-	setText('[data-profile-active-days]', String(stats.activeDays));
+	setText('[data-profile-streak]', String(stats.currentStreak));
+	const streakCard = getElement<HTMLElement>('[data-profile-streak-card]');
+	if (streakCard) {
+		streakCard.dataset.state = stats.streakActive ? 'active' : 'idle';
+	}
+	getElement<HTMLElement>('[data-profile-streak-fire]')?.classList.toggle(
+		'hidden',
+		!stats.streakActive,
+	);
 	renderStoryList('[data-profile-story-list]', stories);
 
 	const isOwnProfile = currentProfile?.user_id === targetProfile.user_id;
@@ -199,6 +229,65 @@ export async function initProfilePage() {
 	setInputValue('[data-profile-edit-username]', targetProfile.username);
 	setInputValue('[data-profile-edit-bio]', targetProfile.bio ?? '');
 	setInputValue('[data-profile-edit-avatar]', targetProfile.avatar_url ?? '');
+	setInputValue('[data-profile-edit-avatar-url]', targetProfile.avatar_url ?? '');
+
+	getElement<HTMLButtonElement>('[data-profile-avatar-upload]')?.addEventListener('click', () => {
+		getElement<HTMLInputElement>('[data-profile-edit-avatar-file]')?.click();
+	});
+
+	getElement<HTMLInputElement>('[data-profile-edit-avatar-url]')?.addEventListener('input', (event) => {
+		const target = event.target;
+		if (!(target instanceof HTMLInputElement)) {
+			return;
+		}
+
+		setInputValues(['[data-profile-edit-avatar]'], target.value.trim());
+		setAvatar(
+			getElement<HTMLInputElement>('[data-profile-edit-display-name]')?.value || targetProfile.display_name,
+			target.value.trim() || null,
+		);
+	});
+
+	getElement<HTMLInputElement>('[data-profile-edit-display-name]')?.addEventListener('input', (event) => {
+		const target = event.target;
+		if (!(target instanceof HTMLInputElement)) {
+			return;
+		}
+
+		const avatarValue = getElement<HTMLInputElement>('[data-profile-edit-avatar]')?.value ?? '';
+		setAvatar(target.value || targetProfile.display_name, avatarValue || null);
+	});
+
+	getElement<HTMLInputElement>('[data-profile-edit-avatar-file]')?.addEventListener('change', (event) => {
+		const target = event.target;
+		const file = target instanceof HTMLInputElement ? target.files?.[0] : undefined;
+		if (!file) {
+			return;
+		}
+
+		const reader = new FileReader();
+		reader.onload = () => {
+			const result = typeof reader.result === 'string' ? reader.result : '';
+			setInputValues(['[data-profile-edit-avatar]', '[data-profile-edit-avatar-url]'], result);
+			setAvatar(
+				getElement<HTMLInputElement>('[data-profile-edit-display-name]')?.value || targetProfile.display_name,
+				result || null,
+			);
+		};
+		reader.readAsDataURL(file);
+	});
+
+	getElement<HTMLButtonElement>('[data-profile-avatar-clear]')?.addEventListener('click', () => {
+		setInputValues(['[data-profile-edit-avatar]', '[data-profile-edit-avatar-url]'], '');
+		const fileField = getElement<HTMLInputElement>('[data-profile-edit-avatar-file]');
+		if (fileField) {
+			fileField.value = '';
+		}
+		setAvatar(
+			getElement<HTMLInputElement>('[data-profile-edit-display-name]')?.value || targetProfile.display_name,
+			null,
+		);
+	});
 
 	getElement<HTMLButtonElement>('[data-profile-edit-toggle]')?.addEventListener('click', () => {
 		toggleEditor(true);
@@ -229,6 +318,7 @@ export async function initProfilePage() {
 					updated.bio?.trim() || 'Todavia no ha escrito una bio en su cuaderno.',
 				);
 				setAvatar(updated.display_name, updated.avatar_url);
+				setInputValues(['[data-profile-edit-avatar-url]', '[data-profile-edit-avatar]'], updated.avatar_url ?? '');
 			}
 
 			setText('[data-profile-form-status]', 'Perfil guardado.');

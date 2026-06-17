@@ -137,15 +137,14 @@ const bottomNavItems = [
 					<section class='profile-stats-grid'>
 						<div class='profile-stat-card'>
 							<p data-profile-total-stories class='profile-stat-value'>0</p>
-							<p class='profile-stat-label'>Relatos</p>
+							<p class='profile-stat-label'>Relatos publicados</p>
 						</div>
-						<div class='profile-stat-card'>
-							<p data-profile-total-likes class='profile-stat-value'>0</p>
-							<p class='profile-stat-label'>Puntos</p>
-						</div>
-						<div class='profile-stat-card'>
-							<p data-profile-active-days class='profile-stat-value'>0</p>
-							<p class='profile-stat-label'>Dias activos</p>
+						<div class='profile-stat-card' data-profile-streak-card data-state='idle'>
+							<p data-profile-streak class='profile-stat-value'>0</p>
+							<p class='profile-stat-label'>
+								Racha
+								<span data-profile-streak-fire class='hidden'>🔥</span>
+							</p>
 						</div>
 					</section>
 
@@ -168,8 +167,29 @@ const bottomNavItems = [
 								<input data-profile-edit-username type='text' class='auth-input w-full lowercase' />
 							</label>
 							<label class='block md:col-span-2'>
-								<span class='auth-field-label'>Avatar URL</span>
-								<input data-profile-edit-avatar type='url' class='auth-input w-full' />
+								<span class='auth-field-label'>Foto de perfil</span>
+								<div class='profile-photo-editor'>
+									<div class='profile-photo-preview'>
+										<img data-profile-edit-avatar-preview class='profile-photo-preview-image hidden' alt='Vista previa de avatar' />
+										<div data-profile-edit-avatar-preview-fallback class='profile-photo-preview-fallback'>P</div>
+									</div>
+									<div class='flex-1 space-y-3'>
+										<input data-profile-edit-avatar type='hidden' />
+										<input data-profile-edit-avatar-file type='file' accept='image/*' class='hidden' />
+										<div class='flex flex-col gap-3 sm:flex-row'>
+											<button type='button' data-profile-avatar-upload class='home-secondary-button rounded-full px-5 py-3 text-sm font-semibold uppercase tracking-[0.08em]'>
+												Subir foto
+											</button>
+											<button type='button' data-profile-avatar-clear class='auth-helper-link text-left'>
+												Quitar foto
+											</button>
+										</div>
+										<label class='block'>
+											<span class='auth-field-label'>O pega una URL</span>
+											<input data-profile-edit-avatar-url type='url' class='auth-input w-full' />
+										</label>
+									</div>
+								</div>
 							</label>
 							<label class='block md:col-span-2'>
 								<span class='auth-field-label'>Bio</span>
