@@ -8,6 +8,7 @@ import {
 } from '../lib/profiles';
 import {
 	fetchStoriesByAuthorId,
+	fetchLikedStoriesByUserId,
 	getProfileStoryStats,
 } from '../lib/stories';
 import { formatMadridDateTime } from '../lib/time';
@@ -120,6 +121,18 @@ function toggleEditor(open: boolean) {
 	getElement<HTMLElement>('[data-profile-editor]')?.classList.toggle('hidden', !open);
 }
 
+function setProfileTab(mode: 'stories' | 'likes') {
+	document.querySelectorAll<HTMLElement>('[data-profile-tab-button]').forEach((button) => {
+		const active = button.dataset.profileTabButton === mode;
+		button.classList.toggle('is-active', active);
+		button.setAttribute('aria-selected', active ? 'true' : 'false');
+	});
+
+	document.querySelectorAll<HTMLElement>('[data-profile-tab-panel]').forEach((panel) => {
+		panel.classList.toggle('hidden', panel.dataset.profileTabPanel !== mode);
+	});
+}
+
 function renderStoryList(
 	markupSelector: string,
 	stories: Awaited<ReturnType<typeof fetchStoriesByAuthorId>>,
@@ -151,7 +164,6 @@ function renderStoryList(
 						<div class="profile-story-metrics">
 							<span>${story.wordCount} palabras</span>
 							<span>${story.likes} likes</span>
-							<span>Firma @${escapeHtml(story.author.username)}</span>
 						</div>
 						<p class="profile-story-date">${formatMadridDateTime(story.createdAt)}</p>
 					</div>
@@ -215,6 +227,7 @@ export async function initProfilePage() {
 		!stats.streakActive,
 	);
 	renderStoryList('[data-profile-story-list]', stories);
+	setProfileTab('stories');
 
 	const isOwnProfile = currentProfile?.user_id === targetProfile.user_id;
 	toggleGuestState(false);
@@ -224,6 +237,16 @@ export async function initProfilePage() {
 	if (!isOwnProfile) {
 		return;
 	}
+
+	const likedStories = await fetchLikedStoriesByUserId(targetProfile.user_id);
+	renderStoryList('[data-profile-liked-story-list]', likedStories);
+
+	document.querySelectorAll<HTMLElement>('[data-profile-tab-button]').forEach((button) => {
+		button.addEventListener('click', () => {
+			const mode = button.dataset.profileTabButton === 'likes' ? 'likes' : 'stories';
+			setProfileTab(mode);
+		});
+	});
 
 	setInputValue('[data-profile-edit-display-name]', targetProfile.display_name);
 	setInputValue('[data-profile-edit-username]', targetProfile.username);

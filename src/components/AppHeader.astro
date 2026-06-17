@@ -90,7 +90,7 @@ const navItems = [
 							<path d='m9 6 6 6-6 6'></path>
 						</svg>
 					</a>
-					<div data-auth-only class='hidden flex-col gap-2'>
+					<div data-auth-only data-auth-display='flex' class='hidden flex-col gap-2'>
 						<a
 							href='/profile'
 							data-profile-link='true'
@@ -179,7 +179,7 @@ const navItems = [
 			>
 				Entrar
 			</a>
-			<div data-auth-only class='hidden items-center gap-3'>
+			<div data-auth-only data-auth-display='flex' class='hidden items-center gap-3 max-md:hidden'>
 				<a
 					href='/profile'
 					data-profile-link='true'
@@ -198,30 +198,8 @@ const navItems = [
 
 			<a
 				href='/auth'
-				data-guest-only
-				class='app-icon-button inline-flex h-12 w-12 items-center justify-center text-[var(--ink-strong)] md:hidden'
-				aria-label='Ir a acceso'
-			>
-				<svg
-					viewBox='0 0 24 24'
-					class='h-5 w-5'
-					fill='none'
-					stroke='currentColor'
-					stroke-width='1.9'
-					stroke-linecap='round'
-					stroke-linejoin='round'
-					aria-hidden='true'
-				>
-					<path d='M12 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 12 12Z'></path>
-					<path d='M6 20a6 6 0 0 1 12 0'></path>
-				</svg>
-			</a>
-
-			<a
-				href='/profile'
-				data-auth-only
 				data-profile-link='true'
-				class='hidden h-12 w-12 items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-soft)] text-[var(--ink-strong)] md:hidden'
+				class='app-icon-button inline-flex h-12 w-12 items-center justify-center text-[var(--ink-strong)] md:hidden'
 				aria-label='Perfil'
 			>
 				<svg

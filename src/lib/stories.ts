@@ -275,6 +275,50 @@ export async function fetchStoriesByAuthorId(authorId: string, viewerId?: string
 	);
 }
 
+export async function fetchLikedStoriesByUserId(userId: string) {
+	if (!supabase) {
+		return [];
+	}
+
+	const { data: likes, error: likesError } = await supabase
+		.from('story_likes')
+		.select('story_id')
+		.eq('user_id', userId);
+
+	if (likesError) {
+		throw likesError;
+	}
+
+	const storyIds = [...new Set((likes ?? []).map((like) => like.story_id))];
+	if (!storyIds.length) {
+		return [];
+	}
+
+	const { data: stories, error: storiesError } = await supabase
+		.from('stories')
+		.select('*')
+		.in('id', storyIds)
+		.order('created_at', { ascending: false });
+
+	if (storiesError) {
+		throw storiesError;
+	}
+
+	const [profilesMap, likesMap] = await Promise.all([
+		getProfilesMap((stories ?? []).map((story) => story.author_id)),
+		getLikesMap((stories ?? []).map((story) => story.id)),
+	]);
+
+	return (stories ?? []).map((story) =>
+		mapStoryRecord(
+			story,
+			profilesMap.get(story.author_id),
+			likesMap.get(story.id) ?? [],
+			userId,
+		),
+	);
+}
+
 export async function publishStory(input: {
 	authorId: string;
 	title: string;

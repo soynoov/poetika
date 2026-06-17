@@ -205,7 +205,14 @@ const bottomNavItems = [
 					<section class='mt-12'>
 						<div class='mb-6 flex items-end justify-between gap-4'>
 							<div>
-								<h2 class='profile-section-title'>Mis Paginas</h2>
+								<div class='profile-library-tabs' role='tablist' aria-label='Biblioteca personal'>
+									<button type='button' data-profile-tab-button='stories' class='profile-library-tab is-active' role='tab' aria-selected='true'>
+										Mis paginas
+									</button>
+									<button type='button' data-profile-tab-button='likes' class='profile-library-tab' role='tab' aria-selected='false'>
+										Paginas que me han gustado
+									</button>
+								</div>
 							</div>
 							<button type='button' class='app-icon-button hidden h-11 w-11 items-center justify-center md:inline-flex' aria-label='Filtrar relatos'>
 								<svg viewBox='0 0 24 24' class='h-4 w-4' fill='none' stroke='currentColor' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>
@@ -213,7 +220,12 @@ const bottomNavItems = [
 								</svg>
 							</button>
 						</div>
-						<div data-profile-story-list class='grid gap-6'></div>
+						<div data-profile-tab-panel='stories' role='tabpanel'>
+							<div data-profile-story-list class='grid gap-6'></div>
+						</div>
+						<div data-profile-tab-panel='likes' role='tabpanel' class='hidden'>
+							<div data-profile-liked-story-list class='grid gap-6'></div>
+						</div>
 					</section>
 				</section>
 			</section>

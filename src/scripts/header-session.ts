@@ -5,10 +5,23 @@ function getElement<T extends HTMLElement>(selector: string, root: ParentNode = 
 	return root.querySelector<T>(selector);
 }
 
+function showAuthOnlyNode(node: HTMLElement) {
+	node.classList.remove('hidden');
+	const display = node.dataset.authDisplay;
+	if (display === 'inline-flex') {
+		node.classList.add('inline-flex');
+		node.classList.remove('flex');
+		return;
+	}
+
+	node.classList.add('flex');
+}
+
 function renderSignedOut() {
 	document.querySelectorAll<HTMLElement>('[data-auth-only]').forEach((node) => {
 		node.classList.add('hidden');
 		node.classList.remove('flex');
+		node.classList.remove('inline-flex');
 	});
 	document.querySelectorAll<HTMLElement>('[data-guest-only]').forEach((node) => {
 		node.classList.remove('hidden');
@@ -39,8 +52,7 @@ async function renderSignedIn() {
 	const profile = await ensureProfileForUser(session.user);
 
 	document.querySelectorAll<HTMLElement>('[data-auth-only]').forEach((node) => {
-		node.classList.remove('hidden');
-		node.classList.add('flex');
+		showAuthOnlyNode(node);
 	});
 	document.querySelectorAll<HTMLElement>('[data-guest-only]').forEach((node) => {
 		node.classList.add('hidden');
