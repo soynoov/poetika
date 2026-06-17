@@ -29,6 +29,22 @@ function setInputValue(selector: string, value: string) {
 	}
 }
 
+function setImage(selector: string, value: string | null) {
+	const image = getElement<HTMLImageElement>(selector);
+	if (!image) {
+		return;
+	}
+
+	if (value?.trim()) {
+		image.src = value;
+		image.classList.remove('hidden');
+		return;
+	}
+
+	image.removeAttribute('src');
+	image.classList.add('hidden');
+}
+
 function escapeHtml(value: string) {
 	return value
 		.replaceAll('&', '&amp;')
@@ -40,7 +56,25 @@ function escapeHtml(value: string) {
 
 function toggleGuestState(showGuest: boolean) {
 	getElement<HTMLElement>('[data-profile-guest-card]')?.classList.toggle('hidden', !showGuest);
-	getElement<HTMLElement>('[data-profile-editor]')?.classList.toggle('hidden', showGuest);
+	getElement<HTMLElement>('[data-profile-content]')?.classList.toggle('hidden', showGuest);
+}
+
+function setAvatar(displayName: string, avatarUrl: string | null) {
+	setImage('[data-profile-avatar]', avatarUrl);
+	setText(
+		'[data-profile-avatar-fallback]',
+		displayName
+			.trim()
+			.split(/\s+/)
+			.slice(0, 2)
+			.map((part) => part.slice(0, 1).toUpperCase())
+			.join('') || 'P',
+	);
+	getElement<HTMLElement>('[data-profile-avatar-fallback]')?.classList.toggle('hidden', Boolean(avatarUrl?.trim()));
+}
+
+function toggleEditor(open: boolean) {
+	getElement<HTMLElement>('[data-profile-editor]')?.classList.toggle('hidden', !open);
 }
 
 function renderStoryList(
@@ -54,24 +88,27 @@ function renderStoryList(
 
 	if (!stories.length) {
 		root.innerHTML =
-			"<div class='app-panel rounded-[2rem] border-dashed p-6 text-sm leading-7 text-[var(--ink-soft)]'>Todavia no hay relatos publicados en este perfil.</div>";
+			"<div class='profile-story-empty'>Todavia no hay relatos publicados en este perfil.</div>";
 		return;
 	}
 
 	root.innerHTML = stories
 		.map(
 			(story) => `
-				<article class="app-panel rounded-[2rem] p-6">
-					<div class="mb-4 flex items-start justify-between gap-4">
-						<div>
-							<p class="text-[10px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">@${escapeHtml(story.author.username)}</p>
-							<p class="mt-2 text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">${story.wordCount} palabras / ${story.likes} likes / ${formatMadridDateTime(story.createdAt)}</p>
-						</div>
-						<a href="/write" class="app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]">
-							Responder
-						</a>
+				<article class="profile-story-card">
+					<div class="profile-story-tags">
+						<span class="profile-story-tag">${story.wordCount} palabras</span>
+						<span class="profile-story-tag">${story.likes} likes</span>
+						<span class="profile-story-tag">${escapeHtml(story.challengeDate)}</span>
 					</div>
-					<p class="text-sm leading-7 whitespace-pre-wrap break-words text-[var(--ink-soft)]">${escapeHtml(story.body)}</p>
+					<p class="profile-story-body">${escapeHtml(story.body)}</p>
+					<div class="profile-story-footer">
+						<div class="profile-story-metrics">
+							<span>Ojo ${story.likes}</span>
+							<span>Firma @${escapeHtml(story.author.username)}</span>
+						</div>
+						<p class="profile-story-date">${formatMadridDateTime(story.createdAt)}</p>
+					</div>
 				</article>
 			`,
 		)
@@ -91,14 +128,6 @@ export async function initProfilePage() {
 
 	if (!username && !session?.user) {
 		toggleGuestState(true);
-		setText('[data-profile-display-name]', 'Perfil de Poetika');
-		setText('[data-profile-handle]', '@guest');
-		setText(
-			'[data-profile-bio]',
-			'Inicia sesion para abrir tu perfil, editar tu firma y reunir tus relatos en un solo portal.',
-		);
-		setText('[data-profile-status]', 'Necesitas sesion para ver tu perfil personal.');
-		renderStoryList('[data-profile-story-list]', []);
 		return;
 	}
 
@@ -127,6 +156,7 @@ export async function initProfilePage() {
 		'[data-profile-bio]',
 		targetProfile.bio?.trim() || 'Todavia no ha escrito una bio en su cuaderno.',
 	);
+	setAvatar(targetProfile.display_name, targetProfile.avatar_url);
 	setText('[data-profile-total-likes]', String(stats.totalLikes));
 	setText('[data-profile-total-stories]', String(stats.totalStories));
 	setText('[data-profile-active-days]', String(stats.activeDays));
@@ -134,7 +164,8 @@ export async function initProfilePage() {
 
 	const isOwnProfile = currentProfile?.user_id === targetProfile.user_id;
 	toggleGuestState(false);
-	getElement<HTMLElement>('[data-profile-editor]')?.classList.toggle('hidden', !isOwnProfile);
+	getElement<HTMLElement>('[data-profile-edit-toggle]')?.classList.toggle('hidden', !isOwnProfile);
+	toggleEditor(false);
 
 	if (!isOwnProfile) {
 		return;
@@ -144,6 +175,14 @@ export async function initProfilePage() {
 	setInputValue('[data-profile-edit-username]', targetProfile.username);
 	setInputValue('[data-profile-edit-bio]', targetProfile.bio ?? '');
 	setInputValue('[data-profile-edit-avatar]', targetProfile.avatar_url ?? '');
+
+	getElement<HTMLButtonElement>('[data-profile-edit-toggle]')?.addEventListener('click', () => {
+		toggleEditor(true);
+	});
+
+	getElement<HTMLButtonElement>('[data-profile-edit-close]')?.addEventListener('click', () => {
+		toggleEditor(false);
+	});
 
 	getElement<HTMLFormElement>('[data-profile-form]')?.addEventListener('submit', async (event) => {
 		event.preventDefault();
@@ -165,6 +204,7 @@ export async function initProfilePage() {
 					'[data-profile-bio]',
 					updated.bio?.trim() || 'Todavia no ha escrito una bio en su cuaderno.',
 				);
+				setAvatar(updated.display_name, updated.avatar_url);
 			}
 
 			setText('[data-profile-form-status]', 'Perfil guardado.');

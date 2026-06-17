@@ -27,6 +27,16 @@ function setHidden(selector: string, hidden: boolean) {
 	}
 }
 
+function setAuthTab(mode: 'sign-in' | 'sign-up') {
+	document.querySelectorAll<HTMLElement>('[data-auth-panel]').forEach((node) => {
+		node.classList.toggle('hidden', node.dataset.authPanel !== mode);
+	});
+
+	document.querySelectorAll<HTMLElement>('[data-auth-tab-button]').forEach((node) => {
+		node.classList.toggle('is-active', node.dataset.authTabButton === mode);
+	});
+}
+
 function setBannerTone(tone: 'neutral' | 'success' | 'error') {
 	const node = getElement<HTMLElement>('[data-auth-status-card]');
 	if (!node) {
@@ -135,6 +145,7 @@ function renderSignedOutAuthView() {
 	setHidden('[data-auth-go-profile]', true);
 	setText('[data-auth-session-state]', 'Sesion cerrada');
 	showStatus('Todavia no has iniciado sesion.', 'neutral');
+	setAuthTab('sign-in');
 }
 
 async function renderSignedInAuthView(email: string) {
@@ -181,7 +192,7 @@ export async function initAuthPortal() {
 	installAuthDiagnostics();
 
 	try {
-		const root = getElement<HTMLElement>('[data-auth-page]');
+		const root = getElement<HTMLElement>('[data-auth-page], [data-auth-portal]');
 		if (!root) {
 			return;
 		}
@@ -251,6 +262,30 @@ export async function initAuthPortal() {
 				} catch (error) {
 					showStatus(getErrorMessage(error), 'error');
 				}
+			},
+		);
+
+		document.querySelectorAll<HTMLElement>('[data-auth-tab-button]').forEach((button) => {
+			button.addEventListener('click', () => {
+				const mode = button.dataset.authTabButton === 'sign-up' ? 'sign-up' : 'sign-in';
+				setAuthTab(mode);
+			});
+		});
+
+		document.querySelectorAll<HTMLElement>('[data-auth-switch]').forEach((button) => {
+			button.addEventListener('click', () => {
+				const mode = button.dataset.authSwitch === 'sign-up' ? 'sign-up' : 'sign-in';
+				setAuthTab(mode);
+			});
+		});
+
+		getElement<HTMLButtonElement>('[data-auth-forgot-password]')?.addEventListener(
+			'click',
+			() => {
+				showStatus(
+					'La recuperacion de password aun no esta conectada en esta version.',
+					'neutral',
+				);
 			},
 		);
 

@@ -1,120 +1,236 @@
 ---
 import AppHeader from '../components/AppHeader.astro';
 import Layout from '../layouts/Layout.astro';
+
+const bottomNavItems = [
+  { href: '/', label: 'Inicio', active: false, icon: 'M3 11.5 12 4l9 7.5M6.5 10.5V20h11V10.5' },
+  { href: '/write', label: 'Escribir', active: false, icon: 'M4 6.5h10M4 11.5h10M4 16.5h6M16 14l4-4m0 0 2 2m-2-2-2-2' },
+  { href: '/challenge', label: 'Cima', active: false, icon: 'M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Zm0-8v3l2 1' },
+  { href: '/profile', label: 'Perfil', active: true, dynamicProfile: true, icon: 'M12 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 12 12Zm-6 8a6 6 0 0 1 12 0Z' },
+];
 ---
 
 <Layout
-	title='PoetiKa - Perfil'
-	description='Perfil publico y panel personal de escritura dentro de PoetiKa.'
+	title='Poetika - Perfil'
+	description='Perfil de autora y portal de acceso de Poetika.'
 >
-	<main class='home-paper min-h-screen' data-profile-page>
-		<div class='mx-auto max-w-[1420px] px-4 sm:px-8 lg:px-14'>
+	<main class='home-screen min-h-screen' data-profile-page>
+		<div data-profile-signed-in-view class='mx-auto max-w-[1180px] px-0 pb-30 sm:px-6 lg:px-8'>
 			<AppHeader currentPath='/profile' />
 
-			<div class='home-rail mx-auto max-w-[1390px]'>
-				<section class='mx-auto max-w-[1080px] px-2 pb-20 pt-16 sm:px-4'>
-					<section data-profile-guest-card class='mb-8 hidden app-panel rounded-[2rem] p-7 sm:p-9'>
-						<p class='app-kicker mb-3 text-[0.72rem] uppercase tracking-[0.32em]'>Perfil</p>
-						<h1 class='app-title serif text-[2.8rem] font-semibold tracking-[-0.05em]'>
-							Tu portal todavia esta cerrado
-						</h1>
-						<p class='app-copy mt-4 max-w-2xl text-base leading-8'>
-							Inicia sesion o crea una cuenta para ver tu perfil, guardar tu firma y publicar relatos con identidad.
-						</p>
-						<div class='mt-6 flex flex-col gap-3 sm:flex-row'>
-							<a
-								href='/auth'
-								class='home-primary-button inline-flex items-center justify-center px-8 py-4 text-sm font-semibold'
-							>
-								Entrar en Poetika
-							</a>
-							<a
-								href='/all'
-								class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-6 py-4 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
-							>
-								Ver relatos
-							</a>
-						</div>
-					</section>
+			<section class='mx-auto max-w-[1100px] px-5 pb-10 pt-7 sm:px-6'>
+				<section data-profile-guest-card class='hidden'>
+					<div class='auth-shell mx-auto flex justify-center pb-10 pt-6'>
+						<div data-auth-portal class='auth-portal-card w-full max-w-[26rem]'>
+							<div class='text-center'>
+								<a href='/' class='auth-brand'>Poetika</a>
+								<p class='auth-tagline'>Donde las palabras cobran vida</p>
+							</div>
 
-					<header class='app-divider mb-10 border-b pb-6'>
-						<p class='app-kicker mb-3 text-[0.72rem] uppercase tracking-[0.32em]'>Perfil</p>
-						<h1 data-profile-display-name class='app-title serif text-[3.6rem] font-semibold tracking-[-0.05em]'>
-							Cargando perfil...
-						</h1>
-						<p data-profile-handle class='mt-3 text-[0.9rem] uppercase tracking-[0.24em] text-[var(--ink-muted)]'>
-							@poetika
-						</p>
-						<p data-profile-bio class='app-copy mt-4 max-w-2xl text-base leading-8'>
-							Todavia no ha escrito una bio en su cuaderno.
-						</p>
-						<p data-profile-status class='mt-4 text-sm text-[var(--ink-soft)]'></p>
+							<section data-auth-status-card data-tone='neutral' class='auth-status-banner mt-8'>
+								<p data-auth-session-state class='auth-status-title'>Sesion cerrada</p>
+								<p data-auth-status class='auth-status-copy'>Portal listo.</p>
+								<p data-auth-hint class='auth-status-hint hidden'>
+									Si la confirmacion por email esta activa, vuelve despues de verificar el correo.
+								</p>
+							</section>
+
+							<div data-auth-forms class='mt-6'>
+								<div class='auth-panel'>
+									<div class='auth-tab-strip'>
+										<button type='button' data-auth-tab-button='sign-in' class='auth-tab-button is-active'>Entrar</button>
+										<button type='button' data-auth-tab-button='sign-up' class='auth-tab-button'>Registrarte</button>
+									</div>
+
+									<div data-auth-panel='sign-in' class='mt-7'>
+										<form data-sign-in-form novalidate class='space-y-5'>
+											<label class='block'>
+												<span class='auth-field-label'>Email</span>
+												<input data-sign-in-email type='email' required autocomplete='email' placeholder='tu@poema.com' class='auth-input w-full' />
+											</label>
+											<label class='block'>
+												<div class='mb-2 flex items-center justify-between gap-3'>
+													<span class='auth-field-label'>Contrasena</span>
+													<button type='button' data-auth-forgot-password class='auth-helper-link'>Olvidaste?</button>
+												</div>
+												<input data-sign-in-password type='password' required autocomplete='current-password' placeholder='........' class='auth-input w-full' />
+											</label>
+											<button type='submit' class='write-publish-button w-full'>Entrar</button>
+										</form>
+
+										<div class='auth-divider'>
+											<span>O continua con</span>
+										</div>
+
+										<button type='button' data-google-sign-in class='auth-google-button'>
+											<span class='text-[1.4rem] leading-none text-[#ea4335]'>G</span>
+											<span>Continuar con Google</span>
+										</button>
+
+										<button type='button' data-auth-switch='sign-up' class='auth-switch-link'>
+											No tienes cuenta? Registrate
+										</button>
+									</div>
+
+									<div data-auth-panel='sign-up' class='mt-7 hidden'>
+										<form data-sign-up-form novalidate class='space-y-5'>
+											<label class='block'>
+												<span class='auth-field-label'>Nombre visible</span>
+												<input data-sign-up-display-name type='text' required minlength='2' autocomplete='nickname' placeholder='Tu firma literaria' class='auth-input w-full' />
+											</label>
+											<label class='block'>
+												<span class='auth-field-label'>Username</span>
+												<input data-sign-up-username type='text' required minlength='3' maxlength='24' pattern='[a-z0-9_]+' autocomplete='username' placeholder='tuusername' class='auth-input w-full lowercase' />
+											</label>
+											<label class='block'>
+												<span class='auth-field-label'>Email</span>
+												<input data-sign-up-email type='email' required autocomplete='email' placeholder='tu@poema.com' class='auth-input w-full' />
+											</label>
+											<label class='block'>
+												<span class='auth-field-label'>Contrasena</span>
+												<input data-sign-up-password type='password' required minlength='6' autocomplete='new-password' placeholder='Minimo 6 caracteres' class='auth-input w-full' />
+											</label>
+											<button type='submit' data-sign-up-submit class='write-publish-button w-full'>
+												Crear cuenta
+											</button>
+										</form>
+
+										<button type='button' data-auth-switch='sign-in' class='auth-switch-link'>
+											Ya tienes cuenta? Entrar
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class='auth-footer'>
+								<div class='auth-footer-lines'>
+									<span></span>
+									<span></span>
+								</div>
+								<p>Inspiracion nocturna · 2024</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section data-profile-content>
+					<header class='profile-hero'>
+						<div class='profile-avatar-wrap'>
+							<div class='profile-avatar-ring'>
+								<img data-profile-avatar class='profile-avatar-image hidden' alt='Avatar del perfil' />
+								<div data-profile-avatar-fallback class='profile-avatar-fallback'>P</div>
+							</div>
+							<button data-profile-edit-toggle type='button' class='profile-avatar-edit hidden' aria-label='Editar perfil'>
+								<svg viewBox='0 0 24 24' class='h-4 w-4' fill='none' stroke='currentColor' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>
+									<path d='m4 20 4.5-1L19 8.5 15.5 5 5 15.5 4 20Z'></path>
+									<path d='m13.5 7 3.5 3.5'></path>
+								</svg>
+							</button>
+						</div>
+
+						<h1 data-profile-display-name class='profile-display-name'>Cargando perfil...</h1>
+						<p data-profile-handle class='profile-handle'>@poetika</p>
+						<p data-profile-bio class='profile-bio'>Todavia no ha escrito una bio en su cuaderno.</p>
+						<p data-profile-status class='profile-status'></p>
 					</header>
 
-					<section class='grid grid-cols-1 gap-4 sm:grid-cols-3'>
-						<div class='app-panel p-6'>
-							<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.24em]'>Likes</p>
-							<p data-profile-total-likes class='app-title text-4xl font-semibold'>0</p>
+					<section class='profile-stats-grid'>
+						<div class='profile-stat-card'>
+							<p data-profile-total-stories class='profile-stat-value'>0</p>
+							<p class='profile-stat-label'>Relatos</p>
 						</div>
-						<div class='app-panel p-6'>
-							<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.24em]'>Relatos</p>
-							<p data-profile-total-stories class='app-title text-4xl font-semibold'>0</p>
+						<div class='profile-stat-card'>
+							<p data-profile-total-likes class='profile-stat-value'>0</p>
+							<p class='profile-stat-label'>Puntos</p>
 						</div>
-						<div class='app-panel p-6'>
-							<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.24em]'>Dias activos</p>
-							<p data-profile-active-days class='app-title text-4xl font-semibold'>0</p>
+						<div class='profile-stat-card'>
+							<p data-profile-active-days class='profile-stat-value'>0</p>
+							<p class='profile-stat-label'>Dias activos</p>
 						</div>
 					</section>
 
-					<section data-profile-editor class='mt-8 hidden app-panel p-7 sm:p-9'>
-						<div class='app-divider mb-6 border-b pb-4'>
-							<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.32em]'>Tu portal</p>
-							<h2 class='app-title serif text-[2rem] font-semibold tracking-[-0.04em]'>Editar perfil</h2>
+					<section data-profile-editor class='profile-editor-panel mt-8 hidden'>
+						<div class='mb-5 flex items-center justify-between gap-3'>
+							<div>
+								<p class='home-section-kicker'>Tu perfil</p>
+								<h2 class='profile-section-title mt-2'>Editar firma</h2>
+							</div>
+							<button type='button' data-profile-edit-close class='auth-helper-link'>Cerrar</button>
 						</div>
 
 						<form data-profile-form class='grid gap-4 md:grid-cols-2'>
 							<label class='block md:col-span-1'>
-								<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Nombre visible</span>
-								<input data-profile-edit-display-name type='text' class='app-input w-full px-4 py-3' />
+								<span class='auth-field-label'>Nombre visible</span>
+								<input data-profile-edit-display-name type='text' class='auth-input w-full' />
 							</label>
 							<label class='block md:col-span-1'>
-								<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Username</span>
-								<input data-profile-edit-username type='text' class='app-input w-full px-4 py-3 lowercase' />
+								<span class='auth-field-label'>Username</span>
+								<input data-profile-edit-username type='text' class='auth-input w-full lowercase' />
 							</label>
 							<label class='block md:col-span-2'>
-								<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Avatar URL</span>
-								<input data-profile-edit-avatar type='url' class='app-input w-full px-4 py-3' />
+								<span class='auth-field-label'>Avatar URL</span>
+								<input data-profile-edit-avatar type='url' class='auth-input w-full' />
 							</label>
 							<label class='block md:col-span-2'>
-								<span class='app-kicker mb-2 block text-[0.72rem] uppercase tracking-[0.24em]'>Bio</span>
-								<textarea data-profile-edit-bio rows='4' class='app-input w-full resize-y px-4 py-4'></textarea>
+								<span class='auth-field-label'>Bio</span>
+								<textarea data-profile-edit-bio rows='4' class='auth-input min-h-32 w-full resize-y py-4'></textarea>
 							</label>
 							<div class='md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
-								<p data-profile-form-status class='app-copy text-sm'>Ajusta tu firma publica y guarda cuando quieras.</p>
-								<button type='submit' class='home-primary-button inline-flex px-8 py-4 text-sm font-semibold'>
-									Guardar perfil
-								</button>
+								<p data-profile-form-status class='write-status-copy'>Ajusta tu firma publica y guarda cuando quieras.</p>
+								<button type='submit' class='write-publish-button'>Guardar perfil</button>
 							</div>
 						</form>
 					</section>
 
-					<section class='mt-10'>
-						<div class='app-divider mb-6 flex items-end justify-between gap-4 border-b pb-4'>
+					<section class='mt-12'>
+						<div class='mb-6 flex items-end justify-between gap-4'>
 							<div>
-								<p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.32em]'>Biblioteca</p>
-								<h2 class='app-title serif text-[2rem] font-semibold tracking-[-0.04em]'>Relatos publicados</h2>
+								<h2 class='profile-section-title'>Mis Paginas</h2>
 							</div>
+							<button type='button' class='app-icon-button hidden h-11 w-11 items-center justify-center md:inline-flex' aria-label='Filtrar relatos'>
+								<svg viewBox='0 0 24 24' class='h-4 w-4' fill='none' stroke='currentColor' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>
+									<path d='M4 7h16M7 12h10M10 17h4'></path>
+								</svg>
+							</button>
 						</div>
-						<div data-profile-story-list class='grid gap-5'></div>
+						<div data-profile-story-list class='grid gap-6'></div>
 					</section>
 				</section>
-			</div>
+			</section>
+
+			<nav class='home-bottom-nav md:hidden' aria-label='Navegacion principal'>
+				{
+					bottomNavItems.map((item) => (
+						<a
+							href={item.href}
+							data-profile-link={item.dynamicProfile ? 'true' : undefined}
+							class:list={['home-bottom-link', item.active && 'is-active']}
+						>
+							<svg
+								viewBox='0 0 24 24'
+								class='h-5 w-5'
+								fill='none'
+								stroke='currentColor'
+								stroke-width='1.9'
+								stroke-linecap='round'
+								stroke-linejoin='round'
+								aria-hidden='true'
+							>
+								<path d={item.icon}></path>
+							</svg>
+							<span>{item.label}</span>
+						</a>
+					))
+				}
+			</nav>
 		</div>
 	</main>
 
 	<script>
 		import { initProfilePage } from '../scripts/profile-page.ts';
+		import { initAuthPortal } from '../scripts/auth-portal.ts';
 
 		initProfilePage();
+		initAuthPortal();
 	</script>
 </Layout>
