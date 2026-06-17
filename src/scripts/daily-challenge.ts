@@ -1,5 +1,7 @@
 import { loadDailyChallenge } from '../lib/challenge';
 import { getChallengeIcon } from '../lib/challenge-icons';
+import { getSession } from '../lib/auth';
+import { hasAuthorStoryForChallengeDate } from '../lib/stories';
 
 function setText(node: Element | null, value: string) {
 	if (!node) return;
@@ -25,11 +27,24 @@ export async function initDailyChallenge() {
 	}
 
 	const challenge = await loadDailyChallenge();
+	const session = await getSession();
+	const hasPublishedToday = session?.user
+		? await hasAuthorStoryForChallengeDate(session.user.id, challenge.dateKey)
+		: false;
 
 	for (const root of roots) {
 		setText(root.querySelector('[data-daily-date]'), challenge.dateKey);
 		setText(root.querySelector('[data-daily-summary]'), challenge.summary);
 		setText(root.querySelector('[data-daily-source]'), 'seleccion local diaria');
+		setText(
+			root.querySelector('[data-daily-status-label]'),
+			hasPublishedToday ? 'Publicado' : 'Activo',
+		);
+
+		const status = root.querySelector<HTMLElement>('[data-daily-status]');
+		if (status) {
+			status.dataset.state = hasPublishedToday ? 'published' : 'active';
+		}
 
 		const cards = Array.from(root.querySelectorAll<HTMLElement>('[data-daily-slot]'));
 		challenge.slots.forEach((slot, index) => {

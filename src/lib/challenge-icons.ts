@@ -18,8 +18,8 @@ const challengeIconsByCategory: Record<string, ChallengeIcon> = {
 		path: 'M12 21s6-4.35 6-10a6 6 0 1 0-12 0c0 5.65 6 10 6 10Zm0-7.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
 	},
 	objeto: {
-		label: 'lock',
-		path: 'M8 10V8a4 4 0 1 1 8 0v2M7 10h10a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z',
+		label: 'box',
+		path: 'M12 3 4.5 7 12 11 19.5 7 12 3ZM4.5 7v10L12 21l7.5-4V7M12 11v10',
 	},
 	emocion: {
 		label: 'sparkles',
@@ -30,8 +30,8 @@ const challengeIconsByCategory: Record<string, ChallengeIcon> = {
 		path: 'M12 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 12 12Zm-6 8a6 6 0 0 1 12 0Z',
 	},
 	animal: {
-		label: 'paw',
-		path: 'M8 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm8 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM6 16a1.75 1.75 0 1 0 0-3.5A1.75 1.75 0 0 0 6 16Zm12 0a1.75 1.75 0 1 0 0-3.5A1.75 1.75 0 0 0 18 16Zm-6 4c2.7 0 4.5-1.3 4.5-3.2 0-1.65-1.1-2.8-2.6-2.8-.88 0-1.25.27-1.9.8-.65-.53-1.02-.8-1.9-.8-1.5 0-2.6 1.15-2.6 2.8C7.5 18.7 9.3 20 12 20Z',
+		label: 'bug',
+		path: 'M9 6.5V5a3 3 0 1 1 6 0v1.5M8 9h8a2 2 0 0 1 2 2v4a6 6 0 1 1-12 0v-4a2 2 0 0 1 2-2Zm4 0v10M3 13h3M18 13h3M4.5 8.5l2 2M17.5 8.5l-2 2M4.5 18.5l2-2M17.5 18.5l-2-2',
 	},
 };
 
