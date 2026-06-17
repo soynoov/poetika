@@ -1,0 +1,17 @@
+{
+  "name": "Poetika",
+  "short_name": "Poetika",
+  "description": "Retos diarios de escritura y perfil social para autoras.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0a12",
+  "theme_color": "#120f1c",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

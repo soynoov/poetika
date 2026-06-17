@@ -120,7 +120,7 @@ const bottomNavItems = [
 								<img data-profile-avatar class='profile-avatar-image hidden' alt='Avatar del perfil' />
 								<div data-profile-avatar-fallback class='profile-avatar-fallback'>P</div>
 							</div>
-							<button data-profile-edit-toggle type='button' class='profile-avatar-edit hidden' aria-label='Editar perfil'>
+							<button data-profile-avatar-trigger type='button' class='profile-avatar-edit hidden' aria-label='Cambiar foto de perfil'>
 								<svg viewBox='0 0 24 24' class='h-4 w-4' fill='none' stroke='currentColor' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>
 									<path d='m4 20 4.5-1L19 8.5 15.5 5 5 15.5 4 20Z'></path>
 									<path d='m13.5 7 3.5 3.5'></path>
@@ -146,60 +146,6 @@ const bottomNavItems = [
 								<span data-profile-streak-fire class='hidden'>🔥</span>
 							</p>
 						</div>
-					</section>
-
-					<section data-profile-editor class='profile-editor-panel mt-8 hidden'>
-						<div class='mb-5 flex items-center justify-between gap-3'>
-							<div>
-								<p class='home-section-kicker'>Tu perfil</p>
-								<h2 class='profile-section-title mt-2'>Editar firma</h2>
-							</div>
-							<button type='button' data-profile-edit-close class='auth-helper-link'>Cerrar</button>
-						</div>
-
-						<form data-profile-form class='grid gap-4 md:grid-cols-2'>
-							<label class='block md:col-span-1'>
-								<span class='auth-field-label'>Nombre visible</span>
-								<input data-profile-edit-display-name type='text' class='auth-input w-full' />
-							</label>
-							<label class='block md:col-span-1'>
-								<span class='auth-field-label'>Username</span>
-								<input data-profile-edit-username type='text' class='auth-input w-full lowercase' />
-							</label>
-							<label class='block md:col-span-2'>
-								<span class='auth-field-label'>Foto de perfil</span>
-								<div class='profile-photo-editor'>
-									<div class='profile-photo-preview'>
-										<img data-profile-edit-avatar-preview class='profile-photo-preview-image hidden' alt='Vista previa de avatar' />
-										<div data-profile-edit-avatar-preview-fallback class='profile-photo-preview-fallback'>P</div>
-									</div>
-									<div class='flex-1 space-y-3'>
-										<input data-profile-edit-avatar type='hidden' />
-										<input data-profile-edit-avatar-file type='file' accept='image/*' class='hidden' />
-										<div class='flex flex-col gap-3 sm:flex-row'>
-											<button type='button' data-profile-avatar-upload class='home-secondary-button rounded-full px-5 py-3 text-sm font-semibold uppercase tracking-[0.08em]'>
-												Subir foto
-											</button>
-											<button type='button' data-profile-avatar-clear class='auth-helper-link text-left'>
-												Quitar foto
-											</button>
-										</div>
-										<label class='block'>
-											<span class='auth-field-label'>O pega una URL</span>
-											<input data-profile-edit-avatar-url type='url' class='auth-input w-full' />
-										</label>
-									</div>
-								</div>
-							</label>
-							<label class='block md:col-span-2'>
-								<span class='auth-field-label'>Bio</span>
-								<textarea data-profile-edit-bio rows='4' class='auth-input min-h-32 w-full resize-y py-4'></textarea>
-							</label>
-							<div class='md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
-								<p data-profile-form-status class='write-status-copy'>Ajusta tu firma publica y guarda cuando quieras.</p>
-								<button type='submit' class='write-publish-button'>Guardar perfil</button>
-							</div>
-						</form>
 					</section>
 
 					<section class='mt-12'>
@@ -228,6 +174,87 @@ const bottomNavItems = [
 						</div>
 					</section>
 				</section>
+			</section>
+
+			<section data-profile-settings-sheet class='profile-settings-sheet hidden' aria-hidden='true'>
+				<div data-profile-settings-backdrop class='profile-settings-backdrop'></div>
+				<div class='profile-settings-panel'>
+					<div class='mb-5 flex items-center justify-between gap-3'>
+						<div>
+							<p class='home-section-kicker'>Ajustes</p>
+							<h2 class='profile-section-title mt-2'>Tu cuenta</h2>
+						</div>
+						<button type='button' data-profile-settings-close class='auth-helper-link'>Cerrar</button>
+					</div>
+
+					<div class='profile-settings-sections'>
+						<section class='profile-settings-block'>
+							<div class='profile-settings-block-head'>
+								<h3 class='profile-settings-heading'>Perfil</h3>
+								<p class='profile-settings-copy'>Tu firma publica, avatar y bio.</p>
+							</div>
+
+							<form data-profile-form class='grid gap-4 md:grid-cols-2'>
+								<label class='block md:col-span-1'>
+									<span class='auth-field-label'>Nombre visible</span>
+									<input data-profile-edit-display-name type='text' class='auth-input w-full' />
+								</label>
+								<label class='block md:col-span-1'>
+									<span class='auth-field-label'>Username</span>
+									<input data-profile-edit-username type='text' class='auth-input w-full lowercase' />
+								</label>
+								<label class='block md:col-span-2'>
+									<span class='auth-field-label'>Foto de perfil</span>
+									<div class='profile-photo-editor'>
+										<div class='profile-photo-preview'>
+											<img data-profile-edit-avatar-preview class='profile-photo-preview-image hidden' alt='Vista previa de avatar' />
+											<div data-profile-edit-avatar-preview-fallback class='profile-photo-preview-fallback'>P</div>
+										</div>
+										<div class='flex-1 space-y-3'>
+											<input data-profile-edit-avatar type='hidden' />
+											<input data-profile-edit-avatar-file type='file' accept='image/*' class='hidden' />
+											<div class='flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center'>
+												<button type='button' data-profile-avatar-upload class='home-secondary-button rounded-full px-5 py-3 text-sm font-semibold uppercase tracking-[0.08em]'>
+													Subir foto
+												</button>
+												<button type='button' data-profile-avatar-clear class='auth-helper-link text-left'>
+													Quitar foto
+												</button>
+											</div>
+											<p class='profile-settings-copy'>El lapiz del avatar abre directamente este selector de imagen.</p>
+										</div>
+									</div>
+								</label>
+								<label class='block md:col-span-2'>
+									<span class='auth-field-label'>Bio</span>
+									<textarea data-profile-edit-bio rows='4' class='auth-input min-h-32 w-full resize-y py-4'></textarea>
+								</label>
+								<div class='md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+									<p data-profile-form-status class='write-status-copy'>Edita tu firma publica y guarda cuando quieras.</p>
+									<button type='submit' class='write-publish-button'>Guardar perfil</button>
+								</div>
+							</form>
+						</section>
+
+						<section class='profile-settings-block'>
+							<div class='profile-settings-block-head'>
+								<h3 class='profile-settings-heading'>Apariencia</h3>
+								<p class='profile-settings-copy'>Preferencia visual para la app.</p>
+							</div>
+							<div class='profile-theme-row'>
+								<button type='button' data-theme-choice='night' class='profile-theme-choice'>Modo nocturno</button>
+								<button type='button' data-theme-choice='day' class='profile-theme-choice'>Modo claro</button>
+							</div>
+						</section>
+
+						<section class='profile-settings-block'>
+							<div class='profile-settings-block-head'>
+								<h3 class='profile-settings-heading'>Privacidad</h3>
+								<p class='profile-settings-copy'>Este bloque queda listo para meter visibilidad, bloqueo y permisos cuando lo bajemos a producto.</p>
+							</div>
+						</section>
+					</div>
+				</div>
 			</section>
 
 			<nav class='home-bottom-nav md:hidden' aria-label='Navegacion principal'>

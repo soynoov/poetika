@@ -110,6 +110,25 @@ const navItems = [
 								<path d='m9 6 6 6-6 6'></path>
 							</svg>
 						</a>
+						<a
+							href='/profile#settings'
+							data-profile-settings-link='true'
+							class='app-menu-link flex items-center justify-between rounded-2xl px-4 py-3 text-sm text-[var(--ink-soft)] transition'
+						>
+							<span>Ajustes</span>
+							<svg
+								viewBox='0 0 24 24'
+								class='h-4 w-4 opacity-60'
+								fill='none'
+								stroke='currentColor'
+								stroke-width='1.9'
+								stroke-linecap='round'
+								stroke-linejoin='round'
+								aria-hidden='true'
+							>
+								<path d='m9 6 6 6-6 6'></path>
+							</svg>
+						</a>
 						<button
 							type='button'
 							data-sign-out-button
@@ -179,22 +198,85 @@ const navItems = [
 			>
 				Entrar
 			</a>
-			<div data-auth-only data-auth-display='flex' class='hidden items-center gap-3 max-md:hidden'>
-				<a
-					href='/profile'
-					data-profile-link='true'
-					class='app-icon-button hidden h-11 items-center justify-center rounded-full px-4 text-sm font-semibold text-[var(--ink-strong)] md:inline-flex'
-				>
+			<details data-auth-only data-auth-display='block' class='relative hidden max-md:hidden'>
+				<summary class='app-icon-button flex h-11 cursor-pointer list-none items-center gap-2 rounded-full px-4 text-sm font-semibold text-[var(--ink-strong)]'>
 					<span data-session-label>Mi perfil</span>
-				</a>
-				<button
-					type='button'
-					data-sign-out-button
-					class='app-icon-button hidden h-11 items-center justify-center rounded-full px-4 text-sm font-semibold text-[var(--ink-strong)] md:inline-flex'
-				>
-					Salir
-				</button>
-			</div>
+					<svg
+						viewBox='0 0 24 24'
+						class='h-4 w-4 opacity-70'
+						fill='none'
+						stroke='currentColor'
+						stroke-width='1.9'
+						stroke-linecap='round'
+						stroke-linejoin='round'
+						aria-hidden='true'
+					>
+						<path d='m7 10 5 5 5-5'></path>
+					</svg>
+				</summary>
+
+				<div class='app-menu-panel absolute right-0 top-[calc(100%+0.85rem)] z-30 w-64 rounded-[1.6rem] p-3'>
+					<nav class='flex flex-col gap-1 text-sm text-[var(--ink-soft)]'>
+						<a
+							href='/profile'
+							data-profile-link='true'
+							class='app-menu-link flex items-center justify-between rounded-2xl px-4 py-3 transition'
+						>
+							<span>Mi perfil</span>
+							<svg
+								viewBox='0 0 24 24'
+								class='h-4 w-4 opacity-60'
+								fill='none'
+								stroke='currentColor'
+								stroke-width='1.9'
+								stroke-linecap='round'
+								stroke-linejoin='round'
+								aria-hidden='true'
+							>
+								<path d='m9 6 6 6-6 6'></path>
+							</svg>
+						</a>
+						<a
+							href='/profile#settings'
+							data-profile-settings-link='true'
+							class='app-menu-link flex items-center justify-between rounded-2xl px-4 py-3 transition'
+						>
+							<span>Ajustes</span>
+							<svg
+								viewBox='0 0 24 24'
+								class='h-4 w-4 opacity-60'
+								fill='none'
+								stroke='currentColor'
+								stroke-width='1.9'
+								stroke-linecap='round'
+								stroke-linejoin='round'
+								aria-hidden='true'
+							>
+								<path d='m9 6 6 6-6 6'></path>
+							</svg>
+						</a>
+						<button
+							type='button'
+							data-sign-out-button
+							class='app-menu-link flex items-center justify-between rounded-2xl px-4 py-3 text-left transition'
+						>
+							<span>Salir</span>
+							<svg
+								viewBox='0 0 24 24'
+								class='h-4 w-4 opacity-60'
+								fill='none'
+								stroke='currentColor'
+								stroke-width='1.9'
+								stroke-linecap='round'
+								stroke-linejoin='round'
+								aria-hidden='true'
+							>
+								<path d='m9 6 6 6-6 6'></path>
+							</svg>
+						</button>
+					</nav>
+				</div>
+			</details>
 
 			<a
 				href='/auth'

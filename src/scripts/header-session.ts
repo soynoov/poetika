@@ -8,9 +8,15 @@ function getElement<T extends HTMLElement>(selector: string, root: ParentNode = 
 function showAuthOnlyNode(node: HTMLElement) {
 	node.classList.remove('hidden');
 	const display = node.dataset.authDisplay;
+	node.classList.remove('block');
+	node.classList.remove('flex');
+	node.classList.remove('inline-flex');
+	if (display === 'block') {
+		node.classList.add('block');
+		return;
+	}
 	if (display === 'inline-flex') {
 		node.classList.add('inline-flex');
-		node.classList.remove('flex');
 		return;
 	}
 
@@ -29,6 +35,11 @@ function renderSignedOut() {
 
 	const profileLinks = document.querySelectorAll<HTMLAnchorElement>('[data-profile-link]');
 	profileLinks.forEach((link) => {
+		link.href = '/profile';
+	});
+
+	const settingsLinks = document.querySelectorAll<HTMLAnchorElement>('[data-profile-settings-link]');
+	settingsLinks.forEach((link) => {
 		link.href = '/profile';
 	});
 
@@ -61,6 +72,11 @@ async function renderSignedIn() {
 	const profileLinks = document.querySelectorAll<HTMLAnchorElement>('[data-profile-link]');
 	profileLinks.forEach((link) => {
 		link.href = profile ? `/profile?u=${encodeURIComponent(profile.username)}` : '/profile';
+	});
+
+	const settingsLinks = document.querySelectorAll<HTMLAnchorElement>('[data-profile-settings-link]');
+	settingsLinks.forEach((link) => {
+		link.href = profile ? `/profile?u=${encodeURIComponent(profile.username)}#settings` : '/profile';
 	});
 
 	const labels = document.querySelectorAll<HTMLElement>('[data-session-label]');

@@ -126,8 +126,15 @@ function setAvatar(displayName: string, avatarUrl: string | null) {
 	);
 }
 
-function toggleEditor(open: boolean) {
-	getElement<HTMLElement>('[data-profile-editor]')?.classList.toggle('hidden', !open);
+function toggleSettingsSheet(open: boolean) {
+	const sheet = getElement<HTMLElement>('[data-profile-settings-sheet]');
+	if (!sheet) {
+		return;
+	}
+
+	sheet.classList.toggle('hidden', !open);
+	sheet.setAttribute('aria-hidden', open ? 'false' : 'true');
+	document.body.classList.toggle('profile-settings-open', open);
 }
 
 function setProfileTab(mode: 'stories' | 'likes') {
@@ -139,6 +146,21 @@ function setProfileTab(mode: 'stories' | 'likes') {
 
 	document.querySelectorAll<HTMLElement>('[data-profile-tab-panel]').forEach((panel) => {
 		panel.classList.toggle('hidden', panel.dataset.profileTabPanel !== mode);
+	});
+}
+
+function setThemeChoice(theme: 'day' | 'night') {
+	const root = document.documentElement;
+	root.dataset.theme = theme;
+
+	try {
+		localStorage.setItem('poetika:theme', theme);
+	} catch {
+		// Ignore localStorage failures.
+	}
+
+	document.querySelectorAll<HTMLElement>('[data-theme-choice]').forEach((button) => {
+		button.classList.toggle('is-active', button.dataset.themeChoice === theme);
 	});
 }
 
@@ -219,6 +241,15 @@ function renderStoryList(
 	setupStoryExpansions(root);
 }
 
+function collectProfileFormValues() {
+	return {
+		display_name: getElement<HTMLInputElement>('[data-profile-edit-display-name]')?.value ?? '',
+		username: getElement<HTMLInputElement>('[data-profile-edit-username]')?.value ?? '',
+		bio: getElement<HTMLTextAreaElement>('[data-profile-edit-bio]')?.value ?? '',
+		avatar_url: getElement<HTMLInputElement>('[data-profile-edit-avatar]')?.value ?? '',
+	};
+}
+
 export async function initProfilePage() {
 	const root = getElement<HTMLElement>('[data-profile-page]');
 	if (!root) {
@@ -273,19 +304,6 @@ export async function initProfilePage() {
 	);
 	renderStoryList('[data-profile-story-list]', stories);
 	setProfileTab('stories');
-
-	const isOwnProfile = currentProfile?.user_id === targetProfile.user_id;
-	toggleGuestState(false);
-	getElement<HTMLElement>('[data-profile-edit-toggle]')?.classList.toggle('hidden', !isOwnProfile);
-	toggleEditor(false);
-
-	if (!isOwnProfile) {
-		return;
-	}
-
-	const likedStories = await fetchLikedStoriesByUserId(targetProfile.user_id);
-	renderStoryList('[data-profile-liked-story-list]', likedStories);
-
 	document.querySelectorAll<HTMLElement>('[data-profile-tab-button]').forEach((button) => {
 		button.addEventListener('click', () => {
 			const mode = button.dataset.profileTabButton === 'likes' ? 'likes' : 'stories';
@@ -293,27 +311,101 @@ export async function initProfilePage() {
 		});
 	});
 
+	const isOwnProfile = currentProfile?.user_id === targetProfile.user_id;
+	toggleGuestState(false);
+	getElement<HTMLElement>('[data-profile-avatar-trigger]')?.classList.toggle('hidden', !isOwnProfile);
+	toggleSettingsSheet(false);
+	setThemeChoice(document.documentElement.dataset.theme === 'night' ? 'night' : 'day');
+
+	if (!isOwnProfile) {
+		getElement<HTMLElement>('[data-profile-tab-button="likes"]')?.classList.add('hidden');
+		getElement<HTMLElement>('[data-profile-tab-panel="likes"]')?.classList.add('hidden');
+		getElement<HTMLElement>('[data-profile-settings-sheet]')?.remove();
+		return;
+	}
+
+	const likedStories = await fetchLikedStoriesByUserId(targetProfile.user_id);
+	renderStoryList('[data-profile-liked-story-list]', likedStories);
+
 	setInputValue('[data-profile-edit-display-name]', targetProfile.display_name);
 	setInputValue('[data-profile-edit-username]', targetProfile.username);
 	setInputValue('[data-profile-edit-bio]', targetProfile.bio ?? '');
 	setInputValue('[data-profile-edit-avatar]', targetProfile.avatar_url ?? '');
-	setInputValue('[data-profile-edit-avatar-url]', targetProfile.avatar_url ?? '');
+
+	const openSettings = () => {
+		toggleSettingsSheet(true);
+		if (window.location.hash !== '#settings') {
+			window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#settings`);
+		}
+	};
+
+	const closeSettings = () => {
+		toggleSettingsSheet(false);
+		if (window.location.hash === '#settings') {
+			window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+		}
+	};
+
+	const syncProfileUI = (profile: {
+		display_name: string;
+		username: string;
+		bio: string | null;
+		avatar_url: string | null;
+	}) => {
+		setText('[data-profile-display-name]', profile.display_name);
+		setText('[data-profile-handle]', `@${profile.username}`);
+		setText(
+			'[data-profile-bio]',
+			profile.bio?.trim() || 'Todavia no ha escrito una bio en su cuaderno.',
+		);
+		setAvatar(profile.display_name, profile.avatar_url);
+		setInputValue('[data-profile-edit-display-name]', profile.display_name);
+		setInputValue('[data-profile-edit-username]', profile.username);
+		setInputValue('[data-profile-edit-bio]', profile.bio ?? '');
+		setInputValue('[data-profile-edit-avatar]', profile.avatar_url ?? '');
+	};
+
+	const persistProfile = async (statusMessage = 'Perfil guardado.') => {
+		setText('[data-profile-form-status]', 'Guardando perfil...');
+		const updated = await updateCurrentProfile(targetProfile.user_id, collectProfileFormValues());
+		if (updated) {
+			syncProfileUI(updated);
+		}
+		setText('[data-profile-form-status]', statusMessage);
+		return updated;
+	};
 
 	getElement<HTMLButtonElement>('[data-profile-avatar-upload]')?.addEventListener('click', () => {
 		getElement<HTMLInputElement>('[data-profile-edit-avatar-file]')?.click();
 	});
 
-	getElement<HTMLInputElement>('[data-profile-edit-avatar-url]')?.addEventListener('input', (event) => {
-		const target = event.target;
-		if (!(target instanceof HTMLInputElement)) {
-			return;
-		}
+	getElement<HTMLButtonElement>('[data-profile-avatar-trigger]')?.addEventListener('click', () => {
+		getElement<HTMLInputElement>('[data-profile-edit-avatar-file]')?.click();
+	});
 
-		setInputValues(['[data-profile-edit-avatar]'], target.value.trim());
-		setAvatar(
-			getElement<HTMLInputElement>('[data-profile-edit-display-name]')?.value || targetProfile.display_name,
-			target.value.trim() || null,
-		);
+	document.querySelectorAll<HTMLAnchorElement>('[data-profile-settings-link]').forEach((link) => {
+		link.addEventListener('click', (event) => {
+			const href = link.getAttribute('href') || '';
+			if (!href.includes('/profile')) {
+				return;
+			}
+
+			const currentProfileUrl = `${window.location.pathname}${window.location.search}`;
+			if (!href.startsWith(currentProfileUrl) && !href.startsWith('/profile')) {
+				return;
+			}
+
+			event.preventDefault();
+			openSettings();
+		});
+	});
+
+	getElement<HTMLButtonElement>('[data-profile-settings-close]')?.addEventListener('click', closeSettings);
+	getElement<HTMLElement>('[data-profile-settings-backdrop]')?.addEventListener('click', closeSettings);
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') {
+			closeSettings();
+		}
 	});
 
 	getElement<HTMLInputElement>('[data-profile-edit-display-name]')?.addEventListener('input', (event) => {
@@ -334,19 +426,26 @@ export async function initProfilePage() {
 		}
 
 		const reader = new FileReader();
-		reader.onload = () => {
+		reader.onload = async () => {
 			const result = typeof reader.result === 'string' ? reader.result : '';
-			setInputValues(['[data-profile-edit-avatar]', '[data-profile-edit-avatar-url]'], result);
+			setInputValues(['[data-profile-edit-avatar]'], result);
 			setAvatar(
 				getElement<HTMLInputElement>('[data-profile-edit-display-name]')?.value || targetProfile.display_name,
 				result || null,
 			);
+			try {
+				await persistProfile('Foto de perfil actualizada.');
+			} catch (error) {
+				const message =
+					error instanceof Error ? error.message : 'No se pudo actualizar la foto de perfil.';
+				setText('[data-profile-form-status]', message);
+			}
 		};
 		reader.readAsDataURL(file);
 	});
 
-	getElement<HTMLButtonElement>('[data-profile-avatar-clear]')?.addEventListener('click', () => {
-		setInputValues(['[data-profile-edit-avatar]', '[data-profile-edit-avatar-url]'], '');
+	getElement<HTMLButtonElement>('[data-profile-avatar-clear]')?.addEventListener('click', async () => {
+		setInputValues(['[data-profile-edit-avatar]'], '');
 		const fileField = getElement<HTMLInputElement>('[data-profile-edit-avatar-file]');
 		if (fileField) {
 			fileField.value = '';
@@ -355,44 +454,34 @@ export async function initProfilePage() {
 			getElement<HTMLInputElement>('[data-profile-edit-display-name]')?.value || targetProfile.display_name,
 			null,
 		);
-	});
-
-	getElement<HTMLButtonElement>('[data-profile-edit-toggle]')?.addEventListener('click', () => {
-		toggleEditor(true);
-	});
-
-	getElement<HTMLButtonElement>('[data-profile-edit-close]')?.addEventListener('click', () => {
-		toggleEditor(false);
+		try {
+			await persistProfile('Foto de perfil eliminada.');
+		} catch (error) {
+			const message =
+				error instanceof Error ? error.message : 'No se pudo quitar la foto de perfil.';
+			setText('[data-profile-form-status]', message);
+		}
 	});
 
 	getElement<HTMLFormElement>('[data-profile-form]')?.addEventListener('submit', async (event) => {
 		event.preventDefault();
-		setText('[data-profile-form-status]', 'Guardando perfil...');
-
 		try {
-			const updated = await updateCurrentProfile(targetProfile.user_id, {
-				display_name:
-					getElement<HTMLInputElement>('[data-profile-edit-display-name]')?.value ?? '',
-				username: getElement<HTMLInputElement>('[data-profile-edit-username]')?.value ?? '',
-				bio: getElement<HTMLTextAreaElement>('[data-profile-edit-bio]')?.value ?? '',
-				avatar_url: getElement<HTMLInputElement>('[data-profile-edit-avatar]')?.value ?? '',
-			});
-
-			if (updated) {
-				setText('[data-profile-display-name]', updated.display_name);
-				setText('[data-profile-handle]', `@${updated.username}`);
-				setText(
-					'[data-profile-bio]',
-					updated.bio?.trim() || 'Todavia no ha escrito una bio en su cuaderno.',
-				);
-				setAvatar(updated.display_name, updated.avatar_url);
-				setInputValues(['[data-profile-edit-avatar-url]', '[data-profile-edit-avatar]'], updated.avatar_url ?? '');
-			}
-
-			setText('[data-profile-form-status]', 'Perfil guardado.');
+			await persistProfile('Perfil guardado.');
+			closeSettings();
 		} catch (error) {
 			const message = error instanceof Error ? error.message : 'No se pudo guardar el perfil.';
 			setText('[data-profile-form-status]', message);
 		}
 	});
+
+	document.querySelectorAll<HTMLElement>('[data-theme-choice]').forEach((button) => {
+		button.addEventListener('click', () => {
+			const theme = button.dataset.themeChoice === 'day' ? 'day' : 'night';
+			setThemeChoice(theme);
+		});
+	});
+
+	if (window.location.hash === '#settings') {
+		openSettings();
+	}
 }
