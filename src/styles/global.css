@@ -1163,3 +1163,322 @@ a {
     padding-inline: 2rem;
   }
 }
+
+.leaderboard-podium-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.18fr 1fr;
+  align-items: end;
+  gap: 0.9rem;
+  padding-top: 1.5rem;
+}
+
+.leaderboard-podium-card {
+  text-align: center;
+}
+
+.leaderboard-podium-card-center {
+  order: 2;
+}
+
+.leaderboard-podium-card-left {
+  order: 1;
+}
+
+.leaderboard-podium-card-right {
+  order: 3;
+}
+
+.leaderboard-podium-avatar-shell {
+  position: relative;
+  margin: 0 auto;
+}
+
+.leaderboard-podium-avatar-shell-side {
+  width: 5.6rem;
+}
+
+.leaderboard-podium-avatar-shell-center {
+  width: 8.5rem;
+}
+
+.leaderboard-podium-avatar,
+.leaderboard-podium-fallback {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+}
+
+.leaderboard-podium-avatar {
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.86);
+  background: #1b1529;
+}
+
+.leaderboard-podium-fallback {
+  display: grid;
+  place-items: center;
+  border: 3px solid rgba(255, 255, 255, 0.86);
+  background: radial-gradient(circle at top, rgba(105, 77, 158, 0.92), rgba(28, 22, 43, 0.98));
+  color: var(--ink-strong);
+  font-family:
+    'Berista Regular',
+    'Iowan Old Style',
+    'Palatino Linotype',
+    'Book Antiqua',
+    Georgia,
+    serif;
+  font-size: 1.7rem;
+}
+
+.leaderboard-podium-rank {
+  position: absolute;
+  right: -0.5rem;
+  bottom: 0.15rem;
+  display: inline-flex;
+  width: 2.15rem;
+  height: 2.15rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #fff8ff;
+  color: #231931;
+  font-size: 0.92rem;
+  font-weight: 900;
+}
+
+.leaderboard-podium-info {
+  border: 1px solid var(--frame-border);
+  border-radius: 2rem 2rem 0 0;
+  background:
+    linear-gradient(180deg, rgba(26, 21, 38, 0.96) 0%, rgba(19, 16, 29, 0.98) 100%);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  margin-top: 0.9rem;
+  padding: 1.25rem 0.8rem 1.4rem;
+  min-height: 10.75rem;
+}
+
+.leaderboard-podium-card-center .leaderboard-podium-info {
+  min-height: 12.8rem;
+  padding-top: 2rem;
+}
+
+.leaderboard-podium-title,
+.leaderboard-kicker,
+.leaderboard-meta {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.leaderboard-podium-name {
+  margin: 0.85rem 0 0;
+  font-family:
+    'Berista Regular',
+    'Iowan Old Style',
+    'Palatino Linotype',
+    'Book Antiqua',
+    Georgia,
+    serif;
+  color: var(--ink-strong);
+  font-size: clamp(1.25rem, 4vw, 2rem);
+  line-height: 1.05;
+}
+
+.leaderboard-podium-points {
+  margin: 0.75rem 0 0;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+}
+
+.leaderboard-topline {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.leaderboard-tabs {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.leaderboard-tab {
+  border: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0 0 0.35rem;
+}
+
+.leaderboard-tab.is-active {
+  color: var(--ink-strong);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.84);
+}
+
+.leaderboard-tab.is-disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.leaderboard-meta {
+  line-height: 1.6;
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.95rem;
+  border: 1px solid var(--frame-border);
+  border-radius: 1.8rem;
+  background:
+    linear-gradient(180deg, rgba(25, 21, 36, 0.96) 0%, rgba(18, 16, 27, 0.98) 100%);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  padding: 1rem 1rem 1rem 0.95rem;
+}
+
+.leaderboard-row.is-viewer {
+  border-color: rgba(157, 124, 255, 0.46);
+  box-shadow:
+    0 20px 56px rgba(88, 51, 174, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.leaderboard-row-rank {
+  color: var(--ink-muted);
+  font-size: 1.45rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  min-width: 2.3rem;
+  text-align: center;
+}
+
+.leaderboard-row-avatar {
+  display: inline-flex;
+  width: 3.55rem;
+  height: 3.55rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.leaderboard-row-avatar-image,
+.leaderboard-row-avatar-fallback {
+  width: 100%;
+  height: 100%;
+}
+
+.leaderboard-row-avatar-image {
+  object-fit: cover;
+}
+
+.leaderboard-row-avatar-fallback {
+  display: grid;
+  place-items: center;
+  color: var(--ink-strong);
+  background: radial-gradient(circle at top, rgba(92, 71, 144, 0.92), rgba(31, 25, 47, 0.98));
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.leaderboard-row-name {
+  display: block;
+  color: var(--ink-strong);
+  font-size: clamp(1.05rem, 3.4vw, 1.5rem);
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-row-badge {
+  border: 1px solid rgba(157, 126, 255, 0.34);
+  border-radius: 0.45rem;
+  color: #d3c1ff;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.22rem 0.45rem;
+  text-transform: uppercase;
+}
+
+.leaderboard-row-preview {
+  margin: 0.35rem 0 0;
+  color: var(--ink-muted);
+  font-size: 0.92rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-row-points {
+  text-align: right;
+  color: var(--ink-strong);
+  font-size: clamp(1.2rem, 3.8vw, 2rem);
+  font-weight: 900;
+  line-height: 0.95;
+}
+
+.leaderboard-row-points small {
+  display: block;
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  margin-top: 0.4rem;
+}
+
+@media (max-width: 767px) {
+  .leaderboard-podium-grid {
+    grid-template-columns: 0.82fr 1.36fr 0.82fr;
+    gap: 0.5rem;
+  }
+
+  .leaderboard-podium-avatar-shell-side {
+    width: 3.9rem;
+  }
+
+  .leaderboard-podium-avatar-shell-center {
+    width: 6.9rem;
+  }
+
+  .leaderboard-podium-info {
+    min-height: 7rem;
+    padding-inline: 0.55rem;
+  }
+
+  .leaderboard-podium-card-center .leaderboard-podium-info {
+    min-height: 9rem;
+    padding-top: 1.35rem;
+  }
+
+  .leaderboard-podium-title,
+  .leaderboard-kicker,
+  .leaderboard-meta {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+  }
+
+  .leaderboard-topline {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .leaderboard-row {
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    padding-right: 0.8rem;
+  }
+}

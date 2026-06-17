@@ -34,6 +34,17 @@ export type ProfileStoryStats = {
 	activeDays: number;
 };
 
+export type LeaderboardEntry = {
+	author: StoryAuthor;
+	points: number;
+	totalLikes: number;
+	totalStories: number;
+	highlight: string;
+	preview: string;
+	rank: number;
+	isViewer: boolean;
+};
+
 const DRAFT_STORAGE_PREFIX = 'poetika:draft:';
 
 function hasWindow() {
@@ -344,4 +355,110 @@ export async function getProfileStoryStats(authorId: string) {
 		totalLikes,
 		activeDays,
 	} satisfies ProfileStoryStats;
+}
+
+function createHighlight(totalStories: number, totalLikes: number, rank: number, isViewer: boolean) {
+	if (isViewer && rank > 1) {
+		return `Faltan ${Math.max(1, rank - 1)} puestos para la corona`;
+	}
+
+	if (totalLikes >= 25) {
+		return 'Virtuoso';
+	}
+
+	if (totalStories >= 3) {
+		return 'Escribe';
+	}
+
+	return 'Ascenso';
+}
+
+export async function fetchLeaderboard(viewerId?: string) {
+	if (!supabase) {
+		return [];
+	}
+
+	const { data, error } = await supabase.from('stories').select('*');
+
+	if (error) {
+		throw error;
+	}
+
+	const stories = data ?? [];
+	if (!stories.length) {
+		return [];
+	}
+
+	const [profilesMap, likesMap] = await Promise.all([
+		getProfilesMap(stories.map((story) => story.author_id)),
+		getLikesMap(stories.map((story) => story.id)),
+	]);
+
+	const grouped = new Map<
+		string,
+		{
+			author: StoryAuthor;
+			totalLikes: number;
+			totalStories: number;
+			totalWords: number;
+			latestStory: StoryRow;
+		}
+	>();
+
+	for (const story of stories) {
+		const author =
+			profilesMap.get(story.author_id) ?? {
+				id: story.author_id,
+				username: 'writer',
+				displayName: 'Writer',
+				avatarUrl: null,
+			};
+		const likes = likesMap.get(story.id)?.length ?? 0;
+		const current = grouped.get(story.author_id);
+
+		if (!current) {
+			grouped.set(story.author_id, {
+				author,
+				totalLikes: likes,
+				totalStories: 1,
+				totalWords: story.word_count,
+				latestStory: story,
+			});
+			continue;
+		}
+
+		current.totalLikes += likes;
+		current.totalStories += 1;
+		current.totalWords += story.word_count;
+		if (new Date(story.created_at).getTime() > new Date(current.latestStory.created_at).getTime()) {
+			current.latestStory = story;
+		}
+	}
+
+	return [...grouped.values()]
+		.map((entry) => ({
+			author: entry.author,
+			points: entry.totalLikes,
+			totalLikes: entry.totalLikes,
+			totalStories: entry.totalStories,
+			preview: buildStoryPreview(entry.latestStory.body, 56),
+			isViewer: viewerId === entry.author.id,
+		}))
+		.sort((left, right) => {
+			if (right.points !== left.points) {
+				return right.points - left.points;
+			}
+
+			if (right.totalStories !== left.totalStories) {
+				return right.totalStories - left.totalStories;
+			}
+
+			return left.author.displayName.localeCompare(right.author.displayName, 'es');
+		})
+		.map((entry, index) => ({
+			...entry,
+			rank: index + 1,
+			highlight: createHighlight(entry.totalStories, entry.totalLikes, index + 1, entry.isViewer),
+		}))
+		.slice(0, 50) satisfies LeaderboardEntry[];
 }
