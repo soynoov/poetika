@@ -1,4 +1,5 @@
 import { getSession } from '../lib/auth';
+import { getFallbackDailyChallenge } from '../lib/challenge';
 import {
 	ensureProfileForUser,
 	getCurrentProfile,
@@ -54,6 +55,25 @@ function escapeHtml(value: string) {
 		.replaceAll("'", '&#39;');
 }
 
+function escapeRegExp(value: string) {
+	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function highlightChallengeWords(body: string, words: string[]) {
+	let html = escapeHtml(body);
+
+	for (const word of words) {
+		if (!word.trim()) continue;
+
+		const pattern = new RegExp(`(^|[^\\p{L}\\p{N}])(${escapeRegExp(word)})(?=[^\\p{L}\\p{N}]|$)`, 'giu');
+		html = html.replace(pattern, (_, prefix: string, match: string) => {
+			return `${prefix}<strong>${match}</strong>`;
+		});
+	}
+
+	return html;
+}
+
 function toggleGuestState(showGuest: boolean) {
 	getElement<HTMLElement>('[data-profile-guest-card]')?.classList.toggle('hidden', !showGuest);
 	getElement<HTMLElement>('[data-profile-content]')?.classList.toggle('hidden', showGuest);
@@ -94,23 +114,27 @@ function renderStoryList(
 
 	root.innerHTML = stories
 		.map(
-			(story) => `
+			(story) => {
+				const challenge = getFallbackDailyChallenge(story.challengeDate);
+				const dailyWords = challenge.slots.map((slot) => slot.word);
+
+				return `
 				<article class="profile-story-card">
 					<div class="profile-story-tags">
-						<span class="profile-story-tag">${story.wordCount} palabras</span>
-						<span class="profile-story-tag">${story.likes} likes</span>
-						<span class="profile-story-tag">${escapeHtml(story.challengeDate)}</span>
+						${dailyWords.map((word) => `<span class="profile-story-tag">${escapeHtml(word)}</span>`).join('')}
 					</div>
-					<p class="profile-story-body">${escapeHtml(story.body)}</p>
+					<p class="profile-story-body">${highlightChallengeWords(story.body, dailyWords)}</p>
 					<div class="profile-story-footer">
 						<div class="profile-story-metrics">
-							<span>Ojo ${story.likes}</span>
+							<span>${story.wordCount} palabras</span>
+							<span>${story.likes} likes</span>
 							<span>Firma @${escapeHtml(story.author.username)}</span>
 						</div>
 						<p class="profile-story-date">${formatMadridDateTime(story.createdAt)}</p>
 					</div>
 				</article>
-			`,
+			`;
+			},
 		)
 		.join('');
 }
