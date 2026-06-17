@@ -7,139 +7,198 @@ import Layout from '../layouts/Layout.astro';
 import { getFallbackDailyChallenge } from '../lib/challenge';
 
 const challenge = getFallbackDailyChallenge();
+
+const bottomNavItems = [
+  { href: '/', label: 'Inicio', active: true, icon: 'M3 11.5 12 4l9 7.5M6.5 10.5V20h11V10.5' },
+  { href: '/write', label: 'Escribir', active: false, icon: 'M4 6.5h10M4 11.5h10M4 16.5h6M16 14l4-4m0 0 2 2m-2-2-2-2' },
+  { href: '/challenge', label: 'Cima', active: false, icon: 'M12 17.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Zm0-8v3l2 1' },
+  { href: '/profile', label: 'Perfil', active: false, dynamicProfile: true, icon: 'M12 12a3.5 3.5 0 1 0-3.5-3.5A3.5 3.5 0 0 0 12 12Zm-6 8a6 6 0 0 1 12 0Z' },
+];
 ---
 
 <Layout
-  title='PoetiKa - Inicio'
-  description='PoetiKa muestra el reto activo y los relatos publicados en una home simple centrada en la app.'
+  title='Poetika - Inicio'
+  description='Poetika muestra el reto activo y los relatos publicados en una portada mobile-first con identidad de app.'
 >
-  <main class='home-paper min-h-screen text-(--ink-strong)'>
-    <div class='mx-auto max-w-355 px-4 sm:px-8 lg:px-14'>
+  <main class='home-screen min-h-screen text-(--ink-strong)'>
+    <div class='mx-auto max-w-[1180px] px-0 pb-28 sm:px-6 lg:px-8'>
       <AppHeader currentPath='/' />
 
-      <div class='home-rail mx-auto w-full max-w-347.5'>
-        <section
-          data-daily-challenge
-          class='mx-auto max-w-280 px-2 pb-10 pt-18 text-center sm:px-4 sm:pt-20'
-        >
-          <p class='app-kicker mb-4 text-[0.72rem] uppercase tracking-[0.32em]'>
-            Reto activo
-          </p>
-          <h1
-            class='app-title serif text-[3.2rem] font-semibold leading-none tracking-[-0.05em] sm:text-[4.7rem]'
-          >
-            Reto del dia
+      <section
+        data-daily-challenge
+        class='mx-auto grid max-w-[1100px] gap-12 px-5 pb-10 pt-8 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)] lg:items-start'
+      >
+        <div class='home-hero-copy'>
+          <p class='home-eyebrow'>Bienvenido de nuevo</p>
+          <h1 class='home-display mt-7 max-w-[13ch]'>
+            Tu proxima historia esta <em>esperando ser contada.</em>
           </h1>
-          <p
-            class='app-kicker mt-4 text-[0.88rem] uppercase tracking-[0.23em] sm:text-[1.02rem]'
-          >
-            Acepta el desafio y escribe tu historia
-          </p>
+        </div>
 
-          <div class='mt-16 grid gap-6 lg:grid-cols-3'>
-            {
-              challenge.slots.map((slot, index) => {
-                const icon = getChallengeIcon(slot.category);
-
-                return (
-                  <article
-                    data-daily-slot={index}
-                    class='home-challenge-card flex min-h-62.5 flex-col items-center justify-center bg-(--surface-soft) px-8 py-10 text-center'
-                  >
-                    <svg
-                      viewBox='0 0 24 24'
-                      class='mb-9 h-11 w-11 text-(--ink-strong)'
-                      fill='none'
-                      stroke='currentColor'
-                      stroke-width='1.8'
-                      stroke-linecap='round'
-                      stroke-linejoin='round'
-                      aria-hidden='true'
-                    >
-                      <path d={icon.path} />
-                    </svg>
-                    <p
-                      data-daily-category
-                      class='mb-2 text-[0.9rem] uppercase tracking-[0.24em] text-(--ink-muted)'
-                    >
-                      {slot.category}
-                    </p>
-                    <div class='mb-4 h-px w-16 bg-(--frame-border)' />
-                    <p
-                      data-daily-word
-                      class='app-title serif text-[2.05rem] font-semibold leading-tight tracking-[-0.03em] sm:text-[2.45rem]'
-                    >
-                      {slot.word}
-                    </p>
-                    <span data-daily-marker class='hidden'>
-                      {slot.marker}
-                    </span>
-                  </article>
-                );
-              })
-            }
+        <div class='home-challenge-shell'>
+          <div class='mb-5 flex items-center justify-between gap-4'>
+            <div>
+              <p class='home-section-kicker'>Reto del dia</p>
+            </div>
+            <p class='home-status'>
+              <span class='home-status-dot'></span>
+              Activo
+            </p>
           </div>
 
-          <div class='mt-14'>
-            <a
-              href='/write'
-              class='home-primary-button inline-flex min-w-[18.5rem] items-center justify-center px-8 py-4 text-[0.98rem] font-semibold transition hover:-translate-y-0.5'
-            >
+          <div class='home-challenge-panel'>
+            <div class='space-y-4'>
+              {
+                challenge.slots.map((slot, index) => {
+                  const icon = getChallengeIcon(slot.category);
+
+                  return (
+                    <article data-daily-slot={index} class='home-slot-card'>
+                      <div class='home-slot-icon'>
+                        <svg
+                          viewBox='0 0 24 24'
+                          class='h-5 w-5'
+                          fill='none'
+                          stroke='currentColor'
+                          stroke-width='1.9'
+                          stroke-linecap='round'
+                          stroke-linejoin='round'
+                          aria-hidden='true'
+                        >
+                          <path data-daily-icon-path d={icon.path} />
+                        </svg>
+                      </div>
+
+                      <div class='min-w-0 flex-1'>
+                        <p data-daily-category class='home-slot-category'>
+                          {slot.category}
+                        </p>
+                        <p data-daily-word class='home-slot-word'>
+                          {slot.word}
+                        </p>
+                        <span data-daily-marker class='hidden'>
+                          {slot.marker}
+                        </span>
+                      </div>
+
+                      <svg
+                        viewBox='0 0 24 24'
+                        class='h-5 w-5 shrink-0 text-[var(--ink-faint)]'
+                        fill='none'
+                        stroke='currentColor'
+                        stroke-width='1.9'
+                        stroke-linecap='round'
+                        stroke-linejoin='round'
+                        aria-hidden='true'
+                      >
+                        <path d='m9 6 6 6-6 6'></path>
+                      </svg>
+                    </article>
+                  );
+                })
+              }
+            </div>
+
+            <a href='/write' class='home-primary-button mt-5 flex w-full items-center justify-center gap-3 px-6 py-4 text-[0.95rem] font-semibold uppercase tracking-[0.24em]'>
+              <svg
+                viewBox='0 0 24 24'
+                class='h-5 w-5'
+                fill='none'
+                stroke='currentColor'
+                stroke-width='1.9'
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                aria-hidden='true'
+              >
+                <path d='M14 4h6v6'></path>
+                <path d='M10 14 20 4'></path>
+                <path d='M20 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4'></path>
+              </svg>
               Escribe tu relato
             </a>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class='mx-auto max-w-225 px-2 pb-20 pt-18 sm:px-4'>
-          <div
-            class='app-divider mb-8 flex items-end justify-between gap-4 border-b pb-3'
-          >
-            <h2
-              class='app-title serif text-[2.2rem] font-semibold leading-none tracking-[-0.04em] sm:text-[3.2rem]'
-            >
-              Relatos de hoy
-            </h2>
-            <a
-              href='/all'
-              class='pb-1 text-[1rem] text-(--ink-muted) transition hover:text-(--ink-strong)'
-            >
+      <section class='mx-auto grid max-w-[1100px] gap-8 px-5 pt-3 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_22rem]'>
+        <div>
+          <div class='mb-6 flex items-end justify-between gap-4'>
+            <div>
+              <h2 class='home-section-title'>Libro de hoy</h2>
+            </div>
+            <a href='/all' class='home-inline-link'>
               Ver todos
             </a>
           </div>
 
-          <div
-            data-story-feed
-            data-feed-mode='home-editorial'
-            class='grid gap-9'
-          >
-          </div>
+          <div data-story-feed data-feed-mode='home-editorial' class='grid gap-4'></div>
+        </div>
 
-          {(koFiUrl || koFiWidget) && (
-            <div class='mt-10 app-panel rounded-[2rem] px-7 py-6'>
-              <p class='app-kicker mb-2 text-[0.72rem] uppercase tracking-[0.3em]'>
-                Ko-fi
-              </p>
-              <div class='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
-                <p class='app-copy max-w-2xl text-sm leading-7'>
-                  Apoya Poetika para seguir puliendo la experiencia de escritura, perfiles y retos.
-                </p>
-                {koFiWidget ? (
-                  <KoFiWidget class='kofi-widget-shell self-start md:self-center' />
-                ) : (
-                  <a
-                    href={koFiUrl}
-                    target='_blank'
-                    rel='noreferrer'
-                    class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-5 py-3 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
-                  >
-                    Apoyar en Ko-fi
-                  </a>
-                )}
-              </div>
+        {(koFiUrl || koFiWidget) && (
+          <aside class='home-support-card self-start'>
+            <div class='home-support-icon'>
+              <svg
+                viewBox='0 0 24 24'
+                class='h-5 w-5'
+                fill='none'
+                stroke='currentColor'
+                stroke-width='1.9'
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                aria-hidden='true'
+              >
+                <path d='M7 5h10a4 4 0 0 1 0 8H7a3 3 0 1 0 0 6h11'></path>
+                <path d='M9 9h8'></path>
+              </svg>
             </div>
-          )}
-        </section>
-      </div>
+            <div>
+              <p class='home-support-title'>Apoya Poetika</p>
+              <p class='home-support-copy'>
+                Ayudanos a mantener viva la llama de la creatividad.
+              </p>
+            </div>
+
+            {koFiWidget ? (
+              <KoFiWidget class='kofi-widget-shell mt-2 self-start' />
+            ) : (
+              <a
+                href={koFiUrl}
+                target='_blank'
+                rel='noreferrer'
+                class='home-secondary-button mt-2 inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em]'
+              >
+                Ko-fi support
+              </a>
+            )}
+          </aside>
+        )}
+      </section>
+
+      <nav class='home-bottom-nav md:hidden' aria-label='Navegacion principal'>
+        {
+          bottomNavItems.map((item) => (
+            <a
+              href={item.href}
+              data-profile-link={item.dynamicProfile ? 'true' : undefined}
+              class:list={['home-bottom-link', item.active && 'is-active']}
+            >
+              <svg
+                viewBox='0 0 24 24'
+                class='h-5 w-5'
+                fill='none'
+                stroke='currentColor'
+                stroke-width='1.9'
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                aria-hidden='true'
+              >
+                <path d={item.icon}></path>
+              </svg>
+              <span>{item.label}</span>
+            </a>
+          ))
+        }
+      </nav>
     </div>
   </main>
 

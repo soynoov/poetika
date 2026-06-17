@@ -39,9 +39,17 @@ function escapeHtml(value: string) {
 function buildEmptyState(mode: FeedMode) {
 	if (mode === 'home-editorial') {
 		return `
-			<div class="app-panel rounded-[2rem] p-10 text-center">
-				<p class="mb-3 text-[11px] uppercase tracking-[0.35em] text-[var(--ink-muted)]">Sin relatos aun</p>
-				<p class="text-base leading-8 text-[var(--ink-soft)]">Publica el primer relato del reto de hoy y aparecera aqui.</p>
+			<div class="home-empty-state rounded-[2rem] px-6 py-10 text-center">
+				<div class="mx-auto mb-5 flex h-18 w-18 items-center justify-center rounded-full bg-[rgba(255,255,255,0.06)]">
+					<svg viewBox="0 0 24 24" class="h-7 w-7 text-[var(--ink-muted)]" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="m8 12 7-7"></path>
+						<path d="M17 5h2v2"></path>
+						<path d="m9 15-4 4"></path>
+						<path d="M5 17v2h2"></path>
+					</svg>
+				</div>
+				<p class="mb-3 text-[11px] uppercase tracking-[0.35em] text-[var(--ink-muted)]">Aun no hay susurros</p>
+				<p class="mx-auto max-w-[17rem] text-[1rem] leading-7 text-[var(--ink-soft)]">Se el primero en plasmar tu vision sobre el reto de hoy.</p>
 			</div>
 		`;
 	}
@@ -67,12 +75,12 @@ function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
 
 	if (mode === 'home-editorial') {
 		return `
-			<article class="app-panel rounded-[1.9rem] px-7 py-6">
+			<article class="home-story-card rounded-[1.9rem] px-5 py-5 sm:px-6">
 				<div class="mb-4 flex items-start justify-between gap-4">
 					<div class="min-w-0">
 						<div class="mb-2 flex items-center gap-3">
 							${crownMarkup}
-							<a href="/profile?u=${encodeURIComponent(story.author.username)}" class="text-sm uppercase tracking-[0.28em] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]">@${escapeHtml(story.author.username)}</a>
+							<a href="/profile?u=${encodeURIComponent(story.author.username)}" class="text-[11px] uppercase tracking-[0.28em] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]">@${escapeHtml(story.author.username)}</a>
 						</div>
 						<p class="text-sm tracking-[0.03em] text-[var(--ink-muted)]">
 							${escapeHtml(story.author.displayName)} / ${story.wordCount} palabras
@@ -82,14 +90,15 @@ function buildStoryCard(story: StoryRecord, index: number, mode: FeedMode) {
 						type="button"
 						data-like-button
 						data-story-id="${story.id}"
-						class="inline-flex items-center gap-1.5 text-[1.05rem] text-[var(--ink-muted)] transition hover:text-[var(--ink-strong)]"
+						class="inline-flex items-center gap-1.5 rounded-full border border-[var(--frame-border)] bg-[rgba(255,255,255,0.04)] px-3 py-1.5 text-[1.05rem] text-[var(--ink-muted)] transition hover:border-[rgba(154,99,255,0.3)] hover:text-[var(--ink-strong)]"
 						aria-pressed="${story.viewerHasLiked ? 'true' : 'false'}"
 					>
 						<span>${story.viewerHasLiked ? '&#9829;' : '&#9825;'}</span>
-						<span class="text-base">${story.likes}</span>
+						<span class="text-sm font-semibold">${story.likes}</span>
 					</button>
 				</div>
-				<p class="max-w-5xl text-[1.15rem] leading-9 whitespace-pre-wrap break-words text-[var(--ink-soft)]">${escapeHtml(story.body)}</p>
+				<p class="text-[11px] uppercase tracking-[0.24em] text-[var(--ink-muted)]">${formatMadridTime(story.createdAt)}</p>
+				<p class="mt-3 max-w-5xl text-[1rem] leading-7 whitespace-pre-wrap break-words text-[var(--ink-soft)]">${escapeHtml(story.body)}</p>
 			</article>
 		`;
 	}

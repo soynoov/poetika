@@ -1,6 +1,4 @@
 ---
-import BrandLogo from './BrandLogo.astro';
-import { koFiUrl } from '../lib/support';
 
 type Props = {
 	currentPath?: string;
@@ -11,18 +9,141 @@ const { currentPath = '/' } = Astro.props as Props;
 const navItems = [
 	{ href: '/', label: 'Inicio' },
 	{ href: '/write', label: 'Escribir' },
-	{ href: '/all', label: 'Rankings' },
+	{ href: '/challenge', label: 'Cima' },
 	{ href: '/profile', label: 'Perfil', dynamicProfile: true },
 ];
 ---
 
-<header class='app-header border-b border-[var(--frame-border)]'>
-	<div class='mx-auto flex max-w-[1420px] items-center justify-between gap-6 px-4 py-5 sm:px-8 lg:px-14'>
-		<div class='flex min-w-0 items-center'>
-			<BrandLogo class='h-10 w-auto max-w-none' linkClass='opacity-95' />
+<header class='app-header'>
+	<div class='mx-auto flex max-w-[1180px] items-center justify-between gap-3 px-5 py-4 sm:px-6 lg:px-8'>
+		<details class='relative md:hidden'>
+			<summary
+				class='app-icon-button flex h-12 w-12 cursor-pointer list-none items-center justify-center'
+				aria-label='Abrir navegacion'
+			>
+				<svg
+					viewBox='0 0 24 24'
+					class='h-5 w-5'
+					fill='none'
+					stroke='currentColor'
+					stroke-width='1.9'
+					stroke-linecap='round'
+					stroke-linejoin='round'
+					aria-hidden='true'
+				>
+					<path d='M4 7h16M4 12h16M4 17h16'></path>
+				</svg>
+			</summary>
+
+			<div class='app-menu-panel absolute left-0 top-[calc(100%+0.85rem)] z-30 w-[min(18rem,calc(100vw-2.5rem))] rounded-[1.6rem] p-3'>
+				<nav class='flex flex-col gap-1 text-sm text-[var(--ink-soft)]'>
+					{navItems.map((item) => {
+						const isActive =
+							item.href === '/'
+								? currentPath === '/'
+								: currentPath === item.href || currentPath.startsWith(`${item.href}/`);
+
+						return (
+							<a
+								href={item.href}
+								data-profile-link={item.dynamicProfile ? 'true' : undefined}
+								class:list={[
+									'app-menu-link flex items-center justify-between rounded-2xl px-4 py-3 transition',
+									isActive && 'is-active',
+								]}
+							>
+								<span>{item.label}</span>
+								<svg
+									viewBox='0 0 24 24'
+									class='h-4 w-4 opacity-60'
+									fill='none'
+									stroke='currentColor'
+									stroke-width='1.9'
+									stroke-linecap='round'
+									stroke-linejoin='round'
+									aria-hidden='true'
+								>
+									<path d='m9 6 6 6-6 6'></path>
+								</svg>
+							</a>
+						);
+					})}
+				</nav>
+
+				<div class='mt-3 border-t border-[var(--frame-border)] pt-3'>
+					<a
+						href='/auth'
+						data-guest-only
+						class='app-menu-link flex items-center justify-between rounded-2xl px-4 py-3 text-sm text-[var(--ink-soft)] transition'
+					>
+						<span>Entrar</span>
+						<svg
+							viewBox='0 0 24 24'
+							class='h-4 w-4 opacity-60'
+							fill='none'
+							stroke='currentColor'
+							stroke-width='1.9'
+							stroke-linecap='round'
+							stroke-linejoin='round'
+							aria-hidden='true'
+						>
+							<path d='m9 6 6 6-6 6'></path>
+						</svg>
+					</a>
+					<div data-auth-only class='hidden flex-col gap-2'>
+						<a
+							href='/profile'
+							data-profile-link='true'
+							class='app-menu-link flex items-center justify-between rounded-2xl px-4 py-3 text-sm text-[var(--ink-soft)] transition'
+						>
+							<span data-session-label>Mi perfil</span>
+							<svg
+								viewBox='0 0 24 24'
+								class='h-4 w-4 opacity-60'
+								fill='none'
+								stroke='currentColor'
+								stroke-width='1.9'
+								stroke-linecap='round'
+								stroke-linejoin='round'
+								aria-hidden='true'
+							>
+								<path d='m9 6 6 6-6 6'></path>
+							</svg>
+						</a>
+						<button
+							type='button'
+							data-sign-out-button
+							class='app-menu-link flex items-center justify-between rounded-2xl px-4 py-3 text-left text-sm text-[var(--ink-soft)] transition'
+						>
+							<span>Salir</span>
+							<svg
+								viewBox='0 0 24 24'
+								class='h-4 w-4 opacity-60'
+								fill='none'
+								stroke='currentColor'
+								stroke-width='1.9'
+								stroke-linecap='round'
+								stroke-linejoin='round'
+								aria-hidden='true'
+							>
+								<path d='m9 6 6 6-6 6'></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+			</div>
+		</details>
+
+		<div class='min-w-0 flex-1 md:flex-none'>
+			<a href='/' class='app-wordmark mx-auto flex w-fit items-center gap-2.5'>
+				<span class='brand-font text-[2.05rem] font-semibold leading-none tracking-[-0.04em] text-[var(--ink-strong)]'>
+					Poetika
+				</span>
+				<span class='app-beta-tag'>Beta</span>
+			</a>
 		</div>
 
-		<nav class='hidden items-center gap-10 text-[1.05rem] text-[var(--muted-strong)] md:flex'>
+		<nav class='hidden items-center gap-3 text-sm text-[var(--muted-strong)] md:flex'>
 			{navItems.map((item) => {
 				const isActive =
 					item.href === '/'
@@ -34,8 +155,8 @@ const navItems = [
 						href={item.href}
 						data-profile-link={item.dynamicProfile ? 'true' : undefined}
 						class:list={[
-							'pb-1 transition hover:text-[var(--ink-strong)]',
-							isActive && 'border-b-2 border-[var(--ink-strong)] font-semibold text-[var(--ink-strong)]',
+							'app-top-link rounded-full px-4 py-2 transition hover:text-[var(--ink-strong)]',
+							isActive && 'is-active',
 						]}
 					>
 						{item.label}
@@ -44,27 +165,17 @@ const navItems = [
 			})}
 		</nav>
 
-		<div class='flex items-center gap-3'>
-			{koFiUrl && (
-				<a
-					href={koFiUrl}
-					target='_blank'
-					rel='noreferrer'
-					class='app-link-button hidden items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-4 py-2 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)] lg:inline-flex'
-				>
-					Ko-fi
-				</a>
-			)}
+		<div class='flex items-center gap-2 md:gap-3'>
 			<span
 				data-session-state
-				class='hidden rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-3 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)] sm:inline-flex'
+				class='hidden rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[var(--ink-muted)] lg:inline-flex'
 			>
 				Sesion cerrada
 			</span>
 			<a
 				href='/auth'
 				data-guest-only
-				class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-4 py-2 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
+				class='app-icon-button hidden h-11 min-w-11 items-center justify-center rounded-full px-4 text-sm font-semibold text-[var(--ink-strong)] md:inline-flex'
 			>
 				Entrar
 			</a>
@@ -72,52 +183,61 @@ const navItems = [
 				<a
 					href='/profile'
 					data-profile-link='true'
-					class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-4 py-2 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
+					class='app-icon-button hidden h-11 items-center justify-center rounded-full px-4 text-sm font-semibold text-[var(--ink-strong)] md:inline-flex'
 				>
 					<span data-session-label>Mi perfil</span>
 				</a>
 				<button
 					type='button'
 					data-sign-out-button
-					class='app-link-button inline-flex items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-strong)] px-4 py-2 text-sm font-semibold text-[var(--ink-strong)] transition hover:bg-[var(--surface-hover)]'
+					class='app-icon-button hidden h-11 items-center justify-center rounded-full px-4 text-sm font-semibold text-[var(--ink-strong)] md:inline-flex'
 				>
 					Salir
 				</button>
 			</div>
-			<button
-				type='button'
-				class='theme-toggle inline-flex h-11 w-11 items-center justify-center rounded-full text-[var(--muted-strong)] transition hover:bg-[var(--surface-hover)] hover:text-[var(--ink-strong)]'
-				aria-label='Cambiar tema'
-				data-theme-toggle
-				data-theme-label-light='Activar modo noche'
-				data-theme-label-dark='Activar modo dia'
+
+			<a
+				href='/auth'
+				data-guest-only
+				class='app-icon-button inline-flex h-12 w-12 items-center justify-center text-[var(--ink-strong)] md:hidden'
+				aria-label='Entrar'
 			>
 				<svg
-					data-theme-icon='moon'
 					viewBox='0 0 24 24'
-					class='h-7 w-7'
+					class='h-5 w-5'
 					fill='none'
 					stroke='currentColor'
 					stroke-width='1.9'
 					stroke-linecap='round'
 					stroke-linejoin='round'
+					aria-hidden='true'
 				>
-					<path d='M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z'></path>
+					<path d='M15 17h5l-1.4-1.4a2 2 0 0 1-.6-1.4V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5'></path>
+					<path d='M10.5 17a1.5 1.5 0 0 0 3 0'></path>
 				</svg>
+			</a>
+
+			<a
+				href='/profile'
+				data-auth-only
+				data-profile-link='true'
+				class='hidden h-12 w-12 items-center justify-center rounded-full border border-[var(--frame-border)] bg-[var(--surface-soft)] text-[var(--ink-strong)] md:hidden'
+				aria-label='Perfil y avisos'
+			>
 				<svg
-					data-theme-icon='sun'
 					viewBox='0 0 24 24'
-					class='hidden h-7 w-7'
+					class='h-5 w-5'
 					fill='none'
 					stroke='currentColor'
 					stroke-width='1.9'
 					stroke-linecap='round'
 					stroke-linejoin='round'
+					aria-hidden='true'
 				>
-					<circle cx='12' cy='12' r='4'></circle>
-					<path d='M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77'></path>
+					<path d='M15 17h5l-1.4-1.4a2 2 0 0 1-.6-1.4V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5'></path>
+					<path d='M10.5 17a1.5 1.5 0 0 0 3 0'></path>
 				</svg>
-			</button>
+			</a>
 		</div>
 	</div>
 </header>

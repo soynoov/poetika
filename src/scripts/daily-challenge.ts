@@ -1,4 +1,5 @@
 import { loadDailyChallenge } from '../lib/challenge';
+import { getChallengeIcon } from '../lib/challenge-icons';
 
 function setText(node: Element | null, value: string) {
 	if (!node) return;
@@ -9,6 +10,11 @@ function applySlot(card: HTMLElement, slot: { category: string; marker: string; 
 	setText(card.querySelector('[data-daily-marker]'), slot.marker);
 	setText(card.querySelector('[data-daily-category]'), slot.category);
 	setText(card.querySelector('[data-daily-word]'), slot.word);
+
+	const iconPath = card.querySelector<SVGPathElement>('[data-daily-icon-path]');
+	if (iconPath) {
+		iconPath.setAttribute('d', getChallengeIcon(slot.category).path);
+	}
 }
 
 export async function initDailyChallenge() {
