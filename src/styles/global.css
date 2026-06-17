@@ -1003,7 +1003,6 @@ a {
 }
 
 .profile-avatar-fallback {
-  display: grid;
   place-items: center;
   background: radial-gradient(circle at top, rgba(97, 77, 145, 0.94), rgba(35, 28, 52, 0.98));
   color: var(--ink-strong);
@@ -1015,6 +1014,10 @@ a {
     Georgia,
     serif;
   font-size: 2.8rem;
+}
+
+.profile-avatar-fallback:not(.hidden) {
+  display: grid;
 }
 
 .profile-avatar-edit {
@@ -1214,7 +1217,6 @@ a {
 }
 
 .profile-photo-preview-fallback {
-  display: grid;
   place-items: center;
   color: var(--ink-strong);
   background: radial-gradient(circle at top, rgba(97, 77, 145, 0.94), rgba(35, 28, 52, 0.98));
@@ -1226,6 +1228,10 @@ a {
     Georgia,
     serif;
   font-size: 1.75rem;
+}
+
+.profile-photo-preview-fallback:not(.hidden) {
+  display: grid;
 }
 
 .profile-theme-row {
