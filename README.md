@@ -2,6 +2,8 @@
 
 PoetiKa es una experiencia de escritura creativa con una estética editorial. Cada día propone tres palabras comunes para toda la comunidad y convierte esos textos en un feed público con identidad de autor.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0V121A5MN)
+
 ## Qué puede hacer hoy
 
 - Mostrar un reto diario con tres palabras compartidas.
